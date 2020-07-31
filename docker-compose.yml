@@ -1,0 +1,28 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./cmd/diagnosis
+      args:
+        - GITHUB_USER=${GITHUB_USER}
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+    tty: true
+    volumes:
+      - ./diagnosis:/go/src/diagnosis
+    environment:
+      - PORT=9001
+      - DB_MASTER_HOST=${DB_MASTER_HOST}
+      - DB_MASTER_USER=${DB_MASTER_USER}
+      - DB_MASTER_PASSWORD=${DB_MASTER_PASSWORD}
+      - DB_SLAVE_HOST=${DB_SLAVE_HOST}
+      - DB_SLAVE_USER=${DB_SLAVE_USER}
+      - DB_SLAVE_PASSWORD=${DB_SLAVE_PASSWORD}
+      - DB_PORT=3306
+      - DB_SCHEMA=mimosa
+      - DB_LOG_MODE=${DB_LOG_MODE}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - SQS_ENDPOINT=${SQS_ENDPOINT}
+      - GUARD_DUTY_QUEUE_URL=${GUARD_DUTY_QUEUE_URL}

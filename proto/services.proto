@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package diagnosis;
+option go_package = "github.com/CyberAgent/mimosa-diagnosis/pkg/pb/diagnosis";
+
+import "entities.proto";
+import "google/protobuf/empty.proto";
+
+service DiagnosisService {
+  // CRUD
+  rpc ListDiagnosis(ListDiagnosisRequest) returns (ListDiagnosisResponse) {}
+  rpc GetDiagnosis(GetDiagnosisRequest) returns (GetDiagnosisResponse) {}
+  rpc PutDiagnosis(PutDiagnosisRequest) returns (PutDiagnosisResponse) {}
+  rpc DeleteDiagnosis(DeleteDiagnosisRequest) returns (google.protobuf.Empty) {}
+}
+
+service DiagnosisDataSourceService {
+  // CRUD
+  rpc ListDiagnosisDataSource(ListDiagnosisDataSourceRequest) returns (ListDiagnosisDataSourceResponse) {}
+  rpc GetDiagnosisDataSource(GetDiagnosisDataSourceRequest) returns (GetDiagnosisDataSourceResponse) {}
+  rpc PutDiagnosisDataSource(PutDiagnosisDataSourceRequest) returns (PutDiagnosisDataSourceResponse) {}
+  rpc DeleteDiagnosisDataSource(DeleteDiagnosisDataSourceRequest) returns (google.protobuf.Empty) {}
+}
+
+service RelDiagnosisDataSourceService {
+  // CRUD
+  rpc ListRelDiagnosisDataSource(ListRelDiagnosisDataSourceRequest) returns (ListRelDiagnosisDataSourceResponse) {}
+  rpc GetRelDiagnosisDataSource(GetRelDiagnosisDataSourceRequest) returns (GetRelDiagnosisDataSourceResponse) {}
+  rpc PutRelDiagnosisDataSource(PutRelDiagnosisDataSourceRequest) returns (PutRelDiagnosisDataSourceResponse) {}
+  rpc DeleteRelDiagnosisDataSource(DeleteRelDiagnosisDataSourceRequest) returns (google.protobuf.Empty) {}
+  // KICK
+  rpc StartDiagnosis(StartDiagnosisRequest) returns (StartDiagnosisResponse) {}
+}
+
+// Diagnosis Service
+message ListDiagnosisRequest {
+  repeated uint32 project_id = 1;
+  string name = 2;
+}
+
+message ListDiagnosisResponse {repeated Diagnosis diagnosis = 1; }
+
+message GetDiagnosisRequest {
+  uint32 diagnosis_id = 1;
+}
+
+message GetDiagnosisResponse { Diagnosis diagnosis = 1;}
+
+message PutDiagnosisRequest {
+  DiagnosisForUpsert diagnosis = 1;
+}
+
+message PutDiagnosisResponse { Diagnosis diagnosis = 1;}
+
+message DeleteDiagnosisRequest {
+  uint64 diagnosis_id = 1;
+}
+
+// DiagnosisDataSourceService
+message ListDiagnosisDataSourceRequest {
+  string name = 1;
+}
+
+message ListDiagnosisDataSourceResponse { repeated DiagnosisDataSource diagnosis_data_source = 1;}
+
+message GetDiagnosisDataSourceRequest {
+  uint64 diagnosis_data_source_id = 1;
+}
+
+message GetDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
+
+message PutDiagnosisDataSourceRequest {
+  DiagnosisDataSourceForUpsert diagnosis_data_source = 1;
+}
+
+message PutDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
+
+message DeleteDiagnosisDataSourceRequest {
+  uint64 diagnosis_data_source_id = 1;
+}
+
+//KICK Diagnosis
+message StartDiagnosisRequest {
+  uint64 rel_diagnosis_data_source_id = 1;
+}
+
+message StartDiagnosisResponse {
+  string message = 1;
+}
+
+// RelDiagnosisDataSourceService
+message ListRelDiagnosisDataSourceRequest {
+  repeated uint32 project_id = 1;
+  string record_id = 2;
+  string jira_id = 3;
+  uint64 diagnosis_id = 4;
+  uint64 diagnosis_data_source_id = 5;
+}
+
+message ListRelDiagnosisDataSourceResponse { repeated RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
+
+message GetRelDiagnosisDataSourceRequest {
+  uint64 rel_diagnosis_data_source_id = 1;
+}
+
+message GetRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
+
+message PutRelDiagnosisDataSourceRequest {
+  RelDiagnosisDataSourceForUpsert rel_diagnosis_data_source = 1;
+}
+
+message PutRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
+
+message DeleteRelDiagnosisDataSourceRequest {
+  uint64 rel_diagnosis_data_source_id = 1;
+}
