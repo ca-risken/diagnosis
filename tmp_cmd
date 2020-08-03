@@ -1,0 +1,1 @@
+protoc --proto_path=proto --proto_path=${GOPATH}/src --error_format=gcc --go_out=pkg/pb/diagnosis --go_opt=plugins=grpc,paths=source_relative proto/*.proto;
