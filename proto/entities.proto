@@ -4,21 +4,21 @@ package diagnosis;
 option go_package = "github.com/CyberAgent/mimosa-diagnosis/pkg/pb/diagnosis";
 
 message Diagnosis {
-    uint64 diagnosis_id = 1;
-    uint64 project_id = 2;
+    uint32 diagnosis_id = 1;
+    uint32 project_id = 2;
     string name = 3;
     int64 created_at = 4;
     int64 updated_at = 5;
 }
 
 message DiagnosisForUpsert {
-    uint64 diagnosis_id = 1;
-    uint64 project_id = 2;
+    uint32 diagnosis_id = 1;
+    uint32 project_id = 2;
     string name = 3;
 }
 
 message DiagnosisDataSource {
-    uint64 diagnosis_data_source_id = 1;
+    uint32 diagnosis_data_source_id = 1;
     string name = 2;
     string description = 3;
     float max_score = 4;
@@ -27,17 +27,17 @@ message DiagnosisDataSource {
 }
 
 message DiagnosisDataSourceForUpsert {
-    uint64 diagnosis_data_source_id = 1;
+    uint32 diagnosis_data_source_id = 1;
     string name = 2;
     string description = 3;
     float max_score = 4;
 }
 
 message RelDiagnosisDataSource {
-    uint64 rel_diagnosis_data_source_id = 1;
-    uint64 diagnosis_data_source_id = 2;
-    uint64 diagnosis_id = 3;
-    uint64 project_id = 4;
+    uint32 rel_diagnosis_data_source_id = 1;
+    uint32 diagnosis_data_source_id = 2;
+    uint32 diagnosis_id = 3;
+    uint32 project_id = 4;
     string record_id = 5;
     string jira_id = 6;
     int64 created_at = 7;
@@ -45,10 +45,10 @@ message RelDiagnosisDataSource {
 }
 
 message RelDiagnosisDataSourceForUpsert {
-    uint64 rel_diagnosis_data_source_id = 1;
-    uint64 diagnosis_data_source_id = 2;
-    uint64 diagnosis_id = 3;
-    uint64 project_id = 4;
+    uint32 rel_diagnosis_data_source_id = 1;
+    uint32 diagnosis_data_source_id = 2;
+    uint32 diagnosis_id = 3;
+    uint32 project_id = 4;
     string resource_type = 5;
     string resource_name = 6;
 }
