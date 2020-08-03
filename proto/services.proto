@@ -38,7 +38,7 @@ message ListDiagnosisRequest {
   string name = 2;
 }
 
-message ListDiagnosisResponse {Diagnosis diagnosis = 1; }
+message ListDiagnosisResponse {repeated Diagnosis diagnosis = 1; }
 
 message GetDiagnosisRequest {
   uint32 project_id = 1;
@@ -65,7 +65,7 @@ message ListDiagnosisDataSourceRequest {
   string name = 2;
 }
 
-message ListDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
+message ListDiagnosisDataSourceResponse {repeated DiagnosisDataSource diagnosis_data_source = 1;}
 
 message GetDiagnosisDataSourceRequest {
   uint32 project_id = 1;
@@ -107,7 +107,7 @@ message ListRelDiagnosisDataSourceRequest {
   uint32 diagnosis_data_source_id = 5;
 }
 
-message ListRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
+message ListRelDiagnosisDataSourceResponse {repeated  RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
 
 message GetRelDiagnosisDataSourceRequest {
   uint32 project_id = 1;
