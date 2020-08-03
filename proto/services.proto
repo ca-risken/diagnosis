@@ -41,7 +41,8 @@ message ListDiagnosisRequest {
 message ListDiagnosisResponse {repeated Diagnosis diagnosis = 1; }
 
 message GetDiagnosisRequest {
-  uint32 diagnosis_id = 1;
+  repeated uint32 project_id = 1;
+  uint32 diagnosis_id = 2;
 }
 
 message GetDiagnosisResponse { Diagnosis diagnosis = 1;}
@@ -53,30 +54,35 @@ message PutDiagnosisRequest {
 message PutDiagnosisResponse { Diagnosis diagnosis = 1;}
 
 message DeleteDiagnosisRequest {
-  uint64 diagnosis_id = 1;
+  repeated uint32 project_id = 1;
+  uint64 diagnosis_id = 2;
 }
 
 // DiagnosisDataSourceService
 message ListDiagnosisDataSourceRequest {
-  string name = 1;
+  repeated uint32 project_id = 1;
+  string name = 2;
 }
 
 message ListDiagnosisDataSourceResponse { repeated DiagnosisDataSource diagnosis_data_source = 1;}
 
 message GetDiagnosisDataSourceRequest {
-  uint64 diagnosis_data_source_id = 1;
+  repeated uint32 project_id = 1;
+  uint64 diagnosis_data_source_id = 2;
 }
 
 message GetDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
 
 message PutDiagnosisDataSourceRequest {
-  DiagnosisDataSourceForUpsert diagnosis_data_source = 1;
+  repeated uint32 project_id = 1;
+  DiagnosisDataSourceForUpsert diagnosis_data_source = 2;
 }
 
 message PutDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
 
 message DeleteDiagnosisDataSourceRequest {
-  uint64 diagnosis_data_source_id = 1;
+  repeated uint32 project_id = 1;
+  uint64 diagnosis_data_source_id = 2;
 }
 
 //KICK Diagnosis
@@ -100,17 +106,20 @@ message ListRelDiagnosisDataSourceRequest {
 message ListRelDiagnosisDataSourceResponse { repeated RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
 
 message GetRelDiagnosisDataSourceRequest {
-  uint64 rel_diagnosis_data_source_id = 1;
+  repeated uint32 project_id = 1;
+  uint64 rel_diagnosis_data_source_id = 2;
 }
 
 message GetRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
 
 message PutRelDiagnosisDataSourceRequest {
-  RelDiagnosisDataSourceForUpsert rel_diagnosis_data_source = 1;
+  repeated uint32 project_id = 1;
+  RelDiagnosisDataSourceForUpsert rel_diagnosis_data_source = 2;
 }
 
 message PutRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
 
 message DeleteRelDiagnosisDataSourceRequest {
-  uint64 rel_diagnosis_data_source_id = 1;
+  repeated uint32 project_id = 1;
+  uint64 rel_diagnosis_data_source_id = 2;
 }
