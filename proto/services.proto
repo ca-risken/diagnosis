@@ -48,14 +48,15 @@ message GetDiagnosisRequest {
 message GetDiagnosisResponse { Diagnosis diagnosis = 1;}
 
 message PutDiagnosisRequest {
-  DiagnosisForUpsert diagnosis = 1;
+  repeated uint32 project_id = 1;
+  DiagnosisForUpsert diagnosis = 2;
 }
 
 message PutDiagnosisResponse { Diagnosis diagnosis = 1;}
 
 message DeleteDiagnosisRequest {
   repeated uint32 project_id = 1;
-  uint64 diagnosis_id = 2;
+  uint32 diagnosis_id = 2;
 }
 
 // DiagnosisDataSourceService
@@ -68,7 +69,7 @@ message ListDiagnosisDataSourceResponse { repeated DiagnosisDataSource diagnosis
 
 message GetDiagnosisDataSourceRequest {
   repeated uint32 project_id = 1;
-  uint64 diagnosis_data_source_id = 2;
+  uint32 diagnosis_data_source_id = 2;
 }
 
 message GetDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
@@ -78,16 +79,19 @@ message PutDiagnosisDataSourceRequest {
   DiagnosisDataSourceForUpsert diagnosis_data_source = 2;
 }
 
-message PutDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
+message PutDiagnosisDataSourceResponse {
+  repeated uint32 project_id = 1;
+  DiagnosisDataSource diagnosis_data_source = 2;
+}
 
 message DeleteDiagnosisDataSourceRequest {
   repeated uint32 project_id = 1;
-  uint64 diagnosis_data_source_id = 2;
+  uint32 diagnosis_data_source_id = 2;
 }
 
 //KICK Diagnosis
 message StartDiagnosisRequest {
-  uint64 rel_diagnosis_data_source_id = 1;
+  uint32 rel_diagnosis_data_source_id = 1;
 }
 
 message StartDiagnosisResponse {
@@ -99,15 +103,15 @@ message ListRelDiagnosisDataSourceRequest {
   repeated uint32 project_id = 1;
   string record_id = 2;
   string jira_id = 3;
-  uint64 diagnosis_id = 4;
-  uint64 diagnosis_data_source_id = 5;
+  uint32 diagnosis_id = 4;
+  uint32 diagnosis_data_source_id = 5;
 }
 
 message ListRelDiagnosisDataSourceResponse { repeated RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
 
 message GetRelDiagnosisDataSourceRequest {
   repeated uint32 project_id = 1;
-  uint64 rel_diagnosis_data_source_id = 2;
+  uint32 rel_diagnosis_data_source_id = 2;
 }
 
 message GetRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
@@ -121,5 +125,5 @@ message PutRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis
 
 message DeleteRelDiagnosisDataSourceRequest {
   repeated uint32 project_id = 1;
-  uint64 rel_diagnosis_data_source_id = 2;
+  uint32 rel_diagnosis_data_source_id = 2;
 }
