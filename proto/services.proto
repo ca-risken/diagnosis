@@ -48,7 +48,7 @@ message GetDiagnosisRequest {
 message GetDiagnosisResponse { Diagnosis diagnosis = 1;}
 
 message PutDiagnosisRequest {
-  repeated uint32 project_id = 1;
+  uint32 project_id = 1;
   DiagnosisForUpsert diagnosis = 2;
 }
 
@@ -68,14 +68,14 @@ message ListDiagnosisDataSourceRequest {
 message ListDiagnosisDataSourceResponse { repeated DiagnosisDataSource diagnosis_data_source = 1;}
 
 message GetDiagnosisDataSourceRequest {
-  repeated uint32 project_id = 1;
+  uint32 project_id = 1;
   uint32 diagnosis_data_source_id = 2;
 }
 
 message GetDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
 
 message PutDiagnosisDataSourceRequest {
-  repeated uint32 project_id = 1;
+  uint32 project_id = 1;
   DiagnosisDataSourceForUpsert diagnosis_data_source = 2;
 }
 
@@ -117,7 +117,7 @@ message GetRelDiagnosisDataSourceRequest {
 message GetRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
 
 message PutRelDiagnosisDataSourceRequest {
-  repeated uint32 project_id = 1;
+  uint32 project_id = 1;
   RelDiagnosisDataSourceForUpsert rel_diagnosis_data_source = 2;
 }
 
