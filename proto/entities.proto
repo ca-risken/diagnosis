@@ -13,8 +13,7 @@ message Diagnosis {
 
 message DiagnosisForUpsert {
     uint32 diagnosis_id = 1;
-    uint32 project_id = 2;
-    string name = 3;
+    string name = 2;
 }
 
 message DiagnosisDataSource {
@@ -48,7 +47,6 @@ message RelDiagnosisDataSourceForUpsert {
     uint32 rel_diagnosis_data_source_id = 1;
     uint32 diagnosis_data_source_id = 2;
     uint32 diagnosis_id = 3;
-    uint32 project_id = 4;
-    string resource_type = 5;
-    string resource_name = 6;
+    uint32 record_id = 4;
+    uint32 jira_id = 5;
 }
