@@ -95,7 +95,8 @@ message StartDiagnosisRequest {
 }
 
 message StartDiagnosisResponse {
-  string message = 1;
+  uint32 project_id = 1;
+  string message = 2;
 }
 
 // RelDiagnosisDataSourceService
