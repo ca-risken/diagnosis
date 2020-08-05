@@ -1,6 +1,9 @@
-version: '3'
+version: '3.8'
 services:
   app:
+    networks:
+      - local-shared
+      - diagnosis
     build:
       context: ./cmd/diagnosis
       args:
@@ -9,8 +12,10 @@ services:
     tty: true
     volumes:
       - ./diagnosis:/go/src/diagnosis
+    ports:
+      - 19001:19001
     environment:
-      - PORT=9001
+      - PORT=19001
       - DB_MASTER_HOST=${DB_MASTER_HOST}
       - DB_MASTER_USER=${DB_MASTER_USER}
       - DB_MASTER_PASSWORD=${DB_MASTER_PASSWORD}
@@ -24,5 +29,13 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
-      - SQS_ENDPOINT=${SQS_ENDPOINT}
-      - GUARD_DUTY_QUEUE_URL=${GUARD_DUTY_QUEUE_URL}
+      - SQS_ENDPOINT=${ENDPOINT}
+      - DIAGNOSIS_JIRA_QUEUE_URL=${DIAGNOSIS_JIRA_QUEUE_URL}
+      - DIAGNOSIS_JIRA_QUEUE_NAME=${DIAGNOSIS_JIRA_QUEUE_NAME}
+
+networks:
+  diagnosis:
+    driver: bridge
+    attachable: true
+  local-shared:
+    external: true

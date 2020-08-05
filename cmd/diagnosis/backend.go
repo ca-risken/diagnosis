@@ -5,23 +5,20 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-type SQSConfig struct {
-	AWSRegion   string `envconfig:"aws_region" default:"ap-northeast-1"`
-	SQSEndpoint string `envconfig:"sqs_endpoint" default:"http://localhost:9324"`
+type DiagnosisConfig struct {
+	Port     string `default:"19001"`
+	LogLevel string `split_words:"true" default:"debug"`
 
-	DiagnosisQueueURL string `split_words:"true" required:"true"`
+	DB  diagnosisRepoInterface
+	SQS *sqsClient
 }
 
-type BackendConfig struct {
-	DB  DBConfig  `envconfig:"DB"`
-	SQS SQSConfig `envconfig:"SQS"`
-}
-
-func newBackendConfig() (*BackendConfig, error) {
-	backendConfig := &BackendConfig{}
-	if err := envconfig.Process("", &backendConfig); err != nil {
+func newDiagnosisConfig() (*DiagnosisConfig, error) {
+	config := &DiagnosisConfig{}
+	if err := envconfig.Process("", config); err != nil {
 		return nil, err
 	}
-
-	return &backend, nil
+	config.DB = newDiagnosisRepository()
+	config.SQS = newSQSClient()
+	return config, nil
 }

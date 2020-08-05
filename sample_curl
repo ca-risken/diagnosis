@@ -1,0 +1,3 @@
+grpcurl -plaintext -d '{"project_id":1,"diagnosis":{"name":"test"}}' localhost:19001 diagnosis.DiagnosisService.PutDiagnosis
+grpcurl -plaintext -d '{"project_id":0,"diagnosis":{"diagnosis_id":1,"name":"test2"}}' localhost:19001 diagnosis.DiagnosisService.PutDiagnosis
+grpcurl -plaintext -d '{"project_id":1,"diagnosis_id":1}' localhost:19001 diagnosis.DiagnosisService.GetDiagnosis

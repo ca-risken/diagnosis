@@ -18,6 +18,8 @@ export DB_LOG_MODE="false"
 
 # AWS
 export AWS_REGION="ap-northeast-1"
-export SQS_ENDPOINT="http://sqs:9324"
-export GUARD_DUTY_QUEUE_NAME="aws-guardduty"
-export GUARD_DUTY_QUEUE_URL="http://sqs:9324/queue/aws-guardduty"
+export AWS_ACCESS_KEY_ID="testkey"
+export AWS_SECRET_ACCESS_KEY="testsecretkey"
+export ENDPOINT="http://sqs:9324"
+export DIAGNOSIS_JIRA_QUEUE_NAME="diagnosis-jira"
+export DIAGNOSIS_JIRA_QUEUE_URL="http://sqs:9324/queue/diagnosis-jira"

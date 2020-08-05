@@ -3,6 +3,7 @@ module github.com/CyberAgent/mimosa-diagnosis/cmd/diagnosis
 go 1.14
 
 require (
+	github.com/aws/aws-sdk-go v1.33.19
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.2

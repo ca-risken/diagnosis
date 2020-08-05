@@ -11,14 +11,14 @@ RUN go install -v
 
 RUN mkdir /go/src/diagnosis
 WORKDIR /go/src/diagnosis
-ADD ./diagnosis .
-ADD ./proto diagnosis/proto
+ADD . .
+#ADD ./proto diagnosis/proto
 
 FROM alpine
 RUN apk add --no-cache ca-certificates tzdata \
   && cd /tmp/ && wget -q https://github.com/okzk/env-injector/releases/download/v0.0.5/env-injector_0.0.5_linux_amd64.tar.gz \
   && tar xvfz env-injector_0.0.5_linux_amd64.tar.gz && mv env-injector /usr/local/bin/ && rm /tmp/*
-COPY --from=builder /go/bin/diagnosis /usr/local/diagnnosis/bin/
+COPY --from=builder /go/bin/diagnosis /usr/local/diagnosis/bin/
 ENV PORT= \
     DB_MASTER_HOST= \
     DB_MASTER_USER= \
@@ -34,8 +34,7 @@ ENV PORT= \
     AWS_SECRET_ACCESS_KEY= \
     AWS_SESSION_TOKEN= \
     SQS_ENDPOINT= \
-    JIRA_URL= \
-    JIRA_API_TOKEN= \
+    DIAGNOSIS_JIRA_QUEUE_URL= \
     TZ=Asia/Tokyo
 
 WORKDIR /usr/local/diagnosis

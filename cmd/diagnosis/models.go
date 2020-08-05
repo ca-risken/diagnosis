@@ -5,6 +5,7 @@ import "time"
 // Diagnosis entity
 type Diagnosis struct {
 	DiagnosisID uint32 `gorm:"column:diagnosis_id"`
+	ProjectID   uint32
 	Name        string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
