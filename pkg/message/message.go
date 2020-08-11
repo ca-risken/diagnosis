@@ -8,4 +8,5 @@ type DiagnosisQueueMessage struct {
 	ProjectID  uint32 `json:"project_id"`
 	RecordID   string `json:"record_id"`
 	JiraID     string `json:"jira_id"`
+	JiraKey    string `json:"jira_key"`
 }

@@ -39,8 +39,9 @@ message RelDiagnosisDataSource {
     uint32 project_id = 4;
     string record_id = 5;
     string jira_id = 6;
-    int64 created_at = 7;
-    int64 updated_at = 8;
+    string jira_key = 7;
+    int64 created_at = 8;
+    int64 updated_at = 9;
 }
 
 message RelDiagnosisDataSourceForUpsert {
@@ -49,4 +50,5 @@ message RelDiagnosisDataSourceForUpsert {
     uint32 diagnosis_id = 3;
     string record_id = 4;
     string jira_id = 5;
+    string jira_key = 6;
 }

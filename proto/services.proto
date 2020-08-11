@@ -102,10 +102,8 @@ message StartDiagnosisResponse {
 // RelDiagnosisDataSourceService
 message ListRelDiagnosisDataSourceRequest {
   uint32 project_id = 1;
-  string record_id = 2;
-  string jira_id = 3;
-  uint32 diagnosis_id = 4;
-  uint32 diagnosis_data_source_id = 5;
+  uint32 diagnosis_id = 2;
+  uint32 diagnosis_data_source_id = 3;
 }
 
 message ListRelDiagnosisDataSourceResponse {repeated  RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
