@@ -29,6 +29,7 @@ type RelDiagnosisDataSource struct {
 	ProjectID                uint32
 	RecordID                 string
 	JiraID                   string
+	JiraKey                  string
 	CreatedAt                time.Time
 	UpdatedAt                time.Time
 }

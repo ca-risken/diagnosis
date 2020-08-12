@@ -45,7 +45,6 @@ func newSQSClient() *sqsClient {
 		svc: session,
 		queueURLMap: map[string]string{
 			// queueURLMap:
-			// key="data_source_label", value="SQS URL",
 			"diagnosis:jira": conf.DiagnosisJiraQueueURL,
 		},
 	}

@@ -23,3 +23,9 @@ export AWS_SECRET_ACCESS_KEY="testsecretkey"
 export ENDPOINT="http://sqs:9324"
 export DIAGNOSIS_JIRA_QUEUE_NAME="diagnosis-jira"
 export DIAGNOSIS_JIRA_QUEUE_URL="http://sqs:9324/queue/diagnosis-jira"
+export DIAGNOSIS_JIRA_URL="https://ca-security.atlassian.net/"
+export DIAGNOSIS_JIRA_USER_ID="mimosa@cyberagent.co.jp"
+export DIAGNOSIS_JIRA_USER_PASSWORD="HsnHNk9sP5rNzTIU86t1D299"
+
+# mimosa
+export FINDING_SVC_ADDR="finding:8081"

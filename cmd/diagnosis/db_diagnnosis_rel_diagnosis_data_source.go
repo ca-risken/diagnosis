@@ -6,19 +6,10 @@ import (
 	"go.uber.org/zap"
 )
 
-func (r *diagnosisRepository) ListRelDiagnosisDataSource(projectID, diagnosisID, diagnosisDataSourceID uint32, recordID, jiraID string) (*[]RelDiagnosisDataSource, error) {
+func (r *diagnosisRepository) ListRelDiagnosisDataSource(projectID, diagnosisID, diagnosisDataSourceID uint32) (*[]RelDiagnosisDataSource, error) {
 	query := `select * from rel_diagnosis_data_source where project_id = ?`
 	var params []interface{}
 	params = append(params, projectID)
-
-	if !zero.IsZeroVal(recordID) {
-		query += " and record_id = ?"
-		params = append(params, recordID)
-	}
-	if !zero.IsZeroVal(jiraID) {
-		query += " and jira_id = ?"
-		params = append(params, jiraID)
-	}
 	if !zero.IsZeroVal(diagnosisID) {
 		query += " and diagnosis_id = ?"
 		params = append(params, diagnosisID)
@@ -47,7 +38,7 @@ func (r *diagnosisRepository) GetRelDiagnosisDataSource(projectID uint32, rel_di
 
 func (r *diagnosisRepository) UpsertRelDiagnosisDataSource(input *RelDiagnosisDataSource) (*RelDiagnosisDataSource, error) {
 	var data RelDiagnosisDataSource
-	putData := RelDiagnosisDataSource{ProjectID: input.ProjectID, DiagnosisID: input.DiagnosisID, DiagnosisDataSourceID: input.DiagnosisDataSourceID, RecordID: input.RecordID, JiraID: input.JiraID}
+	putData := RelDiagnosisDataSource{ProjectID: input.ProjectID, DiagnosisID: input.DiagnosisID, DiagnosisDataSourceID: input.DiagnosisDataSourceID, RecordID: input.RecordID, JiraID: input.JiraID, JiraKey: input.JiraKey}
 	if err := r.MasterDB.Where("project_id = ? AND rel_diagnosis_data_source_id = ?", input.ProjectID, input.RelDiagnosisDataSourceID).Assign(putData).FirstOrCreate(&data).Error; err != nil {
 		logger.Error("Failed to Upsert RelDiagnosisDataSource", zap.Error(err))
 		return nil, err

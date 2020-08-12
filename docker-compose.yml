@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  app:
+  server:
     networks:
       - local-shared
       - diagnosis
@@ -10,8 +10,6 @@ services:
         - GITHUB_USER=${GITHUB_USER}
         - GITHUB_TOKEN=${GITHUB_TOKEN}
     tty: true
-    volumes:
-      - ./diagnosis:/go/src/diagnosis
     ports:
       - 19001:19001
     environment:
@@ -32,7 +30,40 @@ services:
       - SQS_ENDPOINT=${ENDPOINT}
       - DIAGNOSIS_JIRA_QUEUE_URL=${DIAGNOSIS_JIRA_QUEUE_URL}
       - DIAGNOSIS_JIRA_QUEUE_NAME=${DIAGNOSIS_JIRA_QUEUE_NAME}
-
+  jira:
+    networks:
+      - local-shared
+      - diagnosis
+    build:
+      context: ./cmd/jira
+      args:
+        - GITHUB_USER=${GITHUB_USER}
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+    tty: true
+    ports:
+      - 19002:19002
+    environment:
+      - PORT=19001
+      - DB_MASTER_HOST=${DB_MASTER_HOST}
+      - DB_MASTER_USER=${DB_MASTER_USER}
+      - DB_MASTER_PASSWORD=${DB_MASTER_PASSWORD}
+      - DB_SLAVE_HOST=${DB_SLAVE_HOST}
+      - DB_SLAVE_USER=${DB_SLAVE_USER}
+      - DB_SLAVE_PASSWORD=${DB_SLAVE_PASSWORD}
+      - DB_PORT=3306
+      - DB_SCHEMA=mimosa
+      - DB_LOG_MODE=${DB_LOG_MODE}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - SQS_ENDPOINT=${ENDPOINT}
+      - JIRA_QUEUE_URL=${DIAGNOSIS_JIRA_QUEUE_URL}
+      - DIAGNOSIS_JIRA_QUEUE_NAME=${DIAGNOSIS_JIRA_QUEUE_NAME}
+      - DIAGNOSIS_JIRA_URL=${DIAGNOSIS_JIRA_URL}
+      - DIAGNOSIS_JIRA_USER_ID=${DIAGNOSIS_JIRA_USER_ID}
+      - DIAGNOSIS_JIRA_USER_PASSWORD=${DIAGNOSIS_JIRA_USER_PASSWORD}
+      - FINDING_SVC_ADDR=${FINDING_SVC_ADDR}
 networks:
   diagnosis:
     driver: bridge

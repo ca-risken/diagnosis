@@ -26,7 +26,7 @@ func (s *relDiagnosisDataSourceService) ListRelDiagnosisDataSource(ctx context.C
 	//	if err := req.Validate(); err != nil {
 	//		return nil, err
 	//	}
-	list, err := s.repository.ListRelDiagnosisDataSource(req.ProjectId, req.DiagnosisId, req.DiagnosisDataSourceId, req.RecordId, req.JiraId)
+	list, err := s.repository.ListRelDiagnosisDataSource(req.ProjectId, req.DiagnosisId, req.DiagnosisDataSourceId)
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return &diagnosis.ListRelDiagnosisDataSourceResponse{}, nil
@@ -74,6 +74,7 @@ func (s *relDiagnosisDataSourceService) PutRelDiagnosisDataSource(ctx context.Co
 		DiagnosisID:              req.RelDiagnosisDataSource.DiagnosisId,
 		RecordID:                 req.RelDiagnosisDataSource.RecordId,
 		JiraID:                   req.RelDiagnosisDataSource.JiraId,
+		JiraKey:                  req.RelDiagnosisDataSource.JiraKey,
 	}
 
 	registerdData, err := s.repository.UpsertRelDiagnosisDataSource(data)
@@ -104,6 +105,7 @@ func convertRelDiagnosisDataSource(data *RelDiagnosisDataSource) *diagnosis.RelD
 		ProjectId:                data.ProjectID,
 		RecordId:                 data.RecordID,
 		JiraId:                   data.JiraID,
+		JiraKey:                  data.JiraKey,
 		CreatedAt:                data.CreatedAt.Unix(),
 		UpdatedAt:                data.CreatedAt.Unix(),
 	}
@@ -119,6 +121,7 @@ func (s *relDiagnosisDataSourceService) StartDiagnosis(ctx context.Context, req 
 		ProjectID:  req.ProjectId,
 		RecordID:   data.RecordID,
 		JiraID:     data.JiraID,
+		JiraKey:    data.JiraKey,
 	}
 	resp, err := s.sqs.send(msg)
 	if err != nil {

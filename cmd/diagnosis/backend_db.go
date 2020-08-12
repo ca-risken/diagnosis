@@ -17,7 +17,7 @@ type diagnosisRepoInterface interface {
 	GetDiagnosisDataSource(uint32, uint32) (*DiagnosisDataSource, error)
 	UpsertDiagnosisDataSource(*DiagnosisDataSource) (*DiagnosisDataSource, error)
 	DeleteDiagnosisDataSource(uint32, uint32) error
-	ListRelDiagnosisDataSource(uint32, uint32, uint32, string, string) (*[]RelDiagnosisDataSource, error)
+	ListRelDiagnosisDataSource(uint32, uint32, uint32) (*[]RelDiagnosisDataSource, error)
 	GetRelDiagnosisDataSource(uint32, uint32) (*RelDiagnosisDataSource, error)
 	UpsertRelDiagnosisDataSource(*RelDiagnosisDataSource) (*RelDiagnosisDataSource, error)
 	DeleteRelDiagnosisDataSource(uint32, uint32) error
