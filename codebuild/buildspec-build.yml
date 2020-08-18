@@ -19,7 +19,7 @@ phases:
   pre_build:
     commands:
       - echo Setting environment variables
-      - SRC=${CODEBUILD_SRC_DIR}/src
+      - SRC=${CODEBUILD_SRC_DIR}/cmd
       - BUILD_OPT="--no-cache --pull"
       - TAG=v0.0.${CODEBUILD_BUILD_NUMBER}
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
