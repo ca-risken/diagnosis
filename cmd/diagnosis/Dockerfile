@@ -35,8 +35,8 @@ ENV PORT= \
     AWS_SESSION_TOKEN= \
     SQS_ENDPOINT= \
     DIAGNOSIS_JIRA_QUEUE_URL= \
+    DIAGNOSIS_JIRA_QUEUE_NAME= \
     TZ=Asia/Tokyo
-
 WORKDIR /usr/local/diagnosis
 ENTRYPOINT ["/usr/local/bin/env-injector"]
 CMD ["bin/diagnosis"]
