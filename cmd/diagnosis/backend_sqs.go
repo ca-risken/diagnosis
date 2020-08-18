@@ -38,8 +38,6 @@ func newSQSClient() *sqsClient {
 		Region:   &conf.AWSRegion,
 		Endpoint: &conf.Endpoint,
 	})
-	fmt.Printf("%v\n", conf.AWSRegion)
-	fmt.Printf("%v\n", conf.Endpoint)
 
 	return &sqsClient{
 		svc: session,

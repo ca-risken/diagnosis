@@ -140,4 +140,5 @@ type jiraIssue struct {
 		Summary string `json:"summary"`
 		Target  string `json:"customfield_10042"`
 	} `json:"Fields"`
+	URL string `json:"self"`
 }

@@ -59,7 +59,6 @@ func (s *sqsHandler) getJira(message *message.DiagnosisQueueMessage) ([]*finding
 	putData := []*finding.FindingForUpsert{}
 	//	projects, err := s.jira.listProjects()
 	//	for _, project := range *projects {
-	//		fmt.Printf("projectId: %s\n", project.ID)
 	//	}
 	//	if err != nil {
 	//		logger.Error("Jira.listProjects", zap.Error(err))
@@ -110,7 +109,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 		if err != nil {
 			return err
 		}
-		logger.Info("Success to PutFinding")
+		logger.Info("Success to PutFinding", zap.Any("Finding", f))
 	}
 	return nil
 }
@@ -166,8 +165,9 @@ func getResourceName(target string) string {
 		}
 	}
 	ret := strings.Join(newList, ",")
+	ret = "target::" + ret
 	if len(ret) > 255 {
-		ret = ret[0:254]
+		ret = ret[0:252] + "..."
 	}
 	return ret
 }
