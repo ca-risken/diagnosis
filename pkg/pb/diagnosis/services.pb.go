@@ -1075,59 +1075,58 @@ func init() {
 func init() { proto.RegisterFile("services.proto", fileDescriptor_8e16ccb8c5307b32) }
 
 var fileDescriptor_8e16ccb8c5307b32 = []byte{
-	// 835 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0x5d, 0x6f, 0x12, 0x41,
-	0x14, 0x65, 0x68, 0xa3, 0xe1, 0xf6, 0x43, 0x33, 0x05, 0xa4, 0x6b, 0xa1, 0x30, 0x3e, 0x48, 0x6b,
-	0xbb, 0x24, 0xf8, 0xd0, 0x18, 0x13, 0x13, 0x15, 0x6d, 0xa8, 0xc6, 0x54, 0xd0, 0x34, 0xa9, 0x26,
-	0xcd, 0x02, 0x23, 0x5d, 0x05, 0x96, 0xee, 0x0e, 0xd5, 0xea, 0x53, 0x8d, 0xff, 0xc0, 0x47, 0x13,
-	0x9f, 0xfd, 0x3f, 0x26, 0x3e, 0xfa, 0x5b, 0x4c, 0x59, 0x58, 0x66, 0x61, 0x66, 0x16, 0x8a, 0xd6,
-	0x37, 0x98, 0xbd, 0x7b, 0xcf, 0x99, 0x73, 0xef, 0xde, 0x7b, 0x60, 0xd1, 0xa1, 0xf6, 0xb1, 0x59,
-	0xa5, 0x8e, 0xde, 0xb6, 0x2d, 0x66, 0xe1, 0x48, 0xcd, 0x34, 0xea, 0x2d, 0xcb, 0x31, 0x1d, 0x6d,
-	0x91, 0xb6, 0x98, 0xc9, 0xcc, 0xfe, 0x23, 0xed, 0x7a, 0xdd, 0xb2, 0xea, 0x0d, 0x9a, 0xeb, 0xfe,
-	0xab, 0x74, 0xde, 0xe4, 0x68, 0xb3, 0xcd, 0x4e, 0xdc, 0x87, 0xa4, 0x08, 0xd1, 0xa7, 0xa6, 0xc3,
-	0x0a, 0xfd, 0xb7, 0x4b, 0xf4, 0xa8, 0x43, 0x1d, 0x86, 0x93, 0x00, 0x6d, 0xdb, 0x7a, 0x4b, 0xab,
-	0xec, 0xc0, 0xac, 0x25, 0x50, 0x1a, 0x65, 0x17, 0x4a, 0x91, 0xde, 0x49, 0xb1, 0x86, 0x31, 0xcc,
-	0xb6, 0x8c, 0x26, 0x4d, 0x84, 0xd3, 0x28, 0x1b, 0x29, 0x75, 0x7f, 0x93, 0x27, 0x10, 0x1b, 0x4a,
-	0xe5, 0xb4, 0xad, 0x96, 0x43, 0x71, 0x1e, 0x06, 0xec, 0x12, 0x28, 0x3d, 0x93, 0x9d, 0xcb, 0x47,
-	0x75, 0xef, 0x44, 0x1f, 0xbc, 0x30, 0x08, 0x23, 0x7b, 0xb0, 0xb4, 0x4d, 0x27, 0xa6, 0x95, 0x81,
-	0x79, 0x2f, 0xc5, 0x59, 0x40, 0xb8, 0x1b, 0x30, 0xe7, 0x9d, 0x15, 0x6b, 0x64, 0x07, 0xa2, 0xfe,
-	0xc4, 0x62, 0x92, 0x68, 0x1c, 0x92, 0x47, 0xb0, 0xb4, 0xdb, 0x99, 0x98, 0xe4, 0x5d, 0x1e, 0x29,
-	0xdc, 0x45, 0x4a, 0x8a, 0x90, 0x1e, 0x5b, 0xf6, 0xcb, 0xb6, 0x43, 0x6d, 0xc6, 0x43, 0xee, 0x40,
-	0xd4, 0x0f, 0x39, 0x05, 0xfd, 0x7d, 0x88, 0x17, 0x68, 0x83, 0x32, 0xfa, 0x0f, 0x64, 0x2e, 0x43,
-	0xca, 0xd7, 0x0c, 0x05, 0x83, 0x19, 0x65, 0xab, 0x63, 0x57, 0xe9, 0x14, 0x1d, 0xd6, 0x81, 0x55,
-	0x69, 0xd2, 0x9e, 0x0e, 0x25, 0x88, 0x0d, 0xa8, 0xd5, 0x0c, 0x66, 0x1c, 0x38, 0xdd, 0x80, 0x5e,
-	0xdf, 0xa5, 0x44, 0x9a, 0x70, 0x69, 0x96, 0x6a, 0xa3, 0x87, 0xe4, 0x3d, 0x24, 0xf9, 0x96, 0x99,
-	0xf8, 0x2a, 0x5b, 0x90, 0x10, 0x72, 0x1a, 0x48, 0x17, 0x13, 0xc0, 0x16, 0x6b, 0x84, 0x41, 0x4a,
-	0x06, 0x1c, 0x7c, 0x5d, 0x74, 0xde, 0xeb, 0x7e, 0x43, 0x90, 0xe4, 0x7b, 0x6c, 0xe2, 0xfb, 0xbe,
-	0x92, 0x91, 0x72, 0x9b, 0xfd, 0xa6, 0x9a, 0xd4, 0xa0, 0xed, 0x85, 0xec, 0xbe, 0x22, 0x48, 0xc9,
-	0xd8, 0xf5, 0x44, 0x09, 0xa0, 0x57, 0x52, 0xd3, 0x3b, 0x97, 0x66, 0x1f, 0x21, 0x3d, 0xf4, 0x29,
-	0x5d, 0x5c, 0x97, 0x1c, 0x43, 0xac, 0xcc, 0x0c, 0x7b, 0xe2, 0x39, 0x74, 0x0f, 0x56, 0x6c, 0xda,
-	0x38, 0x08, 0x00, 0x4d, 0xd8, 0xb4, 0x51, 0x10, 0xe2, 0xe6, 0x21, 0x3e, 0x8c, 0xdb, 0x2b, 0x40,
-	0x02, 0x2e, 0x37, 0xa9, 0xe3, 0x18, 0x75, 0xb7, 0x0f, 0x23, 0xa5, 0xfe, 0x5f, 0xf2, 0x1d, 0x41,
-	0xe6, 0xec, 0x13, 0x2e, 0x09, 0x93, 0xfe, 0xb5, 0xf1, 0xa3, 0x14, 0x73, 0x46, 0x25, 0xe6, 0x67,
-	0x04, 0x44, 0x45, 0xb0, 0x77, 0xc3, 0xd7, 0xb0, 0x2c, 0xd5, 0xae, 0x37, 0x6a, 0x32, 0x5c, 0x1f,
-	0x49, 0xb2, 0xc5, 0xc5, 0xda, 0x92, 0x53, 0x04, 0xe9, 0x6d, 0x3a, 0x9d, 0x48, 0xd3, 0x56, 0xf7,
-	0x14, 0x41, 0x46, 0xc1, 0x61, 0x3c, 0x1d, 0xd0, 0x74, 0x3a, 0xfc, 0x40, 0x90, 0xde, 0xed, 0x4c,
-	0xa7, 0x03, 0x55, 0x31, 0x74, 0xbf, 0xf8, 0xf5, 0x40, 0x86, 0x83, 0x99, 0xa4, 0x28, 0x59, 0x46,
-	0x41, 0xf5, 0x42, 0xe4, 0xfa, 0x82, 0xe0, 0x86, 0x3b, 0x85, 0xfe, 0x67, 0xe7, 0xe4, 0x7f, 0x87,
-	0xe1, 0xaa, 0xf7, 0xa4, 0xec, 0xda, 0x54, 0xfc, 0x02, 0x16, 0x7c, 0xab, 0x1b, 0xaf, 0x72, 0xf7,
-	0x14, 0x39, 0x50, 0x2d, 0x2d, 0x0f, 0x70, 0xd5, 0x24, 0x21, 0xfc, 0x1c, 0xe6, 0xf9, 0x05, 0x89,
-	0xf9, 0xd9, 0x2d, 0xb0, 0x8f, 0xda, 0xaa, 0xf4, 0x39, 0x9f, 0x92, 0x5f, 0x2f, 0xbe, 0x94, 0x02,
-	0xb3, 0xe7, 0x4b, 0x29, 0x72, 0x66, 0x24, 0x84, 0x9f, 0xc1, 0x95, 0xa1, 0xe5, 0x80, 0xf9, 0x2a,
-	0x8b, 0x3d, 0x98, 0x16, 0xd7, 0x5d, 0xdf, 0xae, 0xf7, 0x7d, 0xbb, 0xfe, 0xe8, 0xcc, 0xb7, 0x93,
-	0x50, 0xfe, 0xd7, 0x0c, 0x68, 0x02, 0xe9, 0xfb, 0x52, 0xdb, 0x70, 0x4d, 0xe2, 0x92, 0xf0, 0x9a,
-	0x4c, 0xd3, 0x91, 0x26, 0xd1, 0xd6, 0xc7, 0x09, 0xf5, 0xae, 0x68, 0x41, 0x5c, 0xec, 0x54, 0x70,
-	0x56, 0x22, 0xf9, 0x28, 0xe2, 0xda, 0x18, 0x91, 0x3c, 0xa0, 0xd8, 0x05, 0xf8, 0x00, 0x95, 0x36,
-	0xc6, 0x07, 0xa8, 0xb6, 0x14, 0x24, 0x84, 0x2b, 0xb0, 0x2c, 0xdd, 0xf0, 0xf8, 0x96, 0xbc, 0x9c,
-	0xa3, 0xb0, 0xf2, 0xc2, 0xfe, 0x9c, 0x85, 0xa4, 0xf8, 0xd3, 0xed, 0xd7, 0xf6, 0x13, 0x68, 0xf2,
-	0xed, 0x84, 0x37, 0x86, 0x6a, 0xa6, 0x1c, 0x03, 0xda, 0xe6, 0x98, 0xd1, 0x9e, 0x04, 0x1f, 0x60,
-	0x59, 0xba, 0x11, 0x7c, 0x12, 0x04, 0xed, 0x2e, 0x6d, 0x63, 0xbc, 0x60, 0x1e, 0x59, 0x3a, 0x5c,
-	0x7d, 0xc8, 0x41, 0xdb, 0xc2, 0x87, 0x1c, 0x38, 0xaf, 0x49, 0x08, 0x1f, 0xc2, 0x8a, 0x6a, 0xa4,
-	0x62, 0x7d, 0xa4, 0xf2, 0x6a, 0x7c, 0x69, 0xf1, 0xf1, 0x1e, 0x2c, 0xfa, 0xed, 0x14, 0xe6, 0x27,
-	0xa0, 0xd0, 0xe1, 0x69, 0x19, 0x45, 0x44, 0xff, 0x0a, 0x0f, 0xee, 0xec, 0x6f, 0xd5, 0x4d, 0x76,
-	0xd8, 0xa9, 0xe8, 0x55, 0xab, 0x99, 0x7b, 0x78, 0x52, 0xa1, 0xf6, 0xfd, 0x3a, 0x6d, 0xb1, 0x5c,
-	0xd3, 0x6c, 0x5a, 0x8e, 0xb1, 0xe9, 0xa5, 0xc8, 0xb5, 0xdf, 0xd5, 0x73, 0xed, 0x4a, 0xce, 0x3b,
-	0xa8, 0x5c, 0xea, 0xb2, 0xbc, 0xfd, 0x27, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x63, 0xa1, 0x32, 0x6e,
+	// 819 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x56, 0x5f, 0x6f, 0x12, 0x4b,
+	0x14, 0x67, 0xda, 0x9b, 0x7b, 0xc3, 0xe9, 0x9f, 0x7b, 0x33, 0x05, 0x2e, 0x5d, 0x0b, 0x85, 0xf1,
+	0x41, 0x5a, 0xdb, 0x25, 0xc1, 0x87, 0xc6, 0x98, 0x98, 0xa8, 0x68, 0x43, 0x35, 0xa6, 0x82, 0xa6,
+	0x49, 0x35, 0x69, 0x16, 0x18, 0xe9, 0x2a, 0xb0, 0x74, 0x77, 0xa8, 0x56, 0x9f, 0x6a, 0xfc, 0x06,
+	0x3e, 0x9a, 0xf8, 0xec, 0x87, 0xf1, 0x43, 0x99, 0xb2, 0xcb, 0xee, 0x2c, 0xcc, 0xcc, 0x42, 0xd1,
+	0xfa, 0x06, 0x33, 0x67, 0xcf, 0xef, 0x77, 0x7e, 0xe7, 0xcc, 0x39, 0x07, 0x96, 0x1d, 0x6a, 0x9f,
+	0x9a, 0x0d, 0xea, 0xe8, 0x3d, 0xdb, 0x62, 0x16, 0x8e, 0x37, 0x4d, 0xa3, 0xd5, 0xb5, 0x1c, 0xd3,
+	0xd1, 0x96, 0x69, 0x97, 0x99, 0xcc, 0x1c, 0x5e, 0x69, 0xd7, 0x5a, 0x96, 0xd5, 0x6a, 0xd3, 0xe2,
+	0xe0, 0x5f, 0xbd, 0xff, 0xba, 0x48, 0x3b, 0x3d, 0x76, 0xe6, 0x5e, 0x92, 0x0a, 0x24, 0x9e, 0x98,
+	0x0e, 0x2b, 0x0f, 0xbf, 0xae, 0xd2, 0x93, 0x3e, 0x75, 0x18, 0xce, 0x00, 0xf4, 0x6c, 0xeb, 0x0d,
+	0x6d, 0xb0, 0x23, 0xb3, 0x99, 0x46, 0x39, 0x54, 0x58, 0xaa, 0xc6, 0xbd, 0x93, 0x4a, 0x13, 0x63,
+	0xf8, 0xab, 0x6b, 0x74, 0x68, 0x7a, 0x2e, 0x87, 0x0a, 0xf1, 0xea, 0xe0, 0x37, 0x79, 0x0c, 0xc9,
+	0x11, 0x57, 0x4e, 0xcf, 0xea, 0x3a, 0x14, 0x97, 0x20, 0x60, 0x97, 0x46, 0xb9, 0xf9, 0xc2, 0x42,
+	0x29, 0xa1, 0xfb, 0x27, 0x7a, 0xf0, 0x41, 0x60, 0x46, 0x0e, 0x60, 0x65, 0x97, 0x4e, 0x4d, 0x2b,
+	0x0f, 0x8b, 0xbe, 0x8b, 0x0b, 0x83, 0xb9, 0x81, 0xc1, 0x82, 0x7f, 0x56, 0x69, 0x92, 0x3d, 0x48,
+	0x84, 0x1d, 0x8b, 0x49, 0xa2, 0x49, 0x48, 0x9e, 0xc0, 0xca, 0x7e, 0x7f, 0x6a, 0x92, 0x77, 0x78,
+	0xa4, 0xb9, 0x01, 0x52, 0x46, 0x84, 0xf4, 0xc8, 0xb2, 0x5f, 0xf4, 0x1c, 0x6a, 0x33, 0x1e, 0x72,
+	0x0f, 0x12, 0x61, 0xc8, 0x19, 0xe8, 0x1f, 0x42, 0xaa, 0x4c, 0xdb, 0x94, 0xd1, 0xdf, 0x20, 0x73,
+	0x0d, 0xb2, 0xa1, 0x62, 0x28, 0x1b, 0xcc, 0xa8, 0x59, 0x7d, 0xbb, 0x41, 0x67, 0xa8, 0xb0, 0x3e,
+	0xac, 0x4b, 0x9d, 0x7a, 0x3a, 0x54, 0x21, 0x19, 0x50, 0x6b, 0x1a, 0xcc, 0x38, 0x72, 0x06, 0x06,
+	0x5e, 0xdd, 0x65, 0x45, 0x9a, 0x70, 0x6e, 0x56, 0x9a, 0xe3, 0x87, 0xe4, 0x1d, 0x64, 0xf8, 0x92,
+	0x99, 0x3a, 0x94, 0x1d, 0x48, 0x0b, 0x39, 0x05, 0xd2, 0x25, 0x05, 0xb0, 0x95, 0x26, 0x61, 0x90,
+	0x95, 0x01, 0x47, 0x87, 0x8b, 0x2e, 0x1b, 0xee, 0x57, 0x04, 0x19, 0xbe, 0xc6, 0xa6, 0x8e, 0xf7,
+	0xa5, 0x8c, 0x94, 0x5b, 0xec, 0x37, 0xd4, 0xa4, 0x82, 0xb2, 0x17, 0xb2, 0xfb, 0x82, 0x20, 0x2b,
+	0x63, 0xe7, 0x89, 0x12, 0x41, 0xaf, 0xaa, 0xa6, 0x77, 0x29, 0xcd, 0x3e, 0x40, 0x6e, 0xe4, 0x29,
+	0x5d, 0x5d, 0x95, 0x9c, 0x42, 0xb2, 0xc6, 0x0c, 0x7b, 0xea, 0x3e, 0x74, 0x17, 0xd6, 0x6c, 0xda,
+	0x3e, 0x8a, 0x00, 0x4d, 0xdb, 0xb4, 0x5d, 0x16, 0xe2, 0x96, 0x20, 0x35, 0x8a, 0xeb, 0x25, 0x20,
+	0x0d, 0xff, 0x74, 0xa8, 0xe3, 0x18, 0x2d, 0xb7, 0x0e, 0xe3, 0xd5, 0xe1, 0x5f, 0xf2, 0x0d, 0x41,
+	0xfe, 0xe2, 0x09, 0x57, 0x85, 0x4e, 0x7f, 0x59, 0xfb, 0x51, 0x8a, 0x39, 0xaf, 0x12, 0xf3, 0x13,
+	0x02, 0xa2, 0x22, 0xe8, 0x45, 0xf8, 0x0a, 0x56, 0xa5, 0xda, 0x79, 0xad, 0x26, 0xcf, 0xd5, 0x91,
+	0xc4, 0x5b, 0x4a, 0xac, 0x2d, 0x39, 0x47, 0x90, 0xdb, 0xa5, 0xb3, 0x89, 0x34, 0x6b, 0x76, 0xcf,
+	0x11, 0xe4, 0x15, 0x1c, 0x26, 0xd3, 0x01, 0xcd, 0xa6, 0xc3, 0x77, 0x04, 0xb9, 0xfd, 0xfe, 0x6c,
+	0x3a, 0x50, 0x15, 0x43, 0xf7, 0xc5, 0x6f, 0x46, 0x32, 0x0c, 0x7a, 0x92, 0x22, 0x65, 0x79, 0x05,
+	0xd5, 0x2b, 0x91, 0xeb, 0x33, 0x82, 0xeb, 0x6e, 0x17, 0xfa, 0x93, 0x95, 0x53, 0xfa, 0x01, 0xf0,
+	0x9f, 0x7f, 0x53, 0x73, 0xd7, 0x54, 0xfc, 0x1c, 0x96, 0x42, 0xa3, 0x1b, 0xaf, 0x73, 0x71, 0x8a,
+	0x36, 0x50, 0x2d, 0x27, 0x37, 0x70, 0xd5, 0x24, 0x31, 0xfc, 0x0c, 0x16, 0xf9, 0x01, 0x89, 0xf9,
+	0xde, 0x2d, 0x58, 0x1f, 0xb5, 0x75, 0xe9, 0x3d, 0xef, 0x92, 0x1f, 0x2f, 0x21, 0x97, 0x82, 0x65,
+	0x2f, 0xe4, 0x52, 0xb4, 0x99, 0x91, 0x18, 0x7e, 0x0a, 0xff, 0x8e, 0x0c, 0x07, 0xcc, 0x67, 0x59,
+	0xbc, 0x83, 0x69, 0x29, 0xdd, 0xdd, 0xdb, 0xf5, 0xe1, 0xde, 0xae, 0x3f, 0xbc, 0xd8, 0xdb, 0x49,
+	0x0c, 0xdb, 0xf0, 0xbf, 0x64, 0x0d, 0xc2, 0x1b, 0x32, 0xd1, 0xc6, 0xaa, 0x40, 0xdb, 0x9c, 0xc4,
+	0xd4, 0x8f, 0xc1, 0x82, 0x94, 0x78, 0x15, 0xc1, 0x05, 0x89, 0xa6, 0xe3, 0x88, 0x1b, 0x13, 0x58,
+	0xf2, 0x80, 0xe2, 0x31, 0x1f, 0x02, 0x54, 0xee, 0x29, 0x21, 0x40, 0xf5, 0xce, 0x40, 0x62, 0xb8,
+	0x0e, 0xab, 0xd2, 0x11, 0x8e, 0x6f, 0xca, 0xf3, 0x35, 0x0e, 0x2b, 0xcf, 0xdc, 0x47, 0xd0, 0xe4,
+	0xc3, 0x05, 0x6f, 0x8d, 0x64, 0x44, 0xf9, 0x8a, 0xb5, 0xed, 0x09, 0xad, 0xfd, 0x00, 0xdf, 0xc3,
+	0xaa, 0xb4, 0xa1, 0x87, 0x02, 0x8c, 0x1a, 0x3d, 0xda, 0xd6, 0x64, 0xc6, 0x3c, 0xb2, 0xb4, 0x37,
+	0x86, 0x90, 0xa3, 0x9a, 0x7d, 0x08, 0x39, 0xb2, 0xdd, 0x92, 0x18, 0x3e, 0x86, 0x35, 0x55, 0x47,
+	0xc4, 0xfa, 0x58, 0x5e, 0xd5, 0xf8, 0xf2, 0xd4, 0x1e, 0xc0, 0x72, 0x78, 0x1b, 0xc2, 0x7c, 0x03,
+	0x13, 0x2e, 0x68, 0x5a, 0x5e, 0x61, 0x31, 0x0c, 0xe1, 0xfe, 0xed, 0xc3, 0x9d, 0x96, 0xc9, 0x8e,
+	0xfb, 0x75, 0xbd, 0x61, 0x75, 0x8a, 0x0f, 0xce, 0xea, 0xd4, 0xbe, 0xd7, 0xa2, 0x5d, 0x56, 0xec,
+	0x98, 0x1d, 0xcb, 0x31, 0xb6, 0x7d, 0x17, 0xc5, 0xde, 0xdb, 0x56, 0xb1, 0x57, 0x2f, 0xfa, 0x07,
+	0xf5, 0xbf, 0x07, 0x2c, 0x6f, 0xfd, 0x0c, 0x00, 0x00, 0xff, 0xff, 0x52, 0xd9, 0xfa, 0x8a, 0x2d,
 	0x10, 0x00, 0x00,
 }
 
@@ -1143,11 +1142,23 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DiagnosisServiceClient interface {
-	// CRUD
+	// Diagnosis
 	ListDiagnosis(ctx context.Context, in *ListDiagnosisRequest, opts ...grpc.CallOption) (*ListDiagnosisResponse, error)
 	GetDiagnosis(ctx context.Context, in *GetDiagnosisRequest, opts ...grpc.CallOption) (*GetDiagnosisResponse, error)
 	PutDiagnosis(ctx context.Context, in *PutDiagnosisRequest, opts ...grpc.CallOption) (*PutDiagnosisResponse, error)
 	DeleteDiagnosis(ctx context.Context, in *DeleteDiagnosisRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	// DataSource
+	ListDiagnosisDataSource(ctx context.Context, in *ListDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*ListDiagnosisDataSourceResponse, error)
+	GetDiagnosisDataSource(ctx context.Context, in *GetDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*GetDiagnosisDataSourceResponse, error)
+	PutDiagnosisDataSource(ctx context.Context, in *PutDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*PutDiagnosisDataSourceResponse, error)
+	DeleteDiagnosisDataSource(ctx context.Context, in *DeleteDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	// RelDiagnosisDataSource
+	ListRelDiagnosisDataSource(ctx context.Context, in *ListRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*ListRelDiagnosisDataSourceResponse, error)
+	GetRelDiagnosisDataSource(ctx context.Context, in *GetRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*GetRelDiagnosisDataSourceResponse, error)
+	PutRelDiagnosisDataSource(ctx context.Context, in *PutRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*PutRelDiagnosisDataSourceResponse, error)
+	DeleteRelDiagnosisDataSource(ctx context.Context, in *DeleteRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	// KICK
+	StartDiagnosis(ctx context.Context, in *StartDiagnosisRequest, opts ...grpc.CallOption) (*StartDiagnosisResponse, error)
 }
 
 type diagnosisServiceClient struct {
@@ -1194,13 +1205,106 @@ func (c *diagnosisServiceClient) DeleteDiagnosis(ctx context.Context, in *Delete
 	return out, nil
 }
 
+func (c *diagnosisServiceClient) ListDiagnosisDataSource(ctx context.Context, in *ListDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*ListDiagnosisDataSourceResponse, error) {
+	out := new(ListDiagnosisDataSourceResponse)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/ListDiagnosisDataSource", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *diagnosisServiceClient) GetDiagnosisDataSource(ctx context.Context, in *GetDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*GetDiagnosisDataSourceResponse, error) {
+	out := new(GetDiagnosisDataSourceResponse)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/GetDiagnosisDataSource", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *diagnosisServiceClient) PutDiagnosisDataSource(ctx context.Context, in *PutDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*PutDiagnosisDataSourceResponse, error) {
+	out := new(PutDiagnosisDataSourceResponse)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/PutDiagnosisDataSource", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *diagnosisServiceClient) DeleteDiagnosisDataSource(ctx context.Context, in *DeleteDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/DeleteDiagnosisDataSource", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *diagnosisServiceClient) ListRelDiagnosisDataSource(ctx context.Context, in *ListRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*ListRelDiagnosisDataSourceResponse, error) {
+	out := new(ListRelDiagnosisDataSourceResponse)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/ListRelDiagnosisDataSource", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *diagnosisServiceClient) GetRelDiagnosisDataSource(ctx context.Context, in *GetRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*GetRelDiagnosisDataSourceResponse, error) {
+	out := new(GetRelDiagnosisDataSourceResponse)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/GetRelDiagnosisDataSource", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *diagnosisServiceClient) PutRelDiagnosisDataSource(ctx context.Context, in *PutRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*PutRelDiagnosisDataSourceResponse, error) {
+	out := new(PutRelDiagnosisDataSourceResponse)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/PutRelDiagnosisDataSource", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *diagnosisServiceClient) DeleteRelDiagnosisDataSource(ctx context.Context, in *DeleteRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/DeleteRelDiagnosisDataSource", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *diagnosisServiceClient) StartDiagnosis(ctx context.Context, in *StartDiagnosisRequest, opts ...grpc.CallOption) (*StartDiagnosisResponse, error) {
+	out := new(StartDiagnosisResponse)
+	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisService/StartDiagnosis", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DiagnosisServiceServer is the server API for DiagnosisService service.
 type DiagnosisServiceServer interface {
-	// CRUD
+	// Diagnosis
 	ListDiagnosis(context.Context, *ListDiagnosisRequest) (*ListDiagnosisResponse, error)
 	GetDiagnosis(context.Context, *GetDiagnosisRequest) (*GetDiagnosisResponse, error)
 	PutDiagnosis(context.Context, *PutDiagnosisRequest) (*PutDiagnosisResponse, error)
 	DeleteDiagnosis(context.Context, *DeleteDiagnosisRequest) (*empty.Empty, error)
+	// DataSource
+	ListDiagnosisDataSource(context.Context, *ListDiagnosisDataSourceRequest) (*ListDiagnosisDataSourceResponse, error)
+	GetDiagnosisDataSource(context.Context, *GetDiagnosisDataSourceRequest) (*GetDiagnosisDataSourceResponse, error)
+	PutDiagnosisDataSource(context.Context, *PutDiagnosisDataSourceRequest) (*PutDiagnosisDataSourceResponse, error)
+	DeleteDiagnosisDataSource(context.Context, *DeleteDiagnosisDataSourceRequest) (*empty.Empty, error)
+	// RelDiagnosisDataSource
+	ListRelDiagnosisDataSource(context.Context, *ListRelDiagnosisDataSourceRequest) (*ListRelDiagnosisDataSourceResponse, error)
+	GetRelDiagnosisDataSource(context.Context, *GetRelDiagnosisDataSourceRequest) (*GetRelDiagnosisDataSourceResponse, error)
+	PutRelDiagnosisDataSource(context.Context, *PutRelDiagnosisDataSourceRequest) (*PutRelDiagnosisDataSourceResponse, error)
+	DeleteRelDiagnosisDataSource(context.Context, *DeleteRelDiagnosisDataSourceRequest) (*empty.Empty, error)
+	// KICK
+	StartDiagnosis(context.Context, *StartDiagnosisRequest) (*StartDiagnosisResponse, error)
 }
 
 // UnimplementedDiagnosisServiceServer can be embedded to have forward compatible implementations.
@@ -1218,6 +1322,33 @@ func (*UnimplementedDiagnosisServiceServer) PutDiagnosis(ctx context.Context, re
 }
 func (*UnimplementedDiagnosisServiceServer) DeleteDiagnosis(ctx context.Context, req *DeleteDiagnosisRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDiagnosis not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) ListDiagnosisDataSource(ctx context.Context, req *ListDiagnosisDataSourceRequest) (*ListDiagnosisDataSourceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListDiagnosisDataSource not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) GetDiagnosisDataSource(ctx context.Context, req *GetDiagnosisDataSourceRequest) (*GetDiagnosisDataSourceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDiagnosisDataSource not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) PutDiagnosisDataSource(ctx context.Context, req *PutDiagnosisDataSourceRequest) (*PutDiagnosisDataSourceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutDiagnosisDataSource not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) DeleteDiagnosisDataSource(ctx context.Context, req *DeleteDiagnosisDataSourceRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteDiagnosisDataSource not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) ListRelDiagnosisDataSource(ctx context.Context, req *ListRelDiagnosisDataSourceRequest) (*ListRelDiagnosisDataSourceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListRelDiagnosisDataSource not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) GetRelDiagnosisDataSource(ctx context.Context, req *GetRelDiagnosisDataSourceRequest) (*GetRelDiagnosisDataSourceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRelDiagnosisDataSource not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) PutRelDiagnosisDataSource(ctx context.Context, req *PutRelDiagnosisDataSourceRequest) (*PutRelDiagnosisDataSourceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutRelDiagnosisDataSource not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) DeleteRelDiagnosisDataSource(ctx context.Context, req *DeleteRelDiagnosisDataSourceRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRelDiagnosisDataSource not implemented")
+}
+func (*UnimplementedDiagnosisServiceServer) StartDiagnosis(ctx context.Context, req *StartDiagnosisRequest) (*StartDiagnosisResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartDiagnosis not implemented")
 }
 
 func RegisterDiagnosisServiceServer(s *grpc.Server, srv DiagnosisServiceServer) {
@@ -1296,6 +1427,168 @@ func _DiagnosisService_DeleteDiagnosis_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DiagnosisService_ListDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListDiagnosisDataSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).ListDiagnosisDataSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/ListDiagnosisDataSource",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).ListDiagnosisDataSource(ctx, req.(*ListDiagnosisDataSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DiagnosisService_GetDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDiagnosisDataSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).GetDiagnosisDataSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/GetDiagnosisDataSource",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).GetDiagnosisDataSource(ctx, req.(*GetDiagnosisDataSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DiagnosisService_PutDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutDiagnosisDataSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).PutDiagnosisDataSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/PutDiagnosisDataSource",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).PutDiagnosisDataSource(ctx, req.(*PutDiagnosisDataSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DiagnosisService_DeleteDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteDiagnosisDataSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).DeleteDiagnosisDataSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/DeleteDiagnosisDataSource",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).DeleteDiagnosisDataSource(ctx, req.(*DeleteDiagnosisDataSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DiagnosisService_ListRelDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRelDiagnosisDataSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).ListRelDiagnosisDataSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/ListRelDiagnosisDataSource",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).ListRelDiagnosisDataSource(ctx, req.(*ListRelDiagnosisDataSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DiagnosisService_GetRelDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRelDiagnosisDataSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).GetRelDiagnosisDataSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/GetRelDiagnosisDataSource",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).GetRelDiagnosisDataSource(ctx, req.(*GetRelDiagnosisDataSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DiagnosisService_PutRelDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutRelDiagnosisDataSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).PutRelDiagnosisDataSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/PutRelDiagnosisDataSource",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).PutRelDiagnosisDataSource(ctx, req.(*PutRelDiagnosisDataSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DiagnosisService_DeleteRelDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRelDiagnosisDataSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).DeleteRelDiagnosisDataSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/DeleteRelDiagnosisDataSource",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).DeleteRelDiagnosisDataSource(ctx, req.(*DeleteRelDiagnosisDataSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DiagnosisService_StartDiagnosis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartDiagnosisRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiagnosisServiceServer).StartDiagnosis(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/diagnosis.DiagnosisService/StartDiagnosis",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiagnosisServiceServer).StartDiagnosis(ctx, req.(*StartDiagnosisRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _DiagnosisService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "diagnosis.DiagnosisService",
 	HandlerType: (*DiagnosisServiceServer)(nil),
@@ -1316,407 +1609,41 @@ var _DiagnosisService_serviceDesc = grpc.ServiceDesc{
 			MethodName: "DeleteDiagnosis",
 			Handler:    _DiagnosisService_DeleteDiagnosis_Handler,
 		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "services.proto",
-}
-
-// DiagnosisDataSourceServiceClient is the client API for DiagnosisDataSourceService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type DiagnosisDataSourceServiceClient interface {
-	// CRUD
-	ListDiagnosisDataSource(ctx context.Context, in *ListDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*ListDiagnosisDataSourceResponse, error)
-	GetDiagnosisDataSource(ctx context.Context, in *GetDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*GetDiagnosisDataSourceResponse, error)
-	PutDiagnosisDataSource(ctx context.Context, in *PutDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*PutDiagnosisDataSourceResponse, error)
-	DeleteDiagnosisDataSource(ctx context.Context, in *DeleteDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*empty.Empty, error)
-}
-
-type diagnosisDataSourceServiceClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewDiagnosisDataSourceServiceClient(cc *grpc.ClientConn) DiagnosisDataSourceServiceClient {
-	return &diagnosisDataSourceServiceClient{cc}
-}
-
-func (c *diagnosisDataSourceServiceClient) ListDiagnosisDataSource(ctx context.Context, in *ListDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*ListDiagnosisDataSourceResponse, error) {
-	out := new(ListDiagnosisDataSourceResponse)
-	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisDataSourceService/ListDiagnosisDataSource", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *diagnosisDataSourceServiceClient) GetDiagnosisDataSource(ctx context.Context, in *GetDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*GetDiagnosisDataSourceResponse, error) {
-	out := new(GetDiagnosisDataSourceResponse)
-	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisDataSourceService/GetDiagnosisDataSource", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *diagnosisDataSourceServiceClient) PutDiagnosisDataSource(ctx context.Context, in *PutDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*PutDiagnosisDataSourceResponse, error) {
-	out := new(PutDiagnosisDataSourceResponse)
-	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisDataSourceService/PutDiagnosisDataSource", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *diagnosisDataSourceServiceClient) DeleteDiagnosisDataSource(ctx context.Context, in *DeleteDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
-	err := c.cc.Invoke(ctx, "/diagnosis.DiagnosisDataSourceService/DeleteDiagnosisDataSource", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// DiagnosisDataSourceServiceServer is the server API for DiagnosisDataSourceService service.
-type DiagnosisDataSourceServiceServer interface {
-	// CRUD
-	ListDiagnosisDataSource(context.Context, *ListDiagnosisDataSourceRequest) (*ListDiagnosisDataSourceResponse, error)
-	GetDiagnosisDataSource(context.Context, *GetDiagnosisDataSourceRequest) (*GetDiagnosisDataSourceResponse, error)
-	PutDiagnosisDataSource(context.Context, *PutDiagnosisDataSourceRequest) (*PutDiagnosisDataSourceResponse, error)
-	DeleteDiagnosisDataSource(context.Context, *DeleteDiagnosisDataSourceRequest) (*empty.Empty, error)
-}
-
-// UnimplementedDiagnosisDataSourceServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedDiagnosisDataSourceServiceServer struct {
-}
-
-func (*UnimplementedDiagnosisDataSourceServiceServer) ListDiagnosisDataSource(ctx context.Context, req *ListDiagnosisDataSourceRequest) (*ListDiagnosisDataSourceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListDiagnosisDataSource not implemented")
-}
-func (*UnimplementedDiagnosisDataSourceServiceServer) GetDiagnosisDataSource(ctx context.Context, req *GetDiagnosisDataSourceRequest) (*GetDiagnosisDataSourceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDiagnosisDataSource not implemented")
-}
-func (*UnimplementedDiagnosisDataSourceServiceServer) PutDiagnosisDataSource(ctx context.Context, req *PutDiagnosisDataSourceRequest) (*PutDiagnosisDataSourceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutDiagnosisDataSource not implemented")
-}
-func (*UnimplementedDiagnosisDataSourceServiceServer) DeleteDiagnosisDataSource(ctx context.Context, req *DeleteDiagnosisDataSourceRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteDiagnosisDataSource not implemented")
-}
-
-func RegisterDiagnosisDataSourceServiceServer(s *grpc.Server, srv DiagnosisDataSourceServiceServer) {
-	s.RegisterService(&_DiagnosisDataSourceService_serviceDesc, srv)
-}
-
-func _DiagnosisDataSourceService_ListDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListDiagnosisDataSourceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DiagnosisDataSourceServiceServer).ListDiagnosisDataSource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.DiagnosisDataSourceService/ListDiagnosisDataSource",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiagnosisDataSourceServiceServer).ListDiagnosisDataSource(ctx, req.(*ListDiagnosisDataSourceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DiagnosisDataSourceService_GetDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDiagnosisDataSourceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DiagnosisDataSourceServiceServer).GetDiagnosisDataSource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.DiagnosisDataSourceService/GetDiagnosisDataSource",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiagnosisDataSourceServiceServer).GetDiagnosisDataSource(ctx, req.(*GetDiagnosisDataSourceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DiagnosisDataSourceService_PutDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutDiagnosisDataSourceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DiagnosisDataSourceServiceServer).PutDiagnosisDataSource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.DiagnosisDataSourceService/PutDiagnosisDataSource",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiagnosisDataSourceServiceServer).PutDiagnosisDataSource(ctx, req.(*PutDiagnosisDataSourceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DiagnosisDataSourceService_DeleteDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteDiagnosisDataSourceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DiagnosisDataSourceServiceServer).DeleteDiagnosisDataSource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.DiagnosisDataSourceService/DeleteDiagnosisDataSource",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DiagnosisDataSourceServiceServer).DeleteDiagnosisDataSource(ctx, req.(*DeleteDiagnosisDataSourceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _DiagnosisDataSourceService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "diagnosis.DiagnosisDataSourceService",
-	HandlerType: (*DiagnosisDataSourceServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "ListDiagnosisDataSource",
-			Handler:    _DiagnosisDataSourceService_ListDiagnosisDataSource_Handler,
+			Handler:    _DiagnosisService_ListDiagnosisDataSource_Handler,
 		},
 		{
 			MethodName: "GetDiagnosisDataSource",
-			Handler:    _DiagnosisDataSourceService_GetDiagnosisDataSource_Handler,
+			Handler:    _DiagnosisService_GetDiagnosisDataSource_Handler,
 		},
 		{
 			MethodName: "PutDiagnosisDataSource",
-			Handler:    _DiagnosisDataSourceService_PutDiagnosisDataSource_Handler,
+			Handler:    _DiagnosisService_PutDiagnosisDataSource_Handler,
 		},
 		{
 			MethodName: "DeleteDiagnosisDataSource",
-			Handler:    _DiagnosisDataSourceService_DeleteDiagnosisDataSource_Handler,
+			Handler:    _DiagnosisService_DeleteDiagnosisDataSource_Handler,
 		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "services.proto",
-}
-
-// RelDiagnosisDataSourceServiceClient is the client API for RelDiagnosisDataSourceService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type RelDiagnosisDataSourceServiceClient interface {
-	// CRUD
-	ListRelDiagnosisDataSource(ctx context.Context, in *ListRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*ListRelDiagnosisDataSourceResponse, error)
-	GetRelDiagnosisDataSource(ctx context.Context, in *GetRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*GetRelDiagnosisDataSourceResponse, error)
-	PutRelDiagnosisDataSource(ctx context.Context, in *PutRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*PutRelDiagnosisDataSourceResponse, error)
-	DeleteRelDiagnosisDataSource(ctx context.Context, in *DeleteRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*empty.Empty, error)
-	// KICK
-	StartDiagnosis(ctx context.Context, in *StartDiagnosisRequest, opts ...grpc.CallOption) (*StartDiagnosisResponse, error)
-}
-
-type relDiagnosisDataSourceServiceClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewRelDiagnosisDataSourceServiceClient(cc *grpc.ClientConn) RelDiagnosisDataSourceServiceClient {
-	return &relDiagnosisDataSourceServiceClient{cc}
-}
-
-func (c *relDiagnosisDataSourceServiceClient) ListRelDiagnosisDataSource(ctx context.Context, in *ListRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*ListRelDiagnosisDataSourceResponse, error) {
-	out := new(ListRelDiagnosisDataSourceResponse)
-	err := c.cc.Invoke(ctx, "/diagnosis.RelDiagnosisDataSourceService/ListRelDiagnosisDataSource", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *relDiagnosisDataSourceServiceClient) GetRelDiagnosisDataSource(ctx context.Context, in *GetRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*GetRelDiagnosisDataSourceResponse, error) {
-	out := new(GetRelDiagnosisDataSourceResponse)
-	err := c.cc.Invoke(ctx, "/diagnosis.RelDiagnosisDataSourceService/GetRelDiagnosisDataSource", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *relDiagnosisDataSourceServiceClient) PutRelDiagnosisDataSource(ctx context.Context, in *PutRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*PutRelDiagnosisDataSourceResponse, error) {
-	out := new(PutRelDiagnosisDataSourceResponse)
-	err := c.cc.Invoke(ctx, "/diagnosis.RelDiagnosisDataSourceService/PutRelDiagnosisDataSource", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *relDiagnosisDataSourceServiceClient) DeleteRelDiagnosisDataSource(ctx context.Context, in *DeleteRelDiagnosisDataSourceRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
-	err := c.cc.Invoke(ctx, "/diagnosis.RelDiagnosisDataSourceService/DeleteRelDiagnosisDataSource", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *relDiagnosisDataSourceServiceClient) StartDiagnosis(ctx context.Context, in *StartDiagnosisRequest, opts ...grpc.CallOption) (*StartDiagnosisResponse, error) {
-	out := new(StartDiagnosisResponse)
-	err := c.cc.Invoke(ctx, "/diagnosis.RelDiagnosisDataSourceService/StartDiagnosis", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// RelDiagnosisDataSourceServiceServer is the server API for RelDiagnosisDataSourceService service.
-type RelDiagnosisDataSourceServiceServer interface {
-	// CRUD
-	ListRelDiagnosisDataSource(context.Context, *ListRelDiagnosisDataSourceRequest) (*ListRelDiagnosisDataSourceResponse, error)
-	GetRelDiagnosisDataSource(context.Context, *GetRelDiagnosisDataSourceRequest) (*GetRelDiagnosisDataSourceResponse, error)
-	PutRelDiagnosisDataSource(context.Context, *PutRelDiagnosisDataSourceRequest) (*PutRelDiagnosisDataSourceResponse, error)
-	DeleteRelDiagnosisDataSource(context.Context, *DeleteRelDiagnosisDataSourceRequest) (*empty.Empty, error)
-	// KICK
-	StartDiagnosis(context.Context, *StartDiagnosisRequest) (*StartDiagnosisResponse, error)
-}
-
-// UnimplementedRelDiagnosisDataSourceServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedRelDiagnosisDataSourceServiceServer struct {
-}
-
-func (*UnimplementedRelDiagnosisDataSourceServiceServer) ListRelDiagnosisDataSource(ctx context.Context, req *ListRelDiagnosisDataSourceRequest) (*ListRelDiagnosisDataSourceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListRelDiagnosisDataSource not implemented")
-}
-func (*UnimplementedRelDiagnosisDataSourceServiceServer) GetRelDiagnosisDataSource(ctx context.Context, req *GetRelDiagnosisDataSourceRequest) (*GetRelDiagnosisDataSourceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRelDiagnosisDataSource not implemented")
-}
-func (*UnimplementedRelDiagnosisDataSourceServiceServer) PutRelDiagnosisDataSource(ctx context.Context, req *PutRelDiagnosisDataSourceRequest) (*PutRelDiagnosisDataSourceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutRelDiagnosisDataSource not implemented")
-}
-func (*UnimplementedRelDiagnosisDataSourceServiceServer) DeleteRelDiagnosisDataSource(ctx context.Context, req *DeleteRelDiagnosisDataSourceRequest) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteRelDiagnosisDataSource not implemented")
-}
-func (*UnimplementedRelDiagnosisDataSourceServiceServer) StartDiagnosis(ctx context.Context, req *StartDiagnosisRequest) (*StartDiagnosisResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartDiagnosis not implemented")
-}
-
-func RegisterRelDiagnosisDataSourceServiceServer(s *grpc.Server, srv RelDiagnosisDataSourceServiceServer) {
-	s.RegisterService(&_RelDiagnosisDataSourceService_serviceDesc, srv)
-}
-
-func _RelDiagnosisDataSourceService_ListRelDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListRelDiagnosisDataSourceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RelDiagnosisDataSourceServiceServer).ListRelDiagnosisDataSource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.RelDiagnosisDataSourceService/ListRelDiagnosisDataSource",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelDiagnosisDataSourceServiceServer).ListRelDiagnosisDataSource(ctx, req.(*ListRelDiagnosisDataSourceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RelDiagnosisDataSourceService_GetRelDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRelDiagnosisDataSourceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RelDiagnosisDataSourceServiceServer).GetRelDiagnosisDataSource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.RelDiagnosisDataSourceService/GetRelDiagnosisDataSource",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelDiagnosisDataSourceServiceServer).GetRelDiagnosisDataSource(ctx, req.(*GetRelDiagnosisDataSourceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RelDiagnosisDataSourceService_PutRelDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutRelDiagnosisDataSourceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RelDiagnosisDataSourceServiceServer).PutRelDiagnosisDataSource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.RelDiagnosisDataSourceService/PutRelDiagnosisDataSource",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelDiagnosisDataSourceServiceServer).PutRelDiagnosisDataSource(ctx, req.(*PutRelDiagnosisDataSourceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RelDiagnosisDataSourceService_DeleteRelDiagnosisDataSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRelDiagnosisDataSourceRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RelDiagnosisDataSourceServiceServer).DeleteRelDiagnosisDataSource(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.RelDiagnosisDataSourceService/DeleteRelDiagnosisDataSource",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelDiagnosisDataSourceServiceServer).DeleteRelDiagnosisDataSource(ctx, req.(*DeleteRelDiagnosisDataSourceRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RelDiagnosisDataSourceService_StartDiagnosis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StartDiagnosisRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RelDiagnosisDataSourceServiceServer).StartDiagnosis(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/diagnosis.RelDiagnosisDataSourceService/StartDiagnosis",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelDiagnosisDataSourceServiceServer).StartDiagnosis(ctx, req.(*StartDiagnosisRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _RelDiagnosisDataSourceService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "diagnosis.RelDiagnosisDataSourceService",
-	HandlerType: (*RelDiagnosisDataSourceServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "ListRelDiagnosisDataSource",
-			Handler:    _RelDiagnosisDataSourceService_ListRelDiagnosisDataSource_Handler,
+			Handler:    _DiagnosisService_ListRelDiagnosisDataSource_Handler,
 		},
 		{
 			MethodName: "GetRelDiagnosisDataSource",
-			Handler:    _RelDiagnosisDataSourceService_GetRelDiagnosisDataSource_Handler,
+			Handler:    _DiagnosisService_GetRelDiagnosisDataSource_Handler,
 		},
 		{
 			MethodName: "PutRelDiagnosisDataSource",
-			Handler:    _RelDiagnosisDataSourceService_PutRelDiagnosisDataSource_Handler,
+			Handler:    _DiagnosisService_PutRelDiagnosisDataSource_Handler,
 		},
 		{
 			MethodName: "DeleteRelDiagnosisDataSource",
-			Handler:    _RelDiagnosisDataSourceService_DeleteRelDiagnosisDataSource_Handler,
+			Handler:    _DiagnosisService_DeleteRelDiagnosisDataSource_Handler,
 		},
 		{
 			MethodName: "StartDiagnosis",
-			Handler:    _RelDiagnosisDataSourceService_StartDiagnosis_Handler,
+			Handler:    _DiagnosisService_StartDiagnosis_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
