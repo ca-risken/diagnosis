@@ -7,23 +7,19 @@ import "entities.proto";
 import "google/protobuf/empty.proto";
 
 service DiagnosisService {
-  // CRUD
+  // Diagnosis
   rpc ListDiagnosis(ListDiagnosisRequest) returns (ListDiagnosisResponse) {}
   rpc GetDiagnosis(GetDiagnosisRequest) returns (GetDiagnosisResponse) {}
   rpc PutDiagnosis(PutDiagnosisRequest) returns (PutDiagnosisResponse) {}
   rpc DeleteDiagnosis(DeleteDiagnosisRequest) returns (google.protobuf.Empty) {}
-}
 
-service DiagnosisDataSourceService {
-  // CRUD
+  // DataSource
   rpc ListDiagnosisDataSource(ListDiagnosisDataSourceRequest) returns (ListDiagnosisDataSourceResponse) {}
   rpc GetDiagnosisDataSource(GetDiagnosisDataSourceRequest) returns (GetDiagnosisDataSourceResponse) {}
   rpc PutDiagnosisDataSource(PutDiagnosisDataSourceRequest) returns (PutDiagnosisDataSourceResponse) {}
   rpc DeleteDiagnosisDataSource(DeleteDiagnosisDataSourceRequest) returns (google.protobuf.Empty) {}
-}
 
-service RelDiagnosisDataSourceService {
-  // CRUD
+  // RelDiagnosisDataSource
   rpc ListRelDiagnosisDataSource(ListRelDiagnosisDataSourceRequest) returns (ListRelDiagnosisDataSourceResponse) {}
   rpc GetRelDiagnosisDataSource(GetRelDiagnosisDataSourceRequest) returns (GetRelDiagnosisDataSourceResponse) {}
   rpc PutRelDiagnosisDataSource(PutRelDiagnosisDataSourceRequest) returns (PutRelDiagnosisDataSourceResponse) {}
