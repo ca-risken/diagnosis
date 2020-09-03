@@ -10,22 +10,10 @@ import (
 	"go.uber.org/zap"
 )
 
-type relDiagnosisDataSourceService struct {
-	repository diagnosisRepoInterface
-	sqs        sqsAPI
-}
-
-func newRelDiagnosisDataSourceService(db diagnosisRepoInterface, s sqsAPI) diagnosis.RelDiagnosisDataSourceServiceServer {
-	return &relDiagnosisDataSourceService{
-		repository: db,
-		sqs:        s,
+func (s *diagnosisService) ListRelDiagnosisDataSource(ctx context.Context, req *diagnosis.ListRelDiagnosisDataSourceRequest) (*diagnosis.ListRelDiagnosisDataSourceResponse, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
 	}
-}
-
-func (s *relDiagnosisDataSourceService) ListRelDiagnosisDataSource(ctx context.Context, req *diagnosis.ListRelDiagnosisDataSourceRequest) (*diagnosis.ListRelDiagnosisDataSourceResponse, error) {
-	//	if err := req.Validate(); err != nil {
-	//		return nil, err
-	//	}
 	list, err := s.repository.ListRelDiagnosisDataSource(req.ProjectId, req.DiagnosisId, req.DiagnosisDataSourceId)
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
@@ -40,10 +28,10 @@ func (s *relDiagnosisDataSourceService) ListRelDiagnosisDataSource(ctx context.C
 	return &data, nil
 }
 
-func (s *relDiagnosisDataSourceService) GetRelDiagnosisDataSource(ctx context.Context, req *diagnosis.GetRelDiagnosisDataSourceRequest) (*diagnosis.GetRelDiagnosisDataSourceResponse, error) {
-	//	if err := req.Validate(); err != nil {
-	//		return nil, err
-	//	}
+func (s *diagnosisService) GetRelDiagnosisDataSource(ctx context.Context, req *diagnosis.GetRelDiagnosisDataSourceRequest) (*diagnosis.GetRelDiagnosisDataSourceResponse, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	getData, err := s.repository.GetRelDiagnosisDataSource(req.ProjectId, req.RelDiagnosisDataSourceId)
 	noRecord := gorm.IsRecordNotFoundError(err)
 	if err != nil && !noRecord {
@@ -53,10 +41,10 @@ func (s *relDiagnosisDataSourceService) GetRelDiagnosisDataSource(ctx context.Co
 	return &diagnosis.GetRelDiagnosisDataSourceResponse{RelDiagnosisDataSource: convertRelDiagnosisDataSource(getData)}, nil
 }
 
-func (s *relDiagnosisDataSourceService) PutRelDiagnosisDataSource(ctx context.Context, req *diagnosis.PutRelDiagnosisDataSourceRequest) (*diagnosis.PutRelDiagnosisDataSourceResponse, error) {
-	//	if err := req.Validate(); err != nil {
-	//		return nil, err
-	//	}
+func (s *diagnosisService) PutRelDiagnosisDataSource(ctx context.Context, req *diagnosis.PutRelDiagnosisDataSourceRequest) (*diagnosis.PutRelDiagnosisDataSourceResponse, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	savedData, err := s.repository.GetRelDiagnosisDataSource(req.ProjectId, req.RelDiagnosisDataSource.RelDiagnosisDataSourceId)
 	noRecord := gorm.IsRecordNotFoundError(err)
 	if err != nil && !noRecord {
@@ -84,10 +72,10 @@ func (s *relDiagnosisDataSourceService) PutRelDiagnosisDataSource(ctx context.Co
 	return &diagnosis.PutRelDiagnosisDataSourceResponse{RelDiagnosisDataSource: convertRelDiagnosisDataSource(registerdData)}, nil
 }
 
-func (s *relDiagnosisDataSourceService) DeleteRelDiagnosisDataSource(ctx context.Context, req *diagnosis.DeleteRelDiagnosisDataSourceRequest) (*empty.Empty, error) {
-	//	if err := req.Validate(); err != nil {
-	//		return nil, err
-	//	}
+func (s *diagnosisService) DeleteRelDiagnosisDataSource(ctx context.Context, req *diagnosis.DeleteRelDiagnosisDataSourceRequest) (*empty.Empty, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	if err := s.repository.DeleteRelDiagnosisDataSource(req.ProjectId, req.RelDiagnosisDataSourceId); err != nil {
 		return nil, err
 	}
@@ -111,7 +99,10 @@ func convertRelDiagnosisDataSource(data *RelDiagnosisDataSource) *diagnosis.RelD
 	}
 }
 
-func (s *relDiagnosisDataSourceService) StartDiagnosis(ctx context.Context, req *diagnosis.StartDiagnosisRequest) (*diagnosis.StartDiagnosisResponse, error) {
+func (s *diagnosisService) StartDiagnosis(ctx context.Context, req *diagnosis.StartDiagnosisRequest) (*diagnosis.StartDiagnosisResponse, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	data, err := s.repository.GetRelDiagnosisDataSource(req.ProjectId, req.RelDiagnosisDataSourceId)
 	if err != nil {
 		return nil, err

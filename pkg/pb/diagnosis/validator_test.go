@@ -545,39 +545,6 @@ func TestValidate_RelDiagnosisDataSourceForUpsert(t *testing.T) {
 			input:   &RelDiagnosisDataSourceForUpsert{DiagnosisId: 1, RecordId: "record_id", JiraId: "jira_id", JiraKey: "jira_key"},
 			wantErr: true,
 		},
-		{
-			name:  "NG Length(record_id)",
-			input: &RelDiagnosisDataSourceForUpsert{DiagnosisId: 1, DiagnosisDataSourceId: 2, RecordId: "123456789012345678901234567890123456789012345678901", JiraId: "jira_id", JiraKey: "jira_key"},
-
-			wantErr: true,
-		},
-		{
-			name:    "NG Required(record_id)",
-			input:   &RelDiagnosisDataSourceForUpsert{DiagnosisId: 1, DiagnosisDataSourceId: 2, JiraId: "jira_id", JiraKey: "jira_key"},
-			wantErr: true,
-		},
-		{
-			name:  "NG Length(jira_id)",
-			input: &RelDiagnosisDataSourceForUpsert{DiagnosisId: 1, DiagnosisDataSourceId: 2, RecordId: "record_id", JiraId: "123456789012345678901234567890123456789012345678901", JiraKey: "jira_key"},
-
-			wantErr: true,
-		},
-		{
-			name:    "NG Required(jira_id)",
-			input:   &RelDiagnosisDataSourceForUpsert{DiagnosisId: 1, DiagnosisDataSourceId: 2, RecordId: "record_id", JiraKey: "jira_key"},
-			wantErr: true,
-		},
-		{
-			name:  "NG Length(jira_key)",
-			input: &RelDiagnosisDataSourceForUpsert{DiagnosisId: 1, DiagnosisDataSourceId: 2, RecordId: "record_id", JiraId: "jira_id", JiraKey: "123456789012345678901234567890123456789012345678901"},
-
-			wantErr: true,
-		},
-		{
-			name:    "NG Required(jira_key)",
-			input:   &RelDiagnosisDataSourceForUpsert{DiagnosisId: 1, DiagnosisDataSourceId: 2, RecordId: "record_id", JiraId: "jira_id"},
-			wantErr: true,
-		},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

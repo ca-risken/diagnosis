@@ -28,12 +28,8 @@ func main() {
 	defer syncLogger()
 
 	server := grpc.NewServer()
-	diagnosisServer := newDiagnosisService(conf.DB)
-	diagnosisDataSourceServer := newDiagnosisDataSourceService(conf.DB)
-	relDiagnosisDataSourceServer := newRelDiagnosisDataSourceService(conf.DB, conf.SQS)
+	diagnosisServer := newDiagnosisService(conf.DB, conf.SQS)
 	diagnosis.RegisterDiagnosisServiceServer(server, diagnosisServer)
-	diagnosis.RegisterDiagnosisDataSourceServiceServer(server, diagnosisDataSourceServer)
-	diagnosis.RegisterRelDiagnosisDataSourceServiceServer(server, relDiagnosisDataSourceServer)
 
 	reflection.Register(server) // enable reflection API
 	logger.Info("Starting gRPC server", zap.String("port", conf.Port))

@@ -150,8 +150,5 @@ func (r *RelDiagnosisDataSourceForUpsert) Validate() error {
 	return validation.ValidateStruct(r,
 		validation.Field(&r.DiagnosisId, validation.Required),
 		validation.Field(&r.DiagnosisDataSourceId, validation.Required),
-		validation.Field(&r.RecordId, validation.Required, validation.Length(0, 50)),
-		validation.Field(&r.JiraId, validation.Required, validation.Length(0, 50)),
-		validation.Field(&r.JiraKey, validation.Required, validation.Length(0, 50)),
 	)
 }
