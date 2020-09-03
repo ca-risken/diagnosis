@@ -8,19 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type diagnosisDataSourceService struct {
-	repository diagnosisRepoInterface
-	//	sqs sqsAPI
-}
-
-func newDiagnosisDataSourceService(db diagnosisRepoInterface) diagnosis.DiagnosisDataSourceServiceServer {
-	return &diagnosisDataSourceService{
-		repository: db,
-		//		sqs:        newSQSClient(),
-	}
-}
-
-func (s *diagnosisDataSourceService) ListDiagnosisDataSource(ctx context.Context, req *diagnosis.ListDiagnosisDataSourceRequest) (*diagnosis.ListDiagnosisDataSourceResponse, error) {
+func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *diagnosis.ListDiagnosisDataSourceRequest) (*diagnosis.ListDiagnosisDataSourceResponse, error) {
 	//	if err := req.Validate(); err != nil {
 	//		return nil, err
 	//	}
@@ -38,7 +26,7 @@ func (s *diagnosisDataSourceService) ListDiagnosisDataSource(ctx context.Context
 	return &data, nil
 }
 
-func (s *diagnosisDataSourceService) GetDiagnosisDataSource(ctx context.Context, req *diagnosis.GetDiagnosisDataSourceRequest) (*diagnosis.GetDiagnosisDataSourceResponse, error) {
+func (s *diagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diagnosis.GetDiagnosisDataSourceRequest) (*diagnosis.GetDiagnosisDataSourceResponse, error) {
 	//	if err := req.Validate(); err != nil {
 	//		return nil, err
 	//	}
@@ -51,7 +39,7 @@ func (s *diagnosisDataSourceService) GetDiagnosisDataSource(ctx context.Context,
 	return &diagnosis.GetDiagnosisDataSourceResponse{DiagnosisDataSource: convertDiagnosisDataSource(getData)}, nil
 }
 
-func (s *diagnosisDataSourceService) PutDiagnosisDataSource(ctx context.Context, req *diagnosis.PutDiagnosisDataSourceRequest) (*diagnosis.PutDiagnosisDataSourceResponse, error) {
+func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diagnosis.PutDiagnosisDataSourceRequest) (*diagnosis.PutDiagnosisDataSourceResponse, error) {
 	//	if err := req.Validate(); err != nil {
 	//		return nil, err
 	//	}
@@ -79,7 +67,7 @@ func (s *diagnosisDataSourceService) PutDiagnosisDataSource(ctx context.Context,
 	return &diagnosis.PutDiagnosisDataSourceResponse{DiagnosisDataSource: convertDiagnosisDataSource(registerdData)}, nil
 }
 
-func (s *diagnosisDataSourceService) DeleteDiagnosisDataSource(ctx context.Context, req *diagnosis.DeleteDiagnosisDataSourceRequest) (*empty.Empty, error) {
+func (s *diagnosisService) DeleteDiagnosisDataSource(ctx context.Context, req *diagnosis.DeleteDiagnosisDataSourceRequest) (*empty.Empty, error) {
 	//	if err := req.Validate(); err != nil {
 	//		return nil, err
 	//	}
