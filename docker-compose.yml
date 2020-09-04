@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  server:
+  diagnosis:
     networks:
       - local-shared
       - diagnosis
@@ -27,7 +27,7 @@ services:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
-      - SQS_ENDPOINT=${ENDPOINT}
+      - SQS_ENDPOINT=${SQS_ENDPOINT}
       - DIAGNOSIS_JIRA_QUEUE_URL=${DIAGNOSIS_JIRA_QUEUE_URL}
       - DIAGNOSIS_JIRA_QUEUE_NAME=${DIAGNOSIS_JIRA_QUEUE_NAME}
   jira:
