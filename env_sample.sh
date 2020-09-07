@@ -28,4 +28,4 @@ export DIAGNOSIS_JIRA_USER_ID="mimosa@cyberagent.co.jp"
 export DIAGNOSIS_JIRA_USER_PASSWORD="HsnHNk9sP5rNzTIU86t1D299"
 
 # mimosa
-export FINDING_SVC_ADDR="finding:8081"
+export FINDING_SVC_ADDR="finding:8001"

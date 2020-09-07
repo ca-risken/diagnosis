@@ -76,6 +76,9 @@ func (s *sqsHandler) getJira(message *message.DiagnosisQueueMessage) ([]*finding
 			logger.Error("Failed to json encoding error", zap.Error(err))
 			return nil, err
 		}
+		if !isOpen(issue.Fields.Status.Name) {
+			continue
+		}
 		score := getScore(issue.Fields.Priority.Name)
 		resource := getResourceName(issue.Fields.Target)
 		putData = append(putData, &finding.FindingForUpsert{
@@ -121,12 +124,20 @@ const (
 	ScoreMiddle          = 5.0
 	ScoreLow             = 3.0
 	ScoreInformation     = 1.0
-	ScoreOther           = 0.0
+	ScoreOther           = 0.1
 	TypeScoreHigh        = "HIGH"
 	TypeScoreMiddle      = "MIDDLE"
 	TypeScoreLow         = "LOW"
 	TypeScoreInformation = "INFORMATION"
+	StatusClosed         = "クローズ"
 )
+
+func isOpen(status string) bool {
+	if strings.Index(status, StatusClosed) > -1 {
+		return false
+	}
+	return true
+}
 
 func getScore(name string) float32 {
 	switch strings.ToUpper(name) {

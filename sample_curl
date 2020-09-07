@@ -1,7 +1,7 @@
 grpcurl -plaintext -d '{"project_id":1,"diagnosis":{"name":"test"}}' localhost:19001 diagnosis.DiagnosisService.PutDiagnosis
-grpcurl -plaintext -d '{"project_id":0,"diagnosis":{"diagnosis_id":1,"name":"test2"}}' localhost:19001 diagnosis.DiagnosisService.PutDiagnosis
+grpcurl -plaintext -d '{"project_id":1,"diagnosis":{"diagnosis_id":1,"name":"test2"}}' localhost:19001 diagnosis.DiagnosisService.PutDiagnosis
 grpcurl -plaintext -d '{"project_id":1,"diagnosis_id":1}' localhost:19001 diagnosis.DiagnosisService.GetDiagnosis
-grpcurl -plaintext -d '{"project_id":0,"name":""}' localhost:19001 diagnosis.DiagnosisService.ListDiagnosis
+grpcurl -plaintext -d '{"project_id":1,"name":""}' localhost:19001 diagnosis.DiagnosisService.ListDiagnosis
 grpcurl -plaintext -d '{"project_id":1,"diagnosis_id":1}' localhost:19001 diagnosis.DiagnosisService.DeleteDiagnosis
 
 grpcurl -plaintext -d '{"project_id":1,"diagnosis_data_source":{"name":"test_ds","description":"for_test","max_score":10}}' localhost:19001 diagnosis.DiagnosisService.PutDiagnosisDataSource
