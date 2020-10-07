@@ -1,8 +1,8 @@
 #!/bin/bash -e
 
 # github
-export GITHUB_USER="iiiidaaa"
-export GITHUB_TOKEN="069ac4aa7c3c32522f447506622f80d81a790cf2"
+export GITHUB_USER="your-name"
+export GITHUB_TOKEN="your_token"
 
 # GO
 export GOPRIVATE="github.com/CyberAgent/*"
