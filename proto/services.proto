@@ -14,16 +14,24 @@ service DiagnosisService {
   rpc DeleteDiagnosis(DeleteDiagnosisRequest) returns (google.protobuf.Empty) {}
 
   // DataSource
-  rpc ListDiagnosisDataSource(ListDiagnosisDataSourceRequest) returns (ListDiagnosisDataSourceResponse) {}
-  rpc GetDiagnosisDataSource(GetDiagnosisDataSourceRequest) returns (GetDiagnosisDataSourceResponse) {}
-  rpc PutDiagnosisDataSource(PutDiagnosisDataSourceRequest) returns (PutDiagnosisDataSourceResponse) {}
-  rpc DeleteDiagnosisDataSource(DeleteDiagnosisDataSourceRequest) returns (google.protobuf.Empty) {}
+  rpc ListDiagnosisDataSource(ListDiagnosisDataSourceRequest)
+      returns (ListDiagnosisDataSourceResponse) {}
+  rpc GetDiagnosisDataSource(GetDiagnosisDataSourceRequest)
+      returns (GetDiagnosisDataSourceResponse) {}
+  rpc PutDiagnosisDataSource(PutDiagnosisDataSourceRequest)
+      returns (PutDiagnosisDataSourceResponse) {}
+  rpc DeleteDiagnosisDataSource(DeleteDiagnosisDataSourceRequest)
+      returns (google.protobuf.Empty) {}
 
   // RelDiagnosisDataSource
-  rpc ListRelDiagnosisDataSource(ListRelDiagnosisDataSourceRequest) returns (ListRelDiagnosisDataSourceResponse) {}
-  rpc GetRelDiagnosisDataSource(GetRelDiagnosisDataSourceRequest) returns (GetRelDiagnosisDataSourceResponse) {}
-  rpc PutRelDiagnosisDataSource(PutRelDiagnosisDataSourceRequest) returns (PutRelDiagnosisDataSourceResponse) {}
-  rpc DeleteRelDiagnosisDataSource(DeleteRelDiagnosisDataSourceRequest) returns (google.protobuf.Empty) {}
+  rpc ListRelDiagnosisDataSource(ListRelDiagnosisDataSourceRequest)
+      returns (ListRelDiagnosisDataSourceResponse) {}
+  rpc GetRelDiagnosisDataSource(GetRelDiagnosisDataSourceRequest)
+      returns (GetRelDiagnosisDataSourceResponse) {}
+  rpc PutRelDiagnosisDataSource(PutRelDiagnosisDataSourceRequest)
+      returns (PutRelDiagnosisDataSourceResponse) {}
+  rpc DeleteRelDiagnosisDataSource(DeleteRelDiagnosisDataSourceRequest)
+      returns (google.protobuf.Empty) {}
   // KICK
   rpc StartDiagnosis(StartDiagnosisRequest) returns (StartDiagnosisResponse) {}
 }
@@ -34,21 +42,21 @@ message ListDiagnosisRequest {
   string name = 2;
 }
 
-message ListDiagnosisResponse {repeated Diagnosis diagnosis = 1; }
+message ListDiagnosisResponse { repeated Diagnosis diagnosis = 1; }
 
 message GetDiagnosisRequest {
   uint32 project_id = 1;
   uint32 diagnosis_id = 2;
 }
 
-message GetDiagnosisResponse { Diagnosis diagnosis = 1;}
+message GetDiagnosisResponse { Diagnosis diagnosis = 1; }
 
 message PutDiagnosisRequest {
   uint32 project_id = 1;
   DiagnosisForUpsert diagnosis = 2;
 }
 
-message PutDiagnosisResponse { Diagnosis diagnosis = 1;}
+message PutDiagnosisResponse { Diagnosis diagnosis = 1; }
 
 message DeleteDiagnosisRequest {
   uint32 project_id = 1;
@@ -61,14 +69,18 @@ message ListDiagnosisDataSourceRequest {
   string name = 2;
 }
 
-message ListDiagnosisDataSourceResponse {repeated DiagnosisDataSource diagnosis_data_source = 1;}
+message ListDiagnosisDataSourceResponse {
+  repeated DiagnosisDataSource diagnosis_data_source = 1;
+}
 
 message GetDiagnosisDataSourceRequest {
   uint32 project_id = 1;
   uint32 diagnosis_data_source_id = 2;
 }
 
-message GetDiagnosisDataSourceResponse { DiagnosisDataSource diagnosis_data_source = 1;}
+message GetDiagnosisDataSourceResponse {
+  DiagnosisDataSource diagnosis_data_source = 1;
+}
 
 message PutDiagnosisDataSourceRequest {
   uint32 project_id = 1;
@@ -85,15 +97,13 @@ message DeleteDiagnosisDataSourceRequest {
   uint32 diagnosis_data_source_id = 2;
 }
 
-//KICK Diagnosis
+// KICK Diagnosis
 message StartDiagnosisRequest {
   uint32 project_id = 1;
   uint32 rel_diagnosis_data_source_id = 2;
 }
 
-message StartDiagnosisResponse {
-  string message = 1;
-}
+message StartDiagnosisResponse { string message = 1; }
 
 // RelDiagnosisDataSourceService
 message ListRelDiagnosisDataSourceRequest {
@@ -102,21 +112,27 @@ message ListRelDiagnosisDataSourceRequest {
   uint32 diagnosis_data_source_id = 3;
 }
 
-message ListRelDiagnosisDataSourceResponse {repeated  RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
+message ListRelDiagnosisDataSourceResponse {
+  repeated RelDiagnosisDataSource rel_diagnosis_data_source = 1;
+}
 
 message GetRelDiagnosisDataSourceRequest {
   uint32 project_id = 1;
   uint32 rel_diagnosis_data_source_id = 2;
 }
 
-message GetRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
+message GetRelDiagnosisDataSourceResponse {
+  RelDiagnosisDataSource rel_diagnosis_data_source = 1;
+}
 
 message PutRelDiagnosisDataSourceRequest {
   uint32 project_id = 1;
   RelDiagnosisDataSourceForUpsert rel_diagnosis_data_source = 2;
 }
 
-message PutRelDiagnosisDataSourceResponse { RelDiagnosisDataSource rel_diagnosis_data_source = 1;}
+message PutRelDiagnosisDataSourceResponse {
+  RelDiagnosisDataSource rel_diagnosis_data_source = 1;
+}
 
 message DeleteRelDiagnosisDataSourceRequest {
   uint32 project_id = 1;
