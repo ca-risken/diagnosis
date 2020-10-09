@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package diagnosis;
+option go_package = "github.com/CyberAgent/mimosa-diagnosis/pkg/pb/diagnosis";
+
+message DiagnosisDataSource {
+  uint32 diagnosis_data_source_id = 1;
+  string name = 2;
+  string description = 3;
+  float max_score = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+message DiagnosisDataSourceForUpsert {
+  uint32 diagnosis_data_source_id = 1;
+  string name = 2;
+  string description = 3;
+  float max_score = 4;
+}
+
+message JiraSetting {
+  uint32 jira_setting_id = 1;
+  string name = 2;
+  uint32 diagnosis_data_source_id = 3;
+  uint32 project_id = 4;
+  string record_id = 5;
+  string identity_field = 6;
+  string identity_value = 7;
+  string jira_id = 8;
+  string jira_key = 9;
+  Status status = 10;
+  string status_detail = 11;
+  int64 scan_at = 12;
+  int64 created_at = 13;
+  int64 updated_at = 14;
+}
+
+message JiraSettingForUpsert {
+  uint32 jira_setting_id = 1;
+  string name = 2;
+  uint32 diagnosis_data_source_id = 3;
+  uint32 project_id = 4;
+  string record_id = 5;
+  string identity_field = 6;
+  string identity_value = 7;
+  string jira_id = 8;
+  string jira_key = 9;
+  Status status = 10;
+  string status_detail = 11;
+  int64 scan_at = 12;
+}
+
+// Status
+enum Status {
+  UNKNOWN = 0;
+  OK = 1;
+  CONFIGURED = 2;
+  NOT_CONFIGURED = 3;
+  ERROR = 4;
+}

@@ -15,26 +15,27 @@ clean:
 network:
 	@if [ -z "`docker network ls | grep local-shared`" ]; then docker network create local-shared; fi
 
-fmt: proto/*.proto
-	clang-format -i proto/*.proto
+fmt: proto/**/*.proto
+	clang-format -i proto/**/*.proto
 
 doc: fmt
 	protoc \
 		--proto_path=proto \
+		--proto_path=${GOPATH}/src \
 		--error_format=gcc \
 		--doc_out=markdown,README.md:doc \
-		proto/*.proto;
+		proto/**/*.proto;
 
-diagnosis-build: fmt
+build: fmt
 	protoc \
 		--proto_path=proto \
+		--proto_path=${GOPATH}/src \
 		--error_format=gcc \
-		--go_out=pkg/pb/diagnosis \
-		--go_opt=plugins=grpc,paths=source_relative proto/*.proto \
-		proto/*.proto;
+		--go_out=plugins=grpc,paths=source_relative:proto proto/**/*.proto \
+		proto/**/*.proto;
 
 go-test: build
-	cd pkg/pb/diagnosis && go test ./...
+	cd proto/diagnosis  && go test ./...
 	cd pkg/message      && go test ./...
 	cd cmd/diagnosis    && go test ./...
 	cd cmd/jira         && go test ./...
