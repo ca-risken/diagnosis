@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/pb/diagnosis"
+	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

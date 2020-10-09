@@ -1,6 +1,8 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 // Diagnosis entity
 type Diagnosis struct {
@@ -13,7 +15,7 @@ type Diagnosis struct {
 
 // DiagnosisDataSource entity
 type DiagnosisDataSource struct {
-	DiagnosisDataSourceID uint32 `gorm:"column:diagnosis_data_source_id"`
+	DiagnosisDataSourceID uint32 `gorm:"primary_key"`
 	Name                  string
 	Description           string
 	MaxScore              float32
@@ -21,15 +23,19 @@ type DiagnosisDataSource struct {
 	UpdatedAt             time.Time
 }
 
-// RelDiagnosisDataSource entity
-type RelDiagnosisDataSource struct {
-	RelDiagnosisDataSourceID uint32 `gorm:"column:rel_diagnosis_data_source_id"`
-	DiagnosisID              uint32 `gorm:"column:diagnosis_id"`
-	DiagnosisDataSourceID    uint32 `gorm:"column:diagnosis_data_source_id"`
-	ProjectID                uint32
-	RecordID                 string
-	JiraID                   string
-	JiraKey                  string
-	CreatedAt                time.Time
-	UpdatedAt                time.Time
+// JiraSetting entity
+type JiraSetting struct {
+	JiraSettingID         uint32 `gorm:"primary_key"`
+	Name                  string
+	DiagnosisDataSourceID uint32
+	ProjectID             uint32
+	IdentityField         string
+	IdentityValue         string
+	JiraID                string
+	JiraKey               string
+	Status                string
+	StatusDetail          string
+	ScanAt                time.Time
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
 }

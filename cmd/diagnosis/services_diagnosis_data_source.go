@@ -3,20 +3,22 @@ package main
 import (
 	"context"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/pb/diagnosis"
+	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
 )
 
 func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *diagnosis.ListDiagnosisDataSourceRequest) (*diagnosis.ListDiagnosisDataSourceResponse, error) {
-	//	if err := req.Validate(); err != nil {
-	//		return nil, err
-	//	}
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	list, err := s.repository.ListDiagnosisDataSource(req.ProjectId, req.Name)
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
 			return &diagnosis.ListDiagnosisDataSourceResponse{}, nil
 		}
+		logger.Error("Failed to List DiagnosisDataSource", zap.Error(err))
 		return nil, err
 	}
 	data := diagnosis.ListDiagnosisDataSourceResponse{}
@@ -27,12 +29,13 @@ func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *dia
 }
 
 func (s *diagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diagnosis.GetDiagnosisDataSourceRequest) (*diagnosis.GetDiagnosisDataSourceResponse, error) {
-	//	if err := req.Validate(); err != nil {
-	//		return nil, err
-	//	}
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	getData, err := s.repository.GetDiagnosisDataSource(req.ProjectId, req.DiagnosisDataSourceId)
 	noRecord := gorm.IsRecordNotFoundError(err)
 	if err != nil && !noRecord {
+		logger.Error("Failed to Get DiagnosisDataSource", zap.Error(err))
 		return nil, err
 	}
 
@@ -40,12 +43,13 @@ func (s *diagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diag
 }
 
 func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diagnosis.PutDiagnosisDataSourceRequest) (*diagnosis.PutDiagnosisDataSourceResponse, error) {
-	//	if err := req.Validate(); err != nil {
-	//		return nil, err
-	//	}
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	savedData, err := s.repository.GetDiagnosisDataSource(req.ProjectId, req.DiagnosisDataSource.DiagnosisDataSourceId)
 	noRecord := gorm.IsRecordNotFoundError(err)
 	if err != nil && !noRecord {
+		logger.Error("Failed to Get DiagnosisDataSource", zap.Error(err))
 		return nil, err
 	}
 
@@ -62,16 +66,18 @@ func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diag
 
 	registerdData, err := s.repository.UpsertDiagnosisDataSource(data)
 	if err != nil {
+		logger.Error("Failed to Put DiagnosisDataSource", zap.Error(err))
 		return nil, err
 	}
 	return &diagnosis.PutDiagnosisDataSourceResponse{DiagnosisDataSource: convertDiagnosisDataSource(registerdData)}, nil
 }
 
 func (s *diagnosisService) DeleteDiagnosisDataSource(ctx context.Context, req *diagnosis.DeleteDiagnosisDataSourceRequest) (*empty.Empty, error) {
-	//	if err := req.Validate(); err != nil {
-	//		return nil, err
-	//	}
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
 	if err := s.repository.DeleteDiagnosisDataSource(req.ProjectId, req.DiagnosisDataSourceId); err != nil {
+		logger.Error("Failed to Delete DiagnosisDataSource", zap.Error(err))
 		return nil, err
 	}
 	return &empty.Empty{}, nil
