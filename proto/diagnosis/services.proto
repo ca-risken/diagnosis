@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package diagnosis;
+option go_package = "github.com/CyberAgent/mimosa-diagnosis/pkg/pb/diagnosis";
+
+import "diagnosis/entities.proto";
+import "google/protobuf/empty.proto";
+
+service DiagnosisService {
+  // DataSource
+  rpc ListDiagnosisDataSource(ListDiagnosisDataSourceRequest)
+      returns (ListDiagnosisDataSourceResponse) {}
+  rpc GetDiagnosisDataSource(GetDiagnosisDataSourceRequest)
+      returns (GetDiagnosisDataSourceResponse) {}
+  rpc PutDiagnosisDataSource(PutDiagnosisDataSourceRequest)
+      returns (PutDiagnosisDataSourceResponse) {}
+  rpc DeleteDiagnosisDataSource(DeleteDiagnosisDataSourceRequest)
+      returns (google.protobuf.Empty) {}
+
+  // JiraSetting
+  rpc ListJiraSetting(ListJiraSettingRequest)
+      returns (ListJiraSettingResponse) {}
+  rpc GetJiraSetting(GetJiraSettingRequest) returns (GetJiraSettingResponse) {}
+  rpc PutJiraSetting(PutJiraSettingRequest) returns (PutJiraSettingResponse) {}
+  rpc DeleteJiraSetting(DeleteJiraSettingRequest)
+      returns (google.protobuf.Empty) {}
+  // KICK
+  rpc StartDiagnosis(StartDiagnosisRequest) returns (StartDiagnosisResponse) {}
+}
+
+// DiagnosisDataSourceService
+message ListDiagnosisDataSourceRequest {
+  uint32 project_id = 1;
+  string name = 2;
+}
+
+message ListDiagnosisDataSourceResponse {
+  repeated DiagnosisDataSource diagnosis_data_source = 1;
+}
+
+message GetDiagnosisDataSourceRequest {
+  uint32 project_id = 1;
+  uint32 diagnosis_data_source_id = 2;
+}
+
+message GetDiagnosisDataSourceResponse {
+  DiagnosisDataSource diagnosis_data_source = 1;
+}
+
+message PutDiagnosisDataSourceRequest {
+  uint32 project_id = 1;
+  DiagnosisDataSourceForUpsert diagnosis_data_source = 2;
+}
+
+message PutDiagnosisDataSourceResponse {
+  uint32 project_id = 1;
+  DiagnosisDataSource diagnosis_data_source = 2;
+}
+
+message DeleteDiagnosisDataSourceRequest {
+  uint32 project_id = 1;
+  uint32 diagnosis_data_source_id = 2;
+}
+
+// KICK Diagnosis
+message StartDiagnosisRequest {
+  uint32 project_id = 1;
+  uint32 jira_setting_id = 2;
+}
+
+message StartDiagnosisResponse { string message = 1; }
+
+// JiraSettingService
+message ListJiraSettingRequest {
+  uint32 project_id = 1;
+  uint32 jira_setting_id = 2;
+  uint32 diagnosis_data_source_id = 3;
+}
+
+message ListJiraSettingResponse { repeated JiraSetting jira_setting = 1; }
+
+message GetJiraSettingRequest {
+  uint32 project_id = 1;
+  uint32 jira_setting_id = 2;
+}
+
+message GetJiraSettingResponse { JiraSetting jira_setting = 1; }
+
+message PutJiraSettingRequest {
+  uint32 project_id = 1;
+  JiraSettingForUpsert jira_setting = 2;
+}
+
+message PutJiraSettingResponse { JiraSetting jira_setting = 1; }
+
+message DeleteJiraSettingRequest {
+  uint32 project_id = 1;
+  uint32 jira_setting_id = 2;
+}

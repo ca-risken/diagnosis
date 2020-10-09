@@ -4,28 +4,35 @@
 ## Table of Contents
 
 - [diagnosis/entities.proto](#diagnosis/entities.proto)
+    - [Diagnosis](#diagnosis.Diagnosis)
     - [DiagnosisDataSource](#diagnosis.DiagnosisDataSource)
     - [DiagnosisDataSourceForUpsert](#diagnosis.DiagnosisDataSourceForUpsert)
-    - [JiraSetting](#diagnosis.JiraSetting)
-    - [JiraSettingForUpsert](#diagnosis.JiraSettingForUpsert)
-  
-    - [Status](#diagnosis.Status)
+    - [DiagnosisForUpsert](#diagnosis.DiagnosisForUpsert)
+    - [RelDiagnosisDataSource](#diagnosis.RelDiagnosisDataSource)
+    - [RelDiagnosisDataSourceForUpsert](#diagnosis.RelDiagnosisDataSourceForUpsert)
   
 - [diagnosis/services.proto](#diagnosis/services.proto)
     - [DeleteDiagnosisDataSourceRequest](#diagnosis.DeleteDiagnosisDataSourceRequest)
-    - [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest)
+    - [DeleteDiagnosisRequest](#diagnosis.DeleteDiagnosisRequest)
+    - [DeleteRelDiagnosisDataSourceRequest](#diagnosis.DeleteRelDiagnosisDataSourceRequest)
     - [GetDiagnosisDataSourceRequest](#diagnosis.GetDiagnosisDataSourceRequest)
     - [GetDiagnosisDataSourceResponse](#diagnosis.GetDiagnosisDataSourceResponse)
-    - [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest)
-    - [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse)
+    - [GetDiagnosisRequest](#diagnosis.GetDiagnosisRequest)
+    - [GetDiagnosisResponse](#diagnosis.GetDiagnosisResponse)
+    - [GetRelDiagnosisDataSourceRequest](#diagnosis.GetRelDiagnosisDataSourceRequest)
+    - [GetRelDiagnosisDataSourceResponse](#diagnosis.GetRelDiagnosisDataSourceResponse)
     - [ListDiagnosisDataSourceRequest](#diagnosis.ListDiagnosisDataSourceRequest)
     - [ListDiagnosisDataSourceResponse](#diagnosis.ListDiagnosisDataSourceResponse)
-    - [ListJiraSettingRequest](#diagnosis.ListJiraSettingRequest)
-    - [ListJiraSettingResponse](#diagnosis.ListJiraSettingResponse)
+    - [ListDiagnosisRequest](#diagnosis.ListDiagnosisRequest)
+    - [ListDiagnosisResponse](#diagnosis.ListDiagnosisResponse)
+    - [ListRelDiagnosisDataSourceRequest](#diagnosis.ListRelDiagnosisDataSourceRequest)
+    - [ListRelDiagnosisDataSourceResponse](#diagnosis.ListRelDiagnosisDataSourceResponse)
     - [PutDiagnosisDataSourceRequest](#diagnosis.PutDiagnosisDataSourceRequest)
     - [PutDiagnosisDataSourceResponse](#diagnosis.PutDiagnosisDataSourceResponse)
-    - [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest)
-    - [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse)
+    - [PutDiagnosisRequest](#diagnosis.PutDiagnosisRequest)
+    - [PutDiagnosisResponse](#diagnosis.PutDiagnosisResponse)
+    - [PutRelDiagnosisDataSourceRequest](#diagnosis.PutRelDiagnosisDataSourceRequest)
+    - [PutRelDiagnosisDataSourceResponse](#diagnosis.PutRelDiagnosisDataSourceResponse)
     - [StartDiagnosisRequest](#diagnosis.StartDiagnosisRequest)
     - [StartDiagnosisResponse](#diagnosis.StartDiagnosisResponse)
   
@@ -39,6 +46,25 @@
 <p align="right"><a href="#top">Top</a></p>
 
 ## diagnosis/entities.proto
+
+
+
+<a name="diagnosis.Diagnosis"></a>
+
+### Diagnosis
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| diagnosis_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| name | [string](#string) |  |  |
+| created_at | [int64](#int64) |  |  |
+| updated_at | [int64](#int64) |  |  |
+
+
+
 
 
 
@@ -80,26 +106,37 @@
 
 
 
-<a name="diagnosis.JiraSetting"></a>
+<a name="diagnosis.DiagnosisForUpsert"></a>
 
-### JiraSetting
+### DiagnosisForUpsert
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| jira_setting_id | [uint32](#uint32) |  |  |
+| diagnosis_id | [uint32](#uint32) |  |  |
 | name | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.RelDiagnosisDataSource"></a>
+
+### RelDiagnosisDataSource
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| rel_diagnosis_data_source_id | [uint32](#uint32) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
+| diagnosis_id | [uint32](#uint32) |  |  |
 | project_id | [uint32](#uint32) |  |  |
 | record_id | [string](#string) |  |  |
-| identity_field | [string](#string) |  |  |
-| identity_value | [string](#string) |  |  |
 | jira_id | [string](#string) |  |  |
 | jira_key | [string](#string) |  |  |
-| status | [Status](#diagnosis.Status) |  |  |
-| status_detail | [string](#string) |  |  |
-| scan_at | [int64](#int64) |  |  |
 | created_at | [int64](#int64) |  |  |
 | updated_at | [int64](#int64) |  |  |
 
@@ -108,47 +145,26 @@
 
 
 
-<a name="diagnosis.JiraSettingForUpsert"></a>
+<a name="diagnosis.RelDiagnosisDataSourceForUpsert"></a>
 
-### JiraSettingForUpsert
+### RelDiagnosisDataSourceForUpsert
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| jira_setting_id | [uint32](#uint32) |  |  |
-| name | [string](#string) |  |  |
+| rel_diagnosis_data_source_id | [uint32](#uint32) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
-| project_id | [uint32](#uint32) |  |  |
+| diagnosis_id | [uint32](#uint32) |  |  |
 | record_id | [string](#string) |  |  |
-| identity_field | [string](#string) |  |  |
-| identity_value | [string](#string) |  |  |
 | jira_id | [string](#string) |  |  |
 | jira_key | [string](#string) |  |  |
-| status | [Status](#diagnosis.Status) |  |  |
-| status_detail | [string](#string) |  |  |
-| scan_at | [int64](#int64) |  |  |
 
 
 
 
 
  
-
-
-<a name="diagnosis.Status"></a>
-
-### Status
-Status
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| UNKNOWN | 0 |  |
-| OK | 1 |  |
-| CONFIGURED | 2 |  |
-| NOT_CONFIGURED | 3 |  |
-| ERROR | 4 |  |
-
 
  
 
@@ -181,16 +197,32 @@ Status
 
 
 
-<a name="diagnosis.DeleteJiraSettingRequest"></a>
+<a name="diagnosis.DeleteDiagnosisRequest"></a>
 
-### DeleteJiraSettingRequest
+### DeleteDiagnosisRequest
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
+| diagnosis_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.DeleteRelDiagnosisDataSourceRequest"></a>
+
+### DeleteRelDiagnosisDataSourceRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| rel_diagnosis_data_source_id | [uint32](#uint32) |  |  |
 
 
 
@@ -228,31 +260,62 @@ Status
 
 
 
-<a name="diagnosis.GetJiraSettingRequest"></a>
+<a name="diagnosis.GetDiagnosisRequest"></a>
 
-### GetJiraSettingRequest
+### GetDiagnosisRequest
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
+| diagnosis_id | [uint32](#uint32) |  |  |
 
 
 
 
 
 
-<a name="diagnosis.GetJiraSettingResponse"></a>
+<a name="diagnosis.GetDiagnosisResponse"></a>
 
-### GetJiraSettingResponse
+### GetDiagnosisResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| jira_setting | [JiraSetting](#diagnosis.JiraSetting) |  |  |
+| diagnosis | [Diagnosis](#diagnosis.Diagnosis) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetRelDiagnosisDataSourceRequest"></a>
+
+### GetRelDiagnosisDataSourceRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| rel_diagnosis_data_source_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetRelDiagnosisDataSourceResponse"></a>
+
+### GetRelDiagnosisDataSourceResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| rel_diagnosis_data_source | [RelDiagnosisDataSource](#diagnosis.RelDiagnosisDataSource) |  |  |
 
 
 
@@ -290,16 +353,47 @@ DiagnosisDataSourceService
 
 
 
-<a name="diagnosis.ListJiraSettingRequest"></a>
+<a name="diagnosis.ListDiagnosisRequest"></a>
 
-### ListJiraSettingRequest
-JiraSettingService
+### ListDiagnosisRequest
+Diagnosis Service
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
+| name | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ListDiagnosisResponse"></a>
+
+### ListDiagnosisResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| diagnosis | [Diagnosis](#diagnosis.Diagnosis) | repeated |  |
+
+
+
+
+
+
+<a name="diagnosis.ListRelDiagnosisDataSourceRequest"></a>
+
+### ListRelDiagnosisDataSourceRequest
+RelDiagnosisDataSourceService
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_id | [uint32](#uint32) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
 
 
@@ -307,15 +401,15 @@ JiraSettingService
 
 
 
-<a name="diagnosis.ListJiraSettingResponse"></a>
+<a name="diagnosis.ListRelDiagnosisDataSourceResponse"></a>
 
-### ListJiraSettingResponse
+### ListRelDiagnosisDataSourceResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| jira_setting | [JiraSetting](#diagnosis.JiraSetting) | repeated |  |
+| rel_diagnosis_data_source | [RelDiagnosisDataSource](#diagnosis.RelDiagnosisDataSource) | repeated |  |
 
 
 
@@ -354,31 +448,62 @@ JiraSettingService
 
 
 
-<a name="diagnosis.PutJiraSettingRequest"></a>
+<a name="diagnosis.PutDiagnosisRequest"></a>
 
-### PutJiraSettingRequest
+### PutDiagnosisRequest
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
-| jira_setting | [JiraSettingForUpsert](#diagnosis.JiraSettingForUpsert) |  |  |
+| diagnosis | [DiagnosisForUpsert](#diagnosis.DiagnosisForUpsert) |  |  |
 
 
 
 
 
 
-<a name="diagnosis.PutJiraSettingResponse"></a>
+<a name="diagnosis.PutDiagnosisResponse"></a>
 
-### PutJiraSettingResponse
+### PutDiagnosisResponse
 
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| jira_setting | [JiraSetting](#diagnosis.JiraSetting) |  |  |
+| diagnosis | [Diagnosis](#diagnosis.Diagnosis) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutRelDiagnosisDataSourceRequest"></a>
+
+### PutRelDiagnosisDataSourceRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| rel_diagnosis_data_source | [RelDiagnosisDataSourceForUpsert](#diagnosis.RelDiagnosisDataSourceForUpsert) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutRelDiagnosisDataSourceResponse"></a>
+
+### PutRelDiagnosisDataSourceResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| rel_diagnosis_data_source | [RelDiagnosisDataSource](#diagnosis.RelDiagnosisDataSource) |  |  |
 
 
 
@@ -394,7 +519,7 @@ KICK Diagnosis
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
+| rel_diagnosis_data_source_id | [uint32](#uint32) |  |  |
 
 
 
@@ -429,14 +554,18 @@ KICK Diagnosis
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
+| ListDiagnosis | [ListDiagnosisRequest](#diagnosis.ListDiagnosisRequest) | [ListDiagnosisResponse](#diagnosis.ListDiagnosisResponse) | Diagnosis |
+| GetDiagnosis | [GetDiagnosisRequest](#diagnosis.GetDiagnosisRequest) | [GetDiagnosisResponse](#diagnosis.GetDiagnosisResponse) |  |
+| PutDiagnosis | [PutDiagnosisRequest](#diagnosis.PutDiagnosisRequest) | [PutDiagnosisResponse](#diagnosis.PutDiagnosisResponse) |  |
+| DeleteDiagnosis | [DeleteDiagnosisRequest](#diagnosis.DeleteDiagnosisRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 | ListDiagnosisDataSource | [ListDiagnosisDataSourceRequest](#diagnosis.ListDiagnosisDataSourceRequest) | [ListDiagnosisDataSourceResponse](#diagnosis.ListDiagnosisDataSourceResponse) | DataSource |
 | GetDiagnosisDataSource | [GetDiagnosisDataSourceRequest](#diagnosis.GetDiagnosisDataSourceRequest) | [GetDiagnosisDataSourceResponse](#diagnosis.GetDiagnosisDataSourceResponse) |  |
 | PutDiagnosisDataSource | [PutDiagnosisDataSourceRequest](#diagnosis.PutDiagnosisDataSourceRequest) | [PutDiagnosisDataSourceResponse](#diagnosis.PutDiagnosisDataSourceResponse) |  |
 | DeleteDiagnosisDataSource | [DeleteDiagnosisDataSourceRequest](#diagnosis.DeleteDiagnosisDataSourceRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
-| ListJiraSetting | [ListJiraSettingRequest](#diagnosis.ListJiraSettingRequest) | [ListJiraSettingResponse](#diagnosis.ListJiraSettingResponse) | JiraSetting |
-| GetJiraSetting | [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest) | [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse) |  |
-| PutJiraSetting | [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest) | [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse) |  |
-| DeleteJiraSetting | [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
+| ListRelDiagnosisDataSource | [ListRelDiagnosisDataSourceRequest](#diagnosis.ListRelDiagnosisDataSourceRequest) | [ListRelDiagnosisDataSourceResponse](#diagnosis.ListRelDiagnosisDataSourceResponse) | RelDiagnosisDataSource |
+| GetRelDiagnosisDataSource | [GetRelDiagnosisDataSourceRequest](#diagnosis.GetRelDiagnosisDataSourceRequest) | [GetRelDiagnosisDataSourceResponse](#diagnosis.GetRelDiagnosisDataSourceResponse) |  |
+| PutRelDiagnosisDataSource | [PutRelDiagnosisDataSourceRequest](#diagnosis.PutRelDiagnosisDataSourceRequest) | [PutRelDiagnosisDataSourceResponse](#diagnosis.PutRelDiagnosisDataSourceResponse) |  |
+| DeleteRelDiagnosisDataSource | [DeleteRelDiagnosisDataSourceRequest](#diagnosis.DeleteRelDiagnosisDataSourceRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 | StartDiagnosis | [StartDiagnosisRequest](#diagnosis.StartDiagnosisRequest) | [StartDiagnosisResponse](#diagnosis.StartDiagnosisResponse) | KICK |
 
  
