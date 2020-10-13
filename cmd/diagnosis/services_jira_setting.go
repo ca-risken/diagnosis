@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
+	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jinzhu/gorm"
@@ -52,7 +53,7 @@ func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.Pu
 	savedData, err := s.repository.GetJiraSetting(req.ProjectId, req.JiraSetting.JiraSettingId)
 	noRecord := gorm.IsRecordNotFoundError(err)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get JiraSettinng", zap.Error(err))
+		logger.Error("Failed to Get JiraSetting", zap.Error(err))
 		return nil, err
 	}
 
@@ -60,7 +61,7 @@ func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.Pu
 	if !noRecord {
 		jiraSettingID = savedData.JiraSettingID
 	}
-	data := &JiraSetting{
+	data := &model.JiraSetting{
 		JiraSettingID:         jiraSettingID,
 		ProjectID:             req.ProjectId,
 		Name:                  req.JiraSetting.Name,
@@ -93,7 +94,7 @@ func (s *diagnosisService) DeleteJiraSetting(ctx context.Context, req *diagnosis
 	return &empty.Empty{}, nil
 }
 
-func convertJiraSetting(data *JiraSetting) *diagnosis.JiraSetting {
+func convertJiraSetting(data *model.JiraSetting) *diagnosis.JiraSetting {
 	if data == nil {
 		return &diagnosis.JiraSetting{}
 	}
@@ -124,6 +125,7 @@ func (s *diagnosisService) StartDiagnosis(ctx context.Context, req *diagnosis.St
 	}
 	msg := &message.DiagnosisQueueMessage{
 		DataSource:    "diagnosis:jira",
+		JiraSettingID: req.JiraSettingId,
 		ProjectID:     req.ProjectId,
 		IdentityField: data.IdentityField,
 		IdentityValue: data.IdentityValue,

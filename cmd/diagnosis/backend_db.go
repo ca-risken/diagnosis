@@ -3,19 +3,20 @@ package main
 import (
 	"fmt"
 
+	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
 )
 
 type diagnosisRepoInterface interface {
-	ListDiagnosisDataSource(uint32, string) (*[]DiagnosisDataSource, error)
-	GetDiagnosisDataSource(uint32, uint32) (*DiagnosisDataSource, error)
-	UpsertDiagnosisDataSource(*DiagnosisDataSource) (*DiagnosisDataSource, error)
+	ListDiagnosisDataSource(uint32, string) (*[]model.DiagnosisDataSource, error)
+	GetDiagnosisDataSource(uint32, uint32) (*model.DiagnosisDataSource, error)
+	UpsertDiagnosisDataSource(*model.DiagnosisDataSource) (*model.DiagnosisDataSource, error)
 	DeleteDiagnosisDataSource(uint32, uint32) error
-	ListJiraSetting(uint32, uint32) (*[]JiraSetting, error)
-	GetJiraSetting(uint32, uint32) (*JiraSetting, error)
-	UpsertJiraSetting(*JiraSetting) (*JiraSetting, error)
+	ListJiraSetting(uint32, uint32) (*[]model.JiraSetting, error)
+	GetJiraSetting(uint32, uint32) (*model.JiraSetting, error)
+	UpsertJiraSetting(*model.JiraSetting) (*model.JiraSetting, error)
 	DeleteJiraSetting(uint32, uint32) error
 }
 

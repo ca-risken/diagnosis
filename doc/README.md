@@ -92,7 +92,6 @@
 | name | [string](#string) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
 | project_id | [uint32](#uint32) |  |  |
-| record_id | [string](#string) |  |  |
 | identity_field | [string](#string) |  |  |
 | identity_value | [string](#string) |  |  |
 | jira_id | [string](#string) |  |  |
@@ -120,7 +119,6 @@
 | name | [string](#string) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
 | project_id | [uint32](#uint32) |  |  |
-| record_id | [string](#string) |  |  |
 | identity_field | [string](#string) |  |  |
 | identity_value | [string](#string) |  |  |
 | jira_id | [string](#string) |  |  |
@@ -128,6 +126,7 @@
 | status | [Status](#diagnosis.Status) |  |  |
 | status_detail | [string](#string) |  |  |
 | scan_at | [int64](#int64) |  |  |
+| created_at | [int64](#int64) |  |  |
 
 
 

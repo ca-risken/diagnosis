@@ -1,11 +1,12 @@
 package main
 
 import (
+	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func (r *diagnosisRepository) ListDiagnosisDataSource(projectID uint32, name string) (*[]DiagnosisDataSource, error) {
-	var data []DiagnosisDataSource
+func (r *diagnosisRepository) ListDiagnosisDataSource(projectID uint32, name string) (*[]model.DiagnosisDataSource, error) {
+	var data []model.DiagnosisDataSource
 	paramName := "%" + name + "%"
 	if err := r.SlaveDB.Where("name like ?", paramName).Find(&data).Error; err != nil {
 		return nil, err
@@ -13,16 +14,16 @@ func (r *diagnosisRepository) ListDiagnosisDataSource(projectID uint32, name str
 	return &data, nil
 }
 
-func (r *diagnosisRepository) GetDiagnosisDataSource(projectID uint32, diagnosisDataSourceID uint32) (*DiagnosisDataSource, error) {
-	var data DiagnosisDataSource
+func (r *diagnosisRepository) GetDiagnosisDataSource(projectID uint32, diagnosisDataSourceID uint32) (*model.DiagnosisDataSource, error) {
+	var data model.DiagnosisDataSource
 	if err := r.SlaveDB.Where("diagnosis_data_source_id = ?", diagnosisDataSourceID).First(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
 }
 
-func (r *diagnosisRepository) UpsertDiagnosisDataSource(input *DiagnosisDataSource) (*DiagnosisDataSource, error) {
-	var data DiagnosisDataSource
+func (r *diagnosisRepository) UpsertDiagnosisDataSource(input *model.DiagnosisDataSource) (*model.DiagnosisDataSource, error) {
+	var data model.DiagnosisDataSource
 	if err := r.MasterDB.Where("diagnosis_data_source_id = ?", input.DiagnosisDataSourceID).Assign(DiagnosisDataSource{Name: input.Name, Description: input.Description, MaxScore: input.MaxScore}).FirstOrCreate(&data).Error; err != nil {
 		return nil, err
 	}

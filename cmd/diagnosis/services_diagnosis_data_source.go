@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jinzhu/gorm"
@@ -57,7 +58,7 @@ func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diag
 	if !noRecord {
 		diagnosisDataSourceID = savedData.DiagnosisDataSourceID
 	}
-	data := &DiagnosisDataSource{
+	data := &model.DiagnosisDataSource{
 		DiagnosisDataSourceID: diagnosisDataSourceID,
 		Name:                  req.DiagnosisDataSource.Name,
 		Description:           req.DiagnosisDataSource.Description,
@@ -83,7 +84,7 @@ func (s *diagnosisService) DeleteDiagnosisDataSource(ctx context.Context, req *d
 	return &empty.Empty{}, nil
 }
 
-func convertDiagnosisDataSource(data *DiagnosisDataSource) *diagnosis.DiagnosisDataSource {
+func convertDiagnosisDataSource(data *model.DiagnosisDataSource) *diagnosis.DiagnosisDataSource {
 	if data == nil {
 		return &diagnosis.DiagnosisDataSource{}
 	}
