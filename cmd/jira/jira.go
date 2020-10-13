@@ -14,7 +14,8 @@ import (
 
 type jiraAPI interface {
 	listProjects() (*[]jiraProject, error)
-	listIssues(string, string, string) (*jiraIssues, error)
+	getJiraProject(string, string, string, string) (string, map[string]string)
+	listIssues(string) (*jiraIssues, error)
 }
 
 type jiraClient struct {
@@ -71,30 +72,137 @@ func (j *jiraClient) listProjects() (*[]jiraProject, error) {
 	return &projects, nil
 }
 
-func (j *jiraClient) listIssues(jiraKey, jiraID, recordID string) (*jiraIssues, error) {
+func (j *jiraClient) getJiraProject(jiraKey, jiraID, IdentityField, IdentityValue string) (string, map[string]string) {
+	errDetail := make(map[string]string)
+	if !zero.IsZeroVal(jiraKey) {
+		_, err := j.searchProjectByJiraKeyID(jiraKey)
+		if err != nil {
+			errDetail["jiraKey"] = err.Error()
+		} else {
+			return jiraKey, nil
+		}
+	}
+	if !zero.IsZeroVal(jiraID) {
+		_, err := j.searchProjectByJiraKeyID(jiraID)
+		if err != nil {
+			errDetail["jiraID"] = err.Error()
+		} else {
+			return jiraID, nil
+		}
+	}
+	if !zero.IsZeroVal(IdentityField) && !zero.IsZeroVal(IdentityValue) {
+		pj, err := j.getProjectByIdentityKey(IdentityField, IdentityValue)
+		if err != nil {
+			errDetail["IdentityField"] = err.Error()
+		} else {
+			return pj, nil
+		}
+	}
+
+	return "", errDetail
+
+}
+func (j *jiraClient) searchProjectByJiraKeyID(search string) (bool, error) {
 	var issues jiraIssues
 	url := j.config.JiraUrl + `rest/api/2/search`
 	req, _ := http.NewRequest("GET", url, nil)
 	req.SetBasicAuth(j.config.JiraUserId, j.config.JiraUserPassword)
-	jql := ""
-	if !zero.IsZeroVal(jiraKey) {
-		jql += fmt.Sprintf(`project="%s"`, jiraKey)
-	} else if !zero.IsZeroVal(jiraID) {
-		jql += fmt.Sprintf(`project="%s"`, jiraID)
-	} else if !zero.IsZeroVal(recordID) {
-		pj, err := j.getProjectByRecordID(recordID)
-		if err != nil {
-			logger.Error("Failed to get project by recordID", zap.Error(err))
-			return nil, err
-		}
-		logger.Info("Project has found by recordID.", zap.String("project", pj))
-		jql += fmt.Sprintf(`project="%s"`, pj)
-	} else {
-		logger.Error("Need to set search_key")
-		return nil, errors.New("Need to set search_key")
+	jql := fmt.Sprintf(`project="%s" AND issuetype = 10021`, search)
+	params := req.URL.Query()
+	params.Add("jql", jql)
+	params.Add("maxResults", "1000")
+	req.URL.RawQuery = params.Encode()
+	client := new(http.Client)
+	res, err := client.Do(req)
+	if err != nil {
+		logger.Error("Failed to list projects. sk the System Administrator", zap.Error(err))
+		return false, err
 	}
-	jql += ` AND issuetype = 10023`
+
+	defer res.Body.Close()
+	if res.StatusCode == 400 {
+		return false, fmt.Errorf(`%v issues found. Please check your value`, issues.Total)
+	}
+	if res.StatusCode != 200 {
+		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
+		return false, fmt.Errorf("Cannot get project by jiraID or jiraKey. Ask the System Administrator")
+	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		logger.Error("Failed to read list projects response", zap.Error(err))
+		return false, err
+	}
+	if err := json.Unmarshal(body, &issues); err != nil {
+		logger.Error("Failed to parse issues. Ask the System Administrator", zap.Error(err))
+		return false, err
+	}
+
+	if issues.Total != 1 {
+		logger.Warn("Unexpect number issues found. ", zap.Int("issues.Total", issues.Total))
+		return false, fmt.Errorf(`%v issues found. Please check your recordID,recordKey`, issues.Total)
+	}
+
+	return true, nil
+}
+
+func (j *jiraClient) getProjectByIdentityKey(identityField, identityValue string) (string, error) {
+	var issues jiraIssues
+	url := j.config.JiraUrl + `rest/api/2/search`
+	req, _ := http.NewRequest("GET", url, nil)
+	req.SetBasicAuth(j.config.JiraUserId, j.config.JiraUserPassword)
+	jql := fmt.Sprintf(`cf[%s]="%s"`, identityField, identityValue)
+	jql += ` AND issuetype = 10021`
 	logger.Info("", zap.String("jql", jql))
+	params := req.URL.Query()
+	params.Add("jql", jql)
+	params.Add("maxResults", "2")
+	req.URL.RawQuery = params.Encode()
+
+	client := new(http.Client)
+	res, err := client.Do(req)
+
+	if err != nil {
+		logger.Error("Failed to list projects", zap.Error(err))
+		return "", err
+	}
+
+	defer res.Body.Close()
+	if res.StatusCode != 400 {
+		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
+		return "", fmt.Errorf("Cannot get project")
+	}
+	if res.StatusCode != 200 {
+		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
+		return "", fmt.Errorf("Cannot get project by recordID")
+	}
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		logger.Error("Failed to read list issues response", zap.Error(err))
+		return "", err
+	}
+
+	if err := json.Unmarshal(body, &issues); err != nil {
+		logger.Error("Failed to parse issues", zap.Error(err))
+		return "", err
+	}
+
+	issueList := issues.Issues
+	if zero.IsZeroVal(issueList) {
+		logger.Error("Cannot find project by recordID")
+		return "", errors.New("project: Cannot find project by recordID")
+	}
+
+	return issueList[0].Fields.Project.Key, nil
+}
+
+func (j *jiraClient) listIssues(project string) (*jiraIssues, error) {
+	var issues jiraIssues
+	url := j.config.JiraUrl + `rest/api/2/search`
+	req, _ := http.NewRequest("GET", url, nil)
+	req.SetBasicAuth(j.config.JiraUserId, j.config.JiraUserPassword)
+	jql := fmt.Sprintf(`project="%s"`, project)
+	jql += ` AND issuetype = 10023`
 	params := req.URL.Query()
 	params.Add("jql", jql)
 	params.Add("maxResults", "1000")
@@ -104,13 +212,13 @@ func (j *jiraClient) listIssues(jiraKey, jiraID, recordID string) (*jiraIssues, 
 	res, err := client.Do(req)
 
 	if err != nil {
-		logger.Error("Failed to list issues", zap.Error(err))
+		logger.Error("Failed to list Issues", zap.Error(err))
 		return nil, err
 	}
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
+		logger.Error("Returned error code when get list Issues", zap.Int("resCode", res.StatusCode))
 		return &issues, nil
 	}
 
@@ -126,52 +234,6 @@ func (j *jiraClient) listIssues(jiraKey, jiraID, recordID string) (*jiraIssues, 
 	}
 
 	return &issues, nil
-}
-
-func (j *jiraClient) getProjectByRecordID(recordID string) (string, error) {
-	var issues jiraIssues
-	url := j.config.JiraUrl + `rest/api/2/search`
-	req, _ := http.NewRequest("GET", url, nil)
-	req.SetBasicAuth(j.config.JiraUserId, j.config.JiraUserPassword)
-	jql := fmt.Sprintf(`cf[10035]="%s"`, recordID)
-	jql += ` AND issuetype = 10021`
-	logger.Info("", zap.String("jql", jql))
-	params := req.URL.Query()
-	params.Add("jql", jql)
-	params.Add("maxResults", "1000")
-	req.URL.RawQuery = params.Encode()
-
-	client := new(http.Client)
-	res, err := client.Do(req)
-
-	if err != nil {
-		logger.Error("Failed to list issues", zap.Error(err))
-		return "", err
-	}
-
-	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
-		return "", fmt.Errorf("Cannot get project by recordID. resCode: %v", res.StatusCode)
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		logger.Error("Failed to read list issues response", zap.Error(err))
-		return "", err
-	}
-
-	if err := json.Unmarshal(body, &issues); err != nil {
-		logger.Error("Failed to parse issues", zap.Error(err))
-		return "", err
-	}
-	issueList := issues.Issues
-	if zero.IsZeroVal(issueList) {
-		logger.Error("Cannot find project by recordID")
-		return "", errors.New("project: Cannot find project by recordID")
-	}
-
-	return issueList[0].Fields.Project.Key, nil
 }
 
 type jiraProject struct {

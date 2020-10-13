@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/pb/diagnosis"
+	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 )
 
 type diagnosisService struct {

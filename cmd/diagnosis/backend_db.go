@@ -3,24 +3,21 @@ package main
 import (
 	"fmt"
 
+	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
 )
 
 type diagnosisRepoInterface interface {
-	ListDiagnosis(uint32, string) (*[]Diagnosis, error)
-	GetDiagnosis(uint32, uint32) (*Diagnosis, error)
-	UpsertDiagnosis(*Diagnosis) (*Diagnosis, error)
-	DeleteDiagnosis(uint32, uint32) error
-	ListDiagnosisDataSource(uint32, string) (*[]DiagnosisDataSource, error)
-	GetDiagnosisDataSource(uint32, uint32) (*DiagnosisDataSource, error)
-	UpsertDiagnosisDataSource(*DiagnosisDataSource) (*DiagnosisDataSource, error)
+	ListDiagnosisDataSource(uint32, string) (*[]model.DiagnosisDataSource, error)
+	GetDiagnosisDataSource(uint32, uint32) (*model.DiagnosisDataSource, error)
+	UpsertDiagnosisDataSource(*model.DiagnosisDataSource) (*model.DiagnosisDataSource, error)
 	DeleteDiagnosisDataSource(uint32, uint32) error
-	ListRelDiagnosisDataSource(uint32, uint32, uint32) (*[]RelDiagnosisDataSource, error)
-	GetRelDiagnosisDataSource(uint32, uint32) (*RelDiagnosisDataSource, error)
-	UpsertRelDiagnosisDataSource(*RelDiagnosisDataSource) (*RelDiagnosisDataSource, error)
-	DeleteRelDiagnosisDataSource(uint32, uint32) error
+	ListJiraSetting(uint32, uint32) (*[]model.JiraSetting, error)
+	GetJiraSetting(uint32, uint32) (*model.JiraSetting, error)
+	UpsertJiraSetting(*model.JiraSetting) (*model.JiraSetting, error)
+	DeleteJiraSetting(uint32, uint32) error
 }
 
 type diagnosisRepository struct {
@@ -69,11 +66,10 @@ func initDB(isMaster bool) *gorm.DB {
 		fmt.Sprintf("%s:%s@tcp([%s]:%d)/%s?charset=utf8mb4&interpolateParams=true&parseTime=true&loc=Local",
 			user, pass, host, conf.Port, conf.Schema))
 	if err != nil {
-		//		logger.Error("Failed to open DB.", zap.String("isMaster", strconv.FormatBool(isMaster)), zap.Error(err))
-		return nil
+		fmt.Printf("Failed to open DB. isMaster: %v", isMaster)
+		panic(err)
 	}
 	db.LogMode(conf.LogMode)
 	db.SingularTable(true) // if set this to true, `User`'s default table name will be `user`
-	//	logger.Info("Connected to Database.", zap.String("isMaster", strconv.FormatBool(isMaster)))
 	return db
 }

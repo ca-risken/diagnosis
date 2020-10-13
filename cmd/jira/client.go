@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/CyberAgent/mimosa-core/proto/finding"
+	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/kelseyhightower/envconfig"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -27,6 +28,25 @@ func newFindingClient() finding.FindingServiceClient {
 		logger.Error("Faild to get GRPC connection", zap.Error(err))
 	}
 	return finding.NewFindingServiceClient(conn)
+}
+
+type diagnosisConfig struct {
+	DiagnosisSvcAddr string `required:"true" split_words:"true"`
+}
+
+func newDiagnosisClient() diagnosis.DiagnosisServiceClient {
+	var conf diagnosisConfig
+	err := envconfig.Process("", &conf)
+	if err != nil {
+		logger.Error("Faild to load diagnosis config error: err=%+v", zap.Error(err))
+	}
+
+	ctx := context.Background()
+	conn, err := getGRPCConn(ctx, conf.DiagnosisSvcAddr)
+	if err != nil {
+		logger.Error("Faild to get GRPC connection: err=%+v", zap.Error(err))
+	}
+	return diagnosis.NewDiagnosisServiceClient(conn)
 }
 
 func getGRPCConn(ctx context.Context, addr string) (*grpc.ClientConn, error) {

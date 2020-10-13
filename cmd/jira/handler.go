@@ -6,17 +6,21 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
+	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
+	"github.com/vikyd/zero"
 	"go.uber.org/zap"
 )
 
 type sqsHandler struct {
-	jira          jiraAPI
-	findingClient finding.FindingServiceClient
+	jira            jiraAPI
+	findingClient   finding.FindingServiceClient
+	diagnosisClient diagnosis.DiagnosisServiceClient
 }
 
 func newHandler() *sqsHandler {
@@ -25,6 +29,8 @@ func newHandler() *sqsHandler {
 	logger.Info("Start Jira Client")
 	h.findingClient = newFindingClient()
 	logger.Info("Start Finding Client")
+	h.diagnosisClient = newDiagnosisClient()
+	logger.Info("Start Diagnosis Client")
 	return h
 }
 
@@ -38,33 +44,50 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 		return err
 	}
 
-	// Get jira
-	findings, err := s.getJira(message)
+	// Get jira Project
+	project, errMap := s.jira.getJiraProject(message.JiraKey, message.JiraID, message.IdentityField, message.IdentityValue)
+	if zero.IsZeroVal(project) {
+		logger.Warn("Faild to get jira project", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.String("Project", project))
+		if err := s.putJiraSetting(message.JiraSettingID, message.ProjectID, false, errMap); err != nil {
+			logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Error(err))
+			return err
+		}
+		return nil
+	}
 
+	if zero.IsZeroVal(project) {
+		if err := s.putJiraSetting(message.JiraSettingID, message.ProjectID, false, errMap); err != nil {
+			logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Error(err))
+			return err
+		}
+	}
+
+	// Get jira
+	findings, err := s.getJira(project, message)
 	if err != nil {
-		logger.Error("Faild to get findngs to Diagnosis Jira", zap.String("RecordID", message.RecordID), zap.String("JiraID", message.JiraID), zap.Error(err))
+		logger.Error("Faild to get findngs to Diagnosis Jira", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Uint32("ProjectID", message.ProjectID), zap.Error(err))
 		return err
 	}
 
-	//Put finding to core
+	// Put finding to core
 	ctx := context.Background()
 	if err := s.putFindings(ctx, findings); err != nil {
-		logger.Error("Faild to put findngs", zap.String("RecordID", message.RecordID), zap.String("JiraID", message.JiraID), zap.Error(err))
+		logger.Error("Faild to put findngs", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Uint32("ProjectID", message.ProjectID), zap.Error(err))
+		return err
+	}
+
+	// Put JiraSetting
+	if err := s.putJiraSetting(message.JiraSettingID, message.ProjectID, true, nil); err != nil {
+		logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Error(err))
 		return err
 	}
 	return nil
+
 }
 
-func (s *sqsHandler) getJira(message *message.DiagnosisQueueMessage) ([]*finding.FindingForUpsert, error) {
+func (s *sqsHandler) getJira(project string, message *message.DiagnosisQueueMessage) ([]*finding.FindingForUpsert, error) {
 	putData := []*finding.FindingForUpsert{}
-	//	projects, err := s.jira.listProjects()
-	//	for _, project := range *projects {
-	//	}
-	//	if err != nil {
-	//		logger.Error("Jira.listProjects", zap.Error(err))
-	//		return nil, err
-	//	}
-	issueList, err := s.jira.listIssues(message.JiraKey, message.JiraID, message.RecordID)
+	issueList, err := s.jira.listIssues(project)
 	if err != nil {
 		logger.Error("Jira.listIssues", zap.Error(err))
 		return nil, err
@@ -117,6 +140,43 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 	return nil
 }
 
+func (s *sqsHandler) putJiraSetting(jiraSettingID, projectID uint32, isSuccess bool, errMap map[string]string) error {
+	ctx := context.Background()
+	resp, err := s.diagnosisClient.GetJiraSetting(ctx, &diagnosis.GetJiraSettingRequest{JiraSettingId: jiraSettingID, ProjectId: projectID})
+	if err != nil {
+		return err
+	}
+	logger.Info("orijinal js", zap.Any("JiraSetting", resp.JiraSetting))
+	jiraSetting := &diagnosis.JiraSettingForUpsert{
+		JiraSettingId:         resp.JiraSetting.JiraSettingId,
+		Name:                  resp.JiraSetting.Name,
+		DiagnosisDataSourceId: resp.JiraSetting.DiagnosisDataSourceId,
+		ProjectId:             resp.JiraSetting.ProjectId,
+		IdentityField:         resp.JiraSetting.IdentityField,
+		IdentityValue:         resp.JiraSetting.IdentityValue,
+		JiraId:                resp.JiraSetting.JiraId,
+		JiraKey:               resp.JiraSetting.JiraKey,
+		ScanAt:                time.Now().Unix(),
+	}
+	jiraSetting.Status = getStatus(isSuccess)
+	if isSuccess {
+		jiraSetting.StatusDetail = ""
+	} else {
+		errDetail, err := json.Marshal(errMap)
+		if err != nil {
+			return err
+		}
+		jiraSetting.StatusDetail = string(errDetail)
+	}
+	logger.Info("put js", zap.Any("JiraSetting", jiraSetting), zap.Any("bool", isSuccess))
+	_, err = s.diagnosisClient.PutJiraSetting(ctx, &diagnosis.PutJiraSettingRequest{ProjectId: resp.JiraSetting.ProjectId, JiraSetting: jiraSetting})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 const (
 	// PriorityScore
 	MaxScore             = 10.0
@@ -137,6 +197,13 @@ func isOpen(status string) bool {
 		return false
 	}
 	return true
+}
+
+func getStatus(isSuccess bool) diagnosis.Status {
+	if isSuccess {
+		return diagnosis.Status_OK
+	}
+	return diagnosis.Status_ERROR
 }
 
 func getScore(name string) float32 {
