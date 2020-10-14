@@ -24,16 +24,15 @@ message JiraSetting {
   string name = 2;
   uint32 diagnosis_data_source_id = 3;
   uint32 project_id = 4;
-  string record_id = 5;
-  string identity_field = 6;
-  string identity_value = 7;
-  string jira_id = 8;
-  string jira_key = 9;
-  Status status = 10;
-  string status_detail = 11;
-  int64 scan_at = 12;
-  int64 created_at = 13;
-  int64 updated_at = 14;
+  string identity_field = 5;
+  string identity_value = 6;
+  string jira_id = 7;
+  string jira_key = 8;
+  Status status = 9;
+  string status_detail = 10;
+  int64 scan_at = 11;
+  int64 created_at = 12;
+  int64 updated_at = 13;
 }
 
 message JiraSettingForUpsert {
@@ -41,14 +40,13 @@ message JiraSettingForUpsert {
   string name = 2;
   uint32 diagnosis_data_source_id = 3;
   uint32 project_id = 4;
-  string record_id = 5;
-  string identity_field = 6;
-  string identity_value = 7;
-  string jira_id = 8;
-  string jira_key = 9;
-  Status status = 10;
-  string status_detail = 11;
-  int64 scan_at = 12;
+  string identity_field = 5;
+  string identity_value = 6;
+  string jira_id = 7;
+  string jira_key = 8;
+  Status status = 9;
+  string status_detail = 10;
+  int64 scan_at = 11;
 }
 
 // Status

@@ -424,6 +424,16 @@ func TestValidate_JiraSettingForUpsert(t *testing.T) {
 			input:   &JiraSettingForUpsert{ProjectId: 1001, Name: "hoge_name", DiagnosisDataSourceId: 1, IdentityField: "", IdentityValue: "", JiraId: "", JiraKey: "123456789012345678901234567890123456789012345678901"},
 			wantErr: true,
 		},
+		{
+			name:    "NG Too small scan_at",
+			input:   &JiraSettingForUpsert{ProjectId: 1001, Name: "hoge_name", DiagnosisDataSourceId: 1, IdentityField: "hoge_field", IdentityValue: "hoge_value", JiraId: "jira_id", JiraKey: "jira_key", ScanAt: -1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too large scan_at",
+			input:   &JiraSettingForUpsert{ProjectId: 1001, Name: "hoge_name", DiagnosisDataSourceId: 1, IdentityField: "hoge_field", IdentityValue: "hoge_value", JiraId: "jira_id", JiraKey: "jira_key", ScanAt: 253402268400},
+			wantErr: true,
+		},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
