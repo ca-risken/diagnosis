@@ -114,6 +114,7 @@ func (r *JiraSettingForUpsert) Validate() error {
 		validation.Field(&r.IdentityValue, validation.Required.When(r.JiraId == "" && r.JiraKey == "").Error("Any one IdentityValue, JiraId, JiraKey is required."), validation.Length(0, 50)),
 		validation.Field(&r.JiraId, validation.Required.When(r.IdentityValue == "" && r.JiraKey == "").Error("Any one IdentityValue, JiraId, JiraKey is required."), validation.Length(0, 50)),
 		validation.Field(&r.JiraKey, validation.Required.When(r.IdentityValue == "" && r.JiraId == "").Error("Any one IdentityValue, JiraId, JiraKey is required."), validation.Length(0, 50)),
+		validation.Field(&r.ScanAt, validation.Min(0), validation.Max(253402268399)), //  1970-01-01T00:00:00 ~ 9999-12-31T23:59:59
 		validation.Field(&r.StatusDetail, validation.Length(0, 255)),
 	)
 }

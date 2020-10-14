@@ -3,9 +3,9 @@ module github.com/CyberAgent/mimosa-diagnosis/cmd/diagnosis
 go 1.15
 
 require (
-	github.com/CyberAgent/mimosa-diagnosis/pkg/message v0.0.0-20201012060521-d483bd010576
-	github.com/CyberAgent/mimosa-diagnosis/pkg/model v0.0.0-20201012060521-d483bd010576
-	github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis v0.0.0-20201012060521-d483bd010576
+	github.com/CyberAgent/mimosa-diagnosis/pkg/message v0.0.0-20201013111037-bf1eb2b9314c
+	github.com/CyberAgent/mimosa-diagnosis/pkg/model v0.0.0-20201013111037-bf1eb2b9314c
+	github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis v0.0.0-20201013111037-bf1eb2b9314c
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
 	github.com/aws/aws-sdk-go v1.35.7
 	github.com/go-sql-driver/mysql v1.5.0
@@ -21,10 +21,10 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
 	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
-	golang.org/x/sys v0.0.0-20201013081832-0aaa2718063a // indirect
+	golang.org/x/sys v0.0.0-20201013132646-2da7054afaeb // indirect
 	golang.org/x/tools v0.0.0-20200828161849-5deb26317202 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20201012135029-0c95dc0d88e8 // indirect
+	google.golang.org/genproto v0.0.0-20201013134114-7f9ee70cb474 // indirect
 	google.golang.org/grpc v1.33.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect

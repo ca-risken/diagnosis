@@ -1,4 +1,4 @@
-FROM golang AS builder
+FROM golang:1.15 AS builder
 WORKDIR /go/src/github.com/CyberAgent/mimosa-diagnosis/src/jira/
 ADD *.go go.* ./
 ENV CGO_ENABLED=0 GO111MODULE=on GOPRIVATE="github.com/CyberAgent/*"
