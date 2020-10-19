@@ -126,7 +126,6 @@
 | status | [Status](#diagnosis.Status) |  |  |
 | status_detail | [string](#string) |  |  |
 | scan_at | [int64](#int64) |  |  |
-| created_at | [int64](#int64) |  |  |
 
 
 
@@ -298,7 +297,6 @@ JiraSettingService
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
 
 

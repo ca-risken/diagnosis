@@ -73,8 +73,7 @@ message StartDiagnosisResponse { string message = 1; }
 // JiraSettingService
 message ListJiraSettingRequest {
   uint32 project_id = 1;
-  uint32 jira_setting_id = 2;
-  uint32 diagnosis_data_source_id = 3;
+  uint32 diagnosis_data_source_id = 2;
 }
 
 message ListJiraSettingResponse { repeated JiraSetting jira_setting = 1; }
