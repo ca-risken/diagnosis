@@ -6,13 +6,13 @@ import (
 	"github.com/vikyd/zero"
 )
 
-func (r *diagnosisRepository) ListJiraSetting(projectID, jiraSettingID uint32) (*[]model.JiraSetting, error) {
+func (r *diagnosisRepository) ListJiraSetting(projectID, diagnoosisDataSourceID uint32) (*[]model.JiraSetting, error) {
 	query := `select * from jira_setting where project_id = ?`
 	var params []interface{}
 	params = append(params, projectID)
-	if !zero.IsZeroVal(jiraSettingID) {
-		query += " and jira_setting_id = ?"
-		params = append(params, jiraSettingID)
+	if !zero.IsZeroVal(diagnoosisDataSourceID) {
+		query += " and diagnosis_data_source_id = ?"
+		params = append(params, diagnoosisDataSourceID)
 	}
 	var data []model.JiraSetting
 	if err := r.SlaveDB.Raw(query, params...).Scan(&data).Error; err != nil {
