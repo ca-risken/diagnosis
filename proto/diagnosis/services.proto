@@ -25,7 +25,8 @@ service DiagnosisService {
   rpc DeleteJiraSetting(DeleteJiraSettingRequest)
       returns (google.protobuf.Empty) {}
   // KICK
-  rpc StartDiagnosis(StartDiagnosisRequest) returns (StartDiagnosisResponse) {}
+  rpc InvokeScan(InvokeScanRequest) returns (InvokeScanResponse) {}
+  rpc InvokeScanAll(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }
 
 // DiagnosisDataSourceService
@@ -62,14 +63,6 @@ message DeleteDiagnosisDataSourceRequest {
   uint32 diagnosis_data_source_id = 2;
 }
 
-// KICK Diagnosis
-message StartDiagnosisRequest {
-  uint32 project_id = 1;
-  uint32 jira_setting_id = 2;
-}
-
-message StartDiagnosisResponse { string message = 1; }
-
 // JiraSettingService
 message ListJiraSettingRequest {
   uint32 project_id = 1;
@@ -96,3 +89,11 @@ message DeleteJiraSettingRequest {
   uint32 project_id = 1;
   uint32 jira_setting_id = 2;
 }
+
+// KICK Diagnosis
+message InvokeScanRequest {
+  uint32 project_id = 1;
+  uint32 jira_setting_id = 2;
+}
+
+message InvokeScanResponse { string message = 1; }

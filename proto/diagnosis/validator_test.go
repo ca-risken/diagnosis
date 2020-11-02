@@ -275,25 +275,25 @@ func TestValidate_DeleteJiraSettingRequest(t *testing.T) {
 	}
 }
 
-func TestValidate_StartDiagnosisRequest(t *testing.T) {
+func TestValidate_InvokeScanRequest(t *testing.T) {
 	cases := []struct {
 		name    string
-		input   *StartDiagnosisRequest
+		input   *InvokeScanRequest
 		wantErr bool
 	}{
 		{
 			name:    "OK",
-			input:   &StartDiagnosisRequest{ProjectId: 1, JiraSettingId: 2},
+			input:   &InvokeScanRequest{ProjectId: 1, JiraSettingId: 2},
 			wantErr: false,
 		},
 		{
 			name:    "NG Required(project_id)",
-			input:   &StartDiagnosisRequest{JiraSettingId: 2},
+			input:   &InvokeScanRequest{JiraSettingId: 2},
 			wantErr: true,
 		},
 		{
 			name:    "NG Required(jira_setting_id)",
-			input:   &StartDiagnosisRequest{ProjectId: 1},
+			input:   &InvokeScanRequest{ProjectId: 1},
 			wantErr: true,
 		},
 	}

@@ -18,6 +18,8 @@
     - [GetDiagnosisDataSourceResponse](#diagnosis.GetDiagnosisDataSourceResponse)
     - [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest)
     - [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse)
+    - [InvokeScanRequest](#diagnosis.InvokeScanRequest)
+    - [InvokeScanResponse](#diagnosis.InvokeScanResponse)
     - [ListDiagnosisDataSourceRequest](#diagnosis.ListDiagnosisDataSourceRequest)
     - [ListDiagnosisDataSourceResponse](#diagnosis.ListDiagnosisDataSourceResponse)
     - [ListJiraSettingRequest](#diagnosis.ListJiraSettingRequest)
@@ -26,8 +28,6 @@
     - [PutDiagnosisDataSourceResponse](#diagnosis.PutDiagnosisDataSourceResponse)
     - [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest)
     - [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse)
-    - [StartDiagnosisRequest](#diagnosis.StartDiagnosisRequest)
-    - [StartDiagnosisResponse](#diagnosis.StartDiagnosisResponse)
   
     - [DiagnosisService](#diagnosis.DiagnosisService)
   
@@ -257,6 +257,37 @@ Status
 
 
 
+<a name="diagnosis.InvokeScanRequest"></a>
+
+### InvokeScanRequest
+KICK Diagnosis
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| jira_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.InvokeScanResponse"></a>
+
+### InvokeScanResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| message | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="diagnosis.ListDiagnosisDataSourceRequest"></a>
 
 ### ListDiagnosisDataSourceRequest
@@ -381,37 +412,6 @@ JiraSettingService
 
 
 
-
-<a name="diagnosis.StartDiagnosisRequest"></a>
-
-### StartDiagnosisRequest
-KICK Diagnosis
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
-
-
-
-
-
-
-<a name="diagnosis.StartDiagnosisResponse"></a>
-
-### StartDiagnosisResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| message | [string](#string) |  |  |
-
-
-
-
-
  
 
  
@@ -434,7 +434,8 @@ KICK Diagnosis
 | GetJiraSetting | [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest) | [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse) |  |
 | PutJiraSetting | [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest) | [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse) |  |
 | DeleteJiraSetting | [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
-| StartDiagnosis | [StartDiagnosisRequest](#diagnosis.StartDiagnosisRequest) | [StartDiagnosisResponse](#diagnosis.StartDiagnosisResponse) | KICK |
+| InvokeScan | [InvokeScanRequest](#diagnosis.InvokeScanRequest) | [InvokeScanResponse](#diagnosis.InvokeScanResponse) | KICK |
+| InvokeScanAll | [.google.protobuf.Empty](#google.protobuf.Empty) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 
  
 
