@@ -45,6 +45,14 @@ func (r *diagnosisRepository) DeleteJiraSetting(projectID uint32, jiraSettingID 
 	return nil
 }
 
+func (r *diagnosisRepository) ListAllJiraSetting() (*[]model.JiraSetting, error) {
+	var data []model.JiraSetting
+	if err := r.SlaveDB.Find(&data).Error; err != nil {
+		return nil, err
+	}
+	return &data, nil
+}
+
 func jiraSettingToMap(jiraSetting *model.JiraSetting) map[string]interface{} {
 	return map[string]interface{}{
 		"jira_setting_id":          jiraSetting.JiraSettingID,

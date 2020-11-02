@@ -8,7 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/CyberAgent/mimosa-core/proto/alert"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
+	"github.com/CyberAgent/mimosa-diagnosis/pkg/common"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/aws"
@@ -20,6 +22,7 @@ import (
 type sqsHandler struct {
 	jira            jiraAPI
 	findingClient   finding.FindingServiceClient
+	alertClient     alert.AlertServiceClient
 	diagnosisClient diagnosis.DiagnosisServiceClient
 }
 
@@ -29,6 +32,8 @@ func newHandler() *sqsHandler {
 	logger.Info("Start Jira Client")
 	h.findingClient = newFindingClient()
 	logger.Info("Start Finding Client")
+	h.alertClient = newAlertClient()
+	logger.Info("Start Alert Client")
 	h.diagnosisClient = newDiagnosisClient()
 	logger.Info("Start Diagnosis Client")
 	return h
@@ -81,6 +86,13 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 		logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Error(err))
 		return err
 	}
+
+	// Call AnalyzeAlert
+	if err := s.CallAnalyzeAlert(ctx, message.ProjectID); err != nil {
+		logger.Error("Faild to analyze alert.", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Error(err))
+		return err
+	}
+
 	return nil
 
 }
@@ -131,11 +143,30 @@ func parseMessage(msg string) (*message.DiagnosisQueueMessage, error) {
 
 func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert) error {
 	for _, f := range findings {
-		_, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: f})
+		res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: f})
 		if err != nil {
 			return err
 		}
+		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis)
+		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagJira)
+		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
 		logger.Info("Success to PutFinding", zap.Any("Finding", f))
+	}
+	return nil
+}
+
+func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID uint64, tag string) error {
+
+	_, err := s.findingClient.TagFinding(ctx, &finding.TagFindingRequest{
+		ProjectId: projectID,
+		Tag: &finding.FindingTagForUpsert{
+			FindingId: findingID,
+			ProjectId: projectID,
+			Tag:       tag,
+		}})
+	if err != nil {
+		logger.Error("Failed to TagFinding.", zap.Error(err))
+		return err
 	}
 	return nil
 }
@@ -146,7 +177,6 @@ func (s *sqsHandler) putJiraSetting(jiraSettingID, projectID uint32, isSuccess b
 	if err != nil {
 		return err
 	}
-	logger.Info("orijinal js", zap.Any("JiraSetting", resp.JiraSetting))
 	jiraSetting := &diagnosis.JiraSettingForUpsert{
 		JiraSettingId:         resp.JiraSetting.JiraSettingId,
 		Name:                  resp.JiraSetting.Name,
@@ -168,12 +198,20 @@ func (s *sqsHandler) putJiraSetting(jiraSettingID, projectID uint32, isSuccess b
 		}
 		jiraSetting.StatusDetail = string(errDetail)
 	}
-	logger.Info("put js", zap.Any("JiraSetting", jiraSetting), zap.Any("bool", isSuccess))
 	_, err = s.diagnosisClient.PutJiraSetting(ctx, &diagnosis.PutJiraSettingRequest{ProjectId: resp.JiraSetting.ProjectId, JiraSetting: jiraSetting})
 	if err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (s *sqsHandler) CallAnalyzeAlert(ctx context.Context, projectID uint32) error {
+	_, err := s.alertClient.AnalyzeAlert(ctx, &alert.AnalyzeAlertRequest{ProjectId: projectID})
+	if err != nil {
+		return err
+	}
+	logger.Info("Success to analyze alert.")
 	return nil
 }
 

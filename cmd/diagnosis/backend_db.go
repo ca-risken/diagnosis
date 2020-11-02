@@ -18,6 +18,8 @@ type diagnosisRepoInterface interface {
 	GetJiraSetting(uint32, uint32) (*model.JiraSetting, error)
 	UpsertJiraSetting(*model.JiraSetting) (*model.JiraSetting, error)
 	DeleteJiraSetting(uint32, uint32) error
+	//for InvokeScan
+	ListAllJiraSetting() (*[]model.JiraSetting, error)
 }
 
 type diagnosisRepository struct {

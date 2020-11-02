@@ -67,9 +67,15 @@ delete-jira_setting:
 		-d '{"project_id":1001, "jira_setting_id":1001}' \
 		localhost:19001 diagnosis.DiagnosisService.DeleteJiraSetting
 
-.PHONY: start-diagnosis
-start-diagnosis:
+.PHONY: invoke-scan
+invoke-scan:
 	grpcurl \
 		-plaintext \
 		-d '{"project_id":1001, "jira_setting_id":1003}' \
-		localhost:19001 diagnosis.DiagnosisService.StartDiagnosis
+		localhost:19001 diagnosis.DiagnosisService.InvokeScan
+
+.PHONY: invoke-scan-all
+invoke-scan-all:
+	grpcurl \
+		-plaintext \
+		localhost:19001 diagnosis.DiagnosisService.InvokeScanAll
