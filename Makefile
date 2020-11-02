@@ -8,7 +8,7 @@ install:
 		github.com/grpc-ecosystem/go-grpc-middleware
 
 clean:
-	rm -f pkg/pb/**/*.pb.go
+	rm -f proto//**/*.pb.go
 	rm -f doc/*.md
 
 # @see https://github.com/CyberAgent/mimosa-common/tree/master/local

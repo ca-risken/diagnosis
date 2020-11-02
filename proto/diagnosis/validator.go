@@ -82,8 +82,8 @@ func (r *DeleteJiraSettingRequest) Validate() error {
 	)
 }
 
-// Validate StartDiagnosisRequest
-func (r *StartDiagnosisRequest) Validate() error {
+// Validate InvokeScanRequest
+func (r *InvokeScanRequest) Validate() error {
 	return validation.ValidateStruct(r,
 		validation.Field(&r.ProjectId, validation.Required),
 		validation.Field(&r.JiraSettingId, validation.Required),
