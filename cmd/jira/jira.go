@@ -167,13 +167,9 @@ func (j *jiraClient) getProjectByIdentityKey(identityField, identityValue string
 	}
 
 	defer res.Body.Close()
-	if res.StatusCode != 400 {
-		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
-		return "", fmt.Errorf("Cannot get project")
-	}
 	if res.StatusCode != 200 {
 		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
-		return "", fmt.Errorf("Cannot get project by recordID")
+		return "", fmt.Errorf("Cannot get project by IdentityKey,Field")
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
@@ -187,10 +183,15 @@ func (j *jiraClient) getProjectByIdentityKey(identityField, identityValue string
 		return "", err
 	}
 
+	if issues.Total != 1 {
+		logger.Warn("Unexpect number issues found. ", zap.Int("issues.Total", issues.Total))
+		return "", fmt.Errorf(`%v issues found. Please check your recordID,recordKey`, issues.Total)
+	}
+
 	issueList := issues.Issues
 	if zero.IsZeroVal(issueList) {
-		logger.Error("Cannot find project by recordID")
-		return "", errors.New("project: Cannot find project by recordID")
+		logger.Error("Cannot find project by IdentityKey,Field.")
+		return "", errors.New("project: Cannot find project by IdentityKey,Field.IdentityKey,Field")
 	}
 
 	return issueList[0].Fields.Project.Key, nil

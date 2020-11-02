@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/CyberAgent/mimosa-core/proto/alert"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/kelseyhightower/envconfig"
@@ -28,6 +29,25 @@ func newFindingClient() finding.FindingServiceClient {
 		logger.Error("Faild to get GRPC connection", zap.Error(err))
 	}
 	return finding.NewFindingServiceClient(conn)
+}
+
+type alertConfig struct {
+	AlertSvcAddr string `required:"true" split_words:"true"`
+}
+
+func newAlertClient() alert.AlertServiceClient {
+	var conf alertConfig
+	err := envconfig.Process("", &conf)
+	if err != nil {
+		logger.Error("Faild to load alert config error", zap.Error(err))
+	}
+
+	ctx := context.Background()
+	conn, err := getGRPCConn(ctx, conf.AlertSvcAddr)
+	if err != nil {
+		logger.Error("Faild to get GRPC connection", zap.Error(err))
+	}
+	return alert.NewAlertServiceClient(conn)
 }
 
 type diagnosisConfig struct {
