@@ -10,6 +10,6 @@ const (
 
 	// TagUnknown unknown service tag
 	TagUnknown = "unknown-resource-type"
-	// TagDomain domain tag
-	TagDomain = "vulnerability"
+	// TagVulnerability domain tag
+	TagVulnerability = "vulnerability"
 )
