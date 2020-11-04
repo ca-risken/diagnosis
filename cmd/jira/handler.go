@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"net/url"
 	"strings"
 	"time"
 
@@ -115,12 +113,11 @@ func (s *sqsHandler) getJira(project string, message *message.DiagnosisQueueMess
 			continue
 		}
 		score := getScore(issue.Fields.Priority.Name)
-		resource := getResourceName(issue.Fields.Target)
 		putData = append(putData, &finding.FindingForUpsert{
 			Description:      issue.Fields.Summary,
 			DataSource:       message.DataSource,
 			DataSourceId:     issue.Key,
-			ResourceName:     resource,
+			ResourceName:     issue.Fields.Project.Name,
 			ProjectId:        message.ProjectID,
 			OriginalScore:    score,
 			OriginalMaxScore: 10.0,
@@ -257,33 +254,4 @@ func getScore(name string) float32 {
 	default:
 		return ScoreOther
 	}
-}
-
-func getResourceName(target string) string {
-	urlLines := strings.Split(target, "\r\n")
-	var resources []string
-	for _, s := range urlLines {
-		if strings.Index(s, "http") > -1 {
-			u, err := url.Parse(s)
-			if err != nil {
-				continue
-			}
-			retResource := fmt.Sprintf("%s://%s", u.Scheme, u.Host)
-			resources = append(resources, retResource)
-		}
-	}
-	m := make(map[string]struct{})
-	newList := make([]string, 0)
-	for _, resource := range resources {
-		if _, ok := m[resource]; !ok {
-			m[resource] = struct{}{}
-			newList = append(newList, resource)
-		}
-	}
-	ret := strings.Join(newList, ",")
-	ret = "target::" + ret
-	if len(ret) > 255 {
-		ret = ret[0:252] + "..."
-	}
-	return ret
 }
