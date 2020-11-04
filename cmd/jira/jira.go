@@ -13,7 +13,6 @@ import (
 )
 
 type jiraAPI interface {
-	listProjects() (*[]jiraProject, error)
 	getJiraProject(string, string, string, string) (string, map[string]string)
 	listIssues(string) (*jiraIssues, error)
 }
@@ -37,39 +36,6 @@ func newJiraClient() *jiraClient {
 		panic(err)
 	}
 	return &jiraClient{config: conf}
-}
-
-func (j *jiraClient) listProjects() (*[]jiraProject, error) {
-	var projects []jiraProject
-	url := j.config.JiraUrl + `rest/api/2/project`
-	req, _ := http.NewRequest("GET", url, nil)
-	req.SetBasicAuth(j.config.JiraUserId, j.config.JiraUserPassword)
-	client := new(http.Client)
-	res, err := client.Do(req)
-
-	if err != nil {
-		logger.Error("Failed to list projects", zap.Error(err))
-		return nil, err
-	}
-
-	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		logger.Error("Returned error code when get list projects", zap.Int("resCode", res.StatusCode))
-		return &projects, nil
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		logger.Error("Failed to read list projects response", zap.Error(err))
-		return nil, err
-	}
-
-	if err := json.Unmarshal(body, &projects); err != nil {
-		logger.Error("Failed to parse projects", zap.Error(err))
-		return nil, err
-	}
-
-	return &projects, nil
 }
 
 func (j *jiraClient) getJiraProject(jiraKey, jiraID, IdentityField, IdentityValue string) (string, map[string]string) {
@@ -262,10 +228,7 @@ type jiraIssue struct {
 		Status  struct {
 			Name string `json:"name"`
 		} `json:"status"`
-		Project struct {
-			ID  string `json:"id"`
-			Key string `json:"key"`
-		} `json:"project"`
+		Project jiraProject `json:"project"`
 	} `json:"Fields"`
 	URL string `json:"self"`
 }
