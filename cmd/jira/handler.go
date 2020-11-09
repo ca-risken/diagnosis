@@ -216,7 +216,7 @@ const (
 	// PriorityScore
 	MaxScore             = 10.0
 	ScoreHigh            = 10.0
-	ScoreMiddle          = 5.0
+	ScoreMiddle          = 6.0
 	ScoreLow             = 3.0
 	ScoreInformation     = 1.0
 	ScoreOther           = 0.1
