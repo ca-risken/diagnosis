@@ -4,15 +4,6 @@ import (
 	"time"
 )
 
-// Diagnosis entity
-type Diagnosis struct {
-	DiagnosisID uint32 `gorm:"column:diagnosis_id"`
-	ProjectID   uint32
-	Name        string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-}
-
 // DiagnosisDataSource entity
 type DiagnosisDataSource struct {
 	DiagnosisDataSourceID uint32 `gorm:"primary_key"`
@@ -38,4 +29,16 @@ type JiraSetting struct {
 	ScanAt                time.Time
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
+}
+
+// WpscanSetting Entity
+type WpscanSetting struct {
+	WpscanSettingID uint32 `gorm:"primary_key"`
+	ProjectID       uint32
+	TargetURL       string
+	Status          string
+	StatusDetail    string
+	ScanAt          time.Time
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }

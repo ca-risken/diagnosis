@@ -5,6 +5,8 @@ const (
 	TagDiagnosis = "diagnosis"
 	// TagJira jira tag
 	TagJira = "jira"
+	// TagWordPress wordpress tag
+	TagWordPress = "wordpress"
 
 	// Diagnosis Resource Type
 
