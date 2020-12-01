@@ -74,7 +74,7 @@ func (r *PutJiraSettingRequest) Validate() error {
 	return r.JiraSetting.Validate()
 }
 
-// Validate DeleteResultRequest
+// Validate DeleteJiraSettingRequest
 func (r *DeleteJiraSettingRequest) Validate() error {
 	return validation.ValidateStruct(r,
 		validation.Field(&r.ProjectId, validation.Required),
@@ -82,11 +82,50 @@ func (r *DeleteJiraSettingRequest) Validate() error {
 	)
 }
 
+// WpscanSetting
+
+// Validate ListWpscanSettingRequest
+func (r *ListWpscanSettingRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+	)
+}
+
+// Validate GetWpscanSettingRequest
+func (r *GetWpscanSettingRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.WpscanSettingId, validation.Required),
+	)
+}
+
+// Validate PutWpscanSettingRequest
+func (r *PutWpscanSettingRequest) Validate() error {
+	if r.WpscanSetting == nil {
+		return errors.New("Required WpscanSetting")
+	}
+	if err := validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.In(r.WpscanSetting.ProjectId), validation.Required),
+	); err != nil {
+		return err
+	}
+	return r.WpscanSetting.Validate()
+}
+
+// Validate DeleteWpscanSettingRequest
+func (r *DeleteWpscanSettingRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.WpscanSettingId, validation.Required),
+	)
+}
+
 // Validate InvokeScanRequest
 func (r *InvokeScanRequest) Validate() error {
 	return validation.ValidateStruct(r,
 		validation.Field(&r.ProjectId, validation.Required),
-		validation.Field(&r.JiraSettingId, validation.Required),
+		validation.Field(&r.SettingId, validation.Required),
+		validation.Field(&r.DiagnosisDataSourceId, validation.Required),
 	)
 }
 
@@ -114,6 +153,17 @@ func (r *JiraSettingForUpsert) Validate() error {
 		validation.Field(&r.IdentityValue, validation.Required.When(r.JiraId == "" && r.JiraKey == "").Error("Any one IdentityValue, JiraId, JiraKey is required."), validation.Length(0, 50)),
 		validation.Field(&r.JiraId, validation.Required.When(r.IdentityValue == "" && r.JiraKey == "").Error("Any one IdentityValue, JiraId, JiraKey is required."), validation.Length(0, 50)),
 		validation.Field(&r.JiraKey, validation.Required.When(r.IdentityValue == "" && r.JiraId == "").Error("Any one IdentityValue, JiraId, JiraKey is required."), validation.Length(0, 50)),
+		validation.Field(&r.ScanAt, validation.Min(0), validation.Max(253402268399)), //  1970-01-01T00:00:00 ~ 9999-12-31T23:59:59
+		validation.Field(&r.StatusDetail, validation.Length(0, 255)),
+	)
+}
+
+// Validate WpscanForUpsert
+func (r *WpscanSettingForUpsert) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.DiagnosisDataSourceId, validation.Required),
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.TargetUrl, validation.Required, validation.Length(0, 200)),
 		validation.Field(&r.ScanAt, validation.Min(0), validation.Max(253402268399)), //  1970-01-01T00:00:00 ~ 9999-12-31T23:59:59
 		validation.Field(&r.StatusDetail, validation.Length(0, 255)),
 	)

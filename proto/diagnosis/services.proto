@@ -24,6 +24,16 @@ service DiagnosisService {
   rpc PutJiraSetting(PutJiraSettingRequest) returns (PutJiraSettingResponse) {}
   rpc DeleteJiraSetting(DeleteJiraSettingRequest)
       returns (google.protobuf.Empty) {}
+
+  // WpscanSetting
+  rpc ListWpscanSetting(ListWpscanSettingRequest)
+      returns (ListWpscanSettingResponse) {}
+  rpc GetWpscanSetting(GetWpscanSettingRequest)
+      returns (GetWpscanSettingResponse) {}
+  rpc PutWpscanSetting(PutWpscanSettingRequest)
+      returns (PutWpscanSettingResponse) {}
+  rpc DeleteWpscanSetting(DeleteWpscanSettingRequest)
+      returns (google.protobuf.Empty) {}
   // KICK
   rpc InvokeScan(InvokeScanRequest) returns (InvokeScanResponse) {}
   rpc InvokeScanAll(google.protobuf.Empty) returns (google.protobuf.Empty) {}
@@ -90,10 +100,38 @@ message DeleteJiraSettingRequest {
   uint32 jira_setting_id = 2;
 }
 
+// WpscanSettingService
+message ListWpscanSettingRequest {
+  uint32 project_id = 1;
+  uint32 diagnosis_data_source_id = 2;
+}
+
+message ListWpscanSettingResponse { repeated WpscanSetting wpscan_setting = 1; }
+
+message GetWpscanSettingRequest {
+  uint32 project_id = 1;
+  uint32 wpscan_setting_id = 2;
+}
+
+message GetWpscanSettingResponse { WpscanSetting wpscan_setting = 1; }
+
+message PutWpscanSettingRequest {
+  uint32 project_id = 1;
+  WpscanSettingForUpsert wpscan_setting = 2;
+}
+
+message PutWpscanSettingResponse { WpscanSetting wpscan_setting = 1; }
+
+message DeleteWpscanSettingRequest {
+  uint32 project_id = 1;
+  uint32 wpscan_setting_id = 2;
+}
+
 // KICK Diagnosis
 message InvokeScanRequest {
   uint32 project_id = 1;
-  uint32 jira_setting_id = 2;
+  uint32 setting_id = 2;
+  uint32 diagnosis_data_source_id = 3;
 }
 
 message InvokeScanResponse { string message = 1; }

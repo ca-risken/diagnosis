@@ -8,26 +8,35 @@
     - [DiagnosisDataSourceForUpsert](#diagnosis.DiagnosisDataSourceForUpsert)
     - [JiraSetting](#diagnosis.JiraSetting)
     - [JiraSettingForUpsert](#diagnosis.JiraSettingForUpsert)
+    - [WpscanSetting](#diagnosis.WpscanSetting)
+    - [WpscanSettingForUpsert](#diagnosis.WpscanSettingForUpsert)
   
     - [Status](#diagnosis.Status)
   
 - [diagnosis/services.proto](#diagnosis/services.proto)
     - [DeleteDiagnosisDataSourceRequest](#diagnosis.DeleteDiagnosisDataSourceRequest)
     - [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest)
+    - [DeleteWpscanSettingRequest](#diagnosis.DeleteWpscanSettingRequest)
     - [GetDiagnosisDataSourceRequest](#diagnosis.GetDiagnosisDataSourceRequest)
     - [GetDiagnosisDataSourceResponse](#diagnosis.GetDiagnosisDataSourceResponse)
     - [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest)
     - [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse)
+    - [GetWpscanSettingRequest](#diagnosis.GetWpscanSettingRequest)
+    - [GetWpscanSettingResponse](#diagnosis.GetWpscanSettingResponse)
     - [InvokeScanRequest](#diagnosis.InvokeScanRequest)
     - [InvokeScanResponse](#diagnosis.InvokeScanResponse)
     - [ListDiagnosisDataSourceRequest](#diagnosis.ListDiagnosisDataSourceRequest)
     - [ListDiagnosisDataSourceResponse](#diagnosis.ListDiagnosisDataSourceResponse)
     - [ListJiraSettingRequest](#diagnosis.ListJiraSettingRequest)
     - [ListJiraSettingResponse](#diagnosis.ListJiraSettingResponse)
+    - [ListWpscanSettingRequest](#diagnosis.ListWpscanSettingRequest)
+    - [ListWpscanSettingResponse](#diagnosis.ListWpscanSettingResponse)
     - [PutDiagnosisDataSourceRequest](#diagnosis.PutDiagnosisDataSourceRequest)
     - [PutDiagnosisDataSourceResponse](#diagnosis.PutDiagnosisDataSourceResponse)
     - [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest)
     - [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse)
+    - [PutWpscanSettingRequest](#diagnosis.PutWpscanSettingRequest)
+    - [PutWpscanSettingResponse](#diagnosis.PutWpscanSettingResponse)
   
     - [DiagnosisService](#diagnosis.DiagnosisService)
   
@@ -131,6 +140,50 @@
 
 
 
+
+<a name="diagnosis.WpscanSetting"></a>
+
+### WpscanSetting
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| wpscan_setting_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+| target_url | [string](#string) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
+| status_detail | [string](#string) |  |  |
+| scan_at | [int64](#int64) |  |  |
+| created_at | [int64](#int64) |  |  |
+| updated_at | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.WpscanSettingForUpsert"></a>
+
+### WpscanSettingForUpsert
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| wpscan_setting_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+| target_url | [string](#string) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
+| status_detail | [string](#string) |  |  |
+| scan_at | [int64](#int64) |  |  |
+
+
+
+
+
  
 
 
@@ -189,6 +242,22 @@ Status
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
 | jira_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.DeleteWpscanSettingRequest"></a>
+
+### DeleteWpscanSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| wpscan_setting_id | [uint32](#uint32) |  |  |
 
 
 
@@ -257,6 +326,37 @@ Status
 
 
 
+<a name="diagnosis.GetWpscanSettingRequest"></a>
+
+### GetWpscanSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| wpscan_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetWpscanSettingResponse"></a>
+
+### GetWpscanSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| wpscan_setting | [WpscanSetting](#diagnosis.WpscanSetting) |  |  |
+
+
+
+
+
+
 <a name="diagnosis.InvokeScanRequest"></a>
 
 ### InvokeScanRequest
@@ -266,7 +366,8 @@ KICK Diagnosis
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
+| setting_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
 
 
 
@@ -350,6 +451,37 @@ JiraSettingService
 
 
 
+<a name="diagnosis.ListWpscanSettingRequest"></a>
+
+### ListWpscanSettingRequest
+WpscanSettingService
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ListWpscanSettingResponse"></a>
+
+### ListWpscanSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| wpscan_setting | [WpscanSetting](#diagnosis.WpscanSetting) | repeated |  |
+
+
+
+
+
+
 <a name="diagnosis.PutDiagnosisDataSourceRequest"></a>
 
 ### PutDiagnosisDataSourceRequest
@@ -412,6 +544,37 @@ JiraSettingService
 
 
 
+
+<a name="diagnosis.PutWpscanSettingRequest"></a>
+
+### PutWpscanSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| wpscan_setting | [WpscanSettingForUpsert](#diagnosis.WpscanSettingForUpsert) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutWpscanSettingResponse"></a>
+
+### PutWpscanSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| wpscan_setting | [WpscanSetting](#diagnosis.WpscanSetting) |  |  |
+
+
+
+
+
  
 
  
@@ -434,6 +597,10 @@ JiraSettingService
 | GetJiraSetting | [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest) | [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse) |  |
 | PutJiraSetting | [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest) | [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse) |  |
 | DeleteJiraSetting | [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
+| ListWpscanSetting | [ListWpscanSettingRequest](#diagnosis.ListWpscanSettingRequest) | [ListWpscanSettingResponse](#diagnosis.ListWpscanSettingResponse) | WpscanSetting |
+| GetWpscanSetting | [GetWpscanSettingRequest](#diagnosis.GetWpscanSettingRequest) | [GetWpscanSettingResponse](#diagnosis.GetWpscanSettingResponse) |  |
+| PutWpscanSetting | [PutWpscanSettingRequest](#diagnosis.PutWpscanSettingRequest) | [PutWpscanSettingResponse](#diagnosis.PutWpscanSettingResponse) |  |
+| DeleteWpscanSetting | [DeleteWpscanSettingRequest](#diagnosis.DeleteWpscanSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 | InvokeScan | [InvokeScanRequest](#diagnosis.InvokeScanRequest) | [InvokeScanResponse](#diagnosis.InvokeScanResponse) | KICK |
 | InvokeScanAll | [.google.protobuf.Empty](#google.protobuf.Empty) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 

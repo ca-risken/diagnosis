@@ -1,7 +1,7 @@
 package message
 
-// DiagnosisQueueMessage is the message for SQS queue
-type DiagnosisQueueMessage struct {
+// JiraQueueMessage is the message for SQS queue for Jira
+type JiraQueueMessage struct {
 	DataSource    string `json:"data_source"`
 	JiraSettingID uint32 `json:"jira_setting_id"`
 	ProjectID     uint32 `json:"project_id"`
@@ -9,4 +9,12 @@ type DiagnosisQueueMessage struct {
 	IdentityValue string `json:"identity_value"`
 	JiraID        string `json:"jira_id"`
 	JiraKey       string `json:"jira_key"`
+}
+
+// WpscanQueueMessage is the message for SQS queue for Wpscan
+type WpscanQueueMessage struct {
+	DataSource      string `json:"data_source"`
+	WpscanSettingID uint32 `json:"jira_setting_id"`
+	ProjectID       uint32 `json:"project_id"`
+	TargetURL       string `json:"target_url"`
 }

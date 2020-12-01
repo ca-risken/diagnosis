@@ -275,6 +275,144 @@ func TestValidate_DeleteJiraSettingRequest(t *testing.T) {
 	}
 }
 
+//WpscanSetting DataSource
+
+func TestValidate_ListWpscanSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *ListWpscanSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &ListWpscanSettingRequest{ProjectId: 1},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &ListWpscanSettingRequest{},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_GetWpscanSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *GetWpscanSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &GetWpscanSettingRequest{ProjectId: 1, WpscanSettingId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &GetWpscanSettingRequest{WpscanSettingId: 2},
+			wantErr: true,
+		},
+		{
+			name:    "NG required(jira_setting_id)",
+			input:   &GetWpscanSettingRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_PutWpscanSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *PutWpscanSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &PutWpscanSettingRequest{ProjectId: 1001, WpscanSetting: &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "hoge_target"}},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(WpscanSetting)",
+			input:   &PutWpscanSettingRequest{ProjectId: 1001},
+			wantErr: true,
+		},
+		{
+			name:    "NG Not Equal(project_id != jira_setting.project_id)",
+			input:   &PutWpscanSettingRequest{ProjectId: 1001, WpscanSetting: &WpscanSettingForUpsert{ProjectId: 1002, DiagnosisDataSourceId: 1, TargetUrl: "hoge_target"}},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(ProjectId)",
+			input:   &PutWpscanSettingRequest{WpscanSetting: &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "hoge_target"}},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_DeleteWpscanSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *DeleteWpscanSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &DeleteWpscanSettingRequest{ProjectId: 1, WpscanSettingId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &DeleteWpscanSettingRequest{WpscanSettingId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(diagnosis_data_source_id)",
+			input:   &DeleteWpscanSettingRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
 func TestValidate_InvokeScanRequest(t *testing.T) {
 	cases := []struct {
 		name    string
@@ -283,17 +421,22 @@ func TestValidate_InvokeScanRequest(t *testing.T) {
 	}{
 		{
 			name:    "OK",
-			input:   &InvokeScanRequest{ProjectId: 1, JiraSettingId: 2},
+			input:   &InvokeScanRequest{ProjectId: 1, SettingId: 2, DiagnosisDataSourceId: 3},
 			wantErr: false,
 		},
 		{
 			name:    "NG Required(project_id)",
-			input:   &InvokeScanRequest{JiraSettingId: 2},
+			input:   &InvokeScanRequest{SettingId: 2, DiagnosisDataSourceId: 3},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(diagnosis_data_source_id)",
+			input:   &InvokeScanRequest{ProjectId: 1, DiagnosisDataSourceId: 3},
 			wantErr: true,
 		},
 		{
 			name:    "NG Required(jira_setting_id)",
-			input:   &InvokeScanRequest{ProjectId: 1},
+			input:   &InvokeScanRequest{ProjectId: 1, SettingId: 2},
 			wantErr: true,
 		},
 	}
@@ -432,6 +575,60 @@ func TestValidate_JiraSettingForUpsert(t *testing.T) {
 		{
 			name:    "NG Too large scan_at",
 			input:   &JiraSettingForUpsert{ProjectId: 1001, Name: "hoge_name", DiagnosisDataSourceId: 1, IdentityField: "hoge_field", IdentityValue: "hoge_value", JiraId: "jira_id", JiraKey: "jira_key", ScanAt: 253402268400},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_WpscanSettingForUpsert(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *WpscanSettingForUpsert
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "hoge_url"},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &WpscanSettingForUpsert{DiagnosisDataSourceId: 1, TargetUrl: "hoge_url"},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(diagnosis_data_source_id)",
+			input:   &WpscanSettingForUpsert{ProjectId: 1001, TargetUrl: "hoge_url"},
+			wantErr: true,
+		},
+		{
+			name:    "Too long(target_url)",
+			input:   &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(target_url)",
+			input:   &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too small scan_at",
+			input:   &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "hoge_url", ScanAt: -1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too large scan_at",
+			input:   &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "hoge_url", ScanAt: 253402268400},
 			wantErr: true,
 		},
 	}
