@@ -33,12 +33,13 @@ type JiraSetting struct {
 
 // WpscanSetting Entity
 type WpscanSetting struct {
-	WpscanSettingID uint32 `gorm:"primary_key"`
-	ProjectID       uint32
-	TargetURL       string
-	Status          string
-	StatusDetail    string
-	ScanAt          time.Time
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	WpscanSettingID       uint32 `gorm:"primary_key"`
+	DiagnosisDataSourceID uint32
+	ProjectID             uint32
+	TargetURL             string
+	Status                string
+	StatusDetail          string
+	ScanAt                time.Time
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
 }
