@@ -67,11 +67,46 @@ delete-jira_setting:
 		-d '{"project_id":1001, "jira_setting_id":1001}' \
 		localhost:19001 diagnosis.DiagnosisService.DeleteJiraSetting
 
-.PHONY: invoke-scan
-invoke-scan:
+.PHONY: list-wpscan_setting
+list-wpscan_setting:
 	grpcurl \
 		-plaintext \
-		-d '{"project_id":1001, "jira_setting_id":1003}' \
+		-d '{"project_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.ListWpscanSetting
+
+.PHONY: get-wpscan_setting
+get-wpscan_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "wpscan_setting_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.GetWpscanSetting
+
+.PHONY: put-wpscan_setting
+put-wpscan_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "wpscan_setting": {"diagnosis_data_source_id":1002, "project_id":1001, "target_url":"http://example.com", "status":"CONFIGURED"}}' \
+		localhost:19001 diagnosis.DiagnosisService.PutWpscanSetting
+
+.PHONY: delete-wpscan_setting
+delete-wpscan_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "wpscan_setting_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.DeleteWpscanSetting
+
+.PHONY: invoke-scan-jira
+invoke-scan-jira:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "setting_id":1003,"diagnosis_data_source_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.InvokeScan
+
+.PHONY: invoke-scan-wpscan
+invoke-scan-wpscan:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "setting_id":1001,"diagnosis_data_source_id":1002}' \
 		localhost:19001 diagnosis.DiagnosisService.InvokeScan
 
 .PHONY: invoke-scan-all

@@ -30,6 +30,8 @@ services:
       - SQS_ENDPOINT=${SQS_ENDPOINT}
       - DIAGNOSIS_JIRA_QUEUE_URL=${DIAGNOSIS_JIRA_QUEUE_URL}
       - DIAGNOSIS_JIRA_QUEUE_NAME=${DIAGNOSIS_JIRA_QUEUE_NAME}
+      - DIAGNOSIS_WPSCAN_QUEUE_URL=${DIAGNOSIS_WPSCAN_QUEUE_URL}
+      - DIAGNOSIS_WPSCAN_QUEUE_NAME=${DIAGNOSIS_WPSCAN_QUEUE_NAME}
   jira:
     networks:
       - local-shared
@@ -40,8 +42,6 @@ services:
         - GITHUB_USER=${GITHUB_USER}
         - GITHUB_TOKEN=${GITHUB_TOKEN}
     tty: true
-    volumes:
-      - ./cmd/jira:/go/src/github.com/CyberAgent/mimosa-diagnosis/src/jira/
     ports:
       - 19002:19002
     environment:
@@ -59,6 +59,31 @@ services:
       - FINDING_SVC_ADDR=${FINDING_SVC_ADDR}
       - ALERT_SVC_ADDR=${ALERT_SVC_ADDR}
       - DIAGNOSIS_SVC_ADDR=${DIAGNOSIS_SVC_ADDR}
+  wpscan:
+    networks:
+      - local-shared
+      - diagnosis
+    build:
+      context: ./cmd/wpscan
+      args:
+        - GITHUB_USER=${GITHUB_USER}
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+    tty: true
+    ports:
+      - 19003:19003
+    environment:
+      - PORT=19003
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - SQS_ENDPOINT=${SQS_ENDPOINT}
+      - DIAGNOSIS_WPSCAN_QUEUE_URL=${DIAGNOSIS_WPSCAN_QUEUE_URL}
+      - DIAGNOSIS_WPSCAN_QUEUE_NAME=${DIAGNOSIS_WPSCAN_QUEUE_NAME}
+      - FINDING_SVC_ADDR=${FINDING_SVC_ADDR}
+      - ALERT_SVC_ADDR=${ALERT_SVC_ADDR}
+      - DIAGNOSIS_SVC_ADDR=${DIAGNOSIS_SVC_ADDR}
+
 networks:
   diagnosis:
     driver: bridge

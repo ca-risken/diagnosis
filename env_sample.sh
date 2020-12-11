@@ -31,3 +31,6 @@ export DIAGNOSIS_JIRA_USER_PASSWORD="jira-password"
 export FINDING_SVC_ADDR="finding:8001"
 export ALERT_SVC_ADDR="alert:8004"
 export DIAGNOSIS_SVC_ADDR="diagnosis:19001"
+
+# WPScan
+export RESULT_PATH="/tmp"

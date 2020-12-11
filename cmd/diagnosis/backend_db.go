@@ -18,8 +18,13 @@ type diagnosisRepoInterface interface {
 	GetJiraSetting(uint32, uint32) (*model.JiraSetting, error)
 	UpsertJiraSetting(*model.JiraSetting) (*model.JiraSetting, error)
 	DeleteJiraSetting(uint32, uint32) error
+	ListWpscanSetting(uint32, uint32) (*[]model.WpscanSetting, error)
+	GetWpscanSetting(uint32, uint32) (*model.WpscanSetting, error)
+	UpsertWpscanSetting(*model.WpscanSetting) (*model.WpscanSetting, error)
+	DeleteWpscanSetting(uint32, uint32) error
 	//for InvokeScan
 	ListAllJiraSetting() (*[]model.JiraSetting, error)
+	ListAllWpscanSetting() (*[]model.WpscanSetting, error)
 }
 
 type diagnosisRepository struct {

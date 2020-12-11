@@ -5,7 +5,7 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-type DiagnosisConfig struct {
+type diagnosisConfig struct {
 	Port     string `default:"19001"`
 	LogLevel string `split_words:"true" default:"debug"`
 
@@ -13,8 +13,8 @@ type DiagnosisConfig struct {
 	SQS *sqsClient
 }
 
-func newDiagnosisConfig() (*DiagnosisConfig, error) {
-	config := &DiagnosisConfig{}
+func newDiagnosisConfig() (*diagnosisConfig, error) {
+	config := &diagnosisConfig{}
 	if err := envconfig.Process("", config); err != nil {
 		return nil, err
 	}

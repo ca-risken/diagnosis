@@ -24,14 +24,14 @@ func (r *diagnosisRepository) GetDiagnosisDataSource(projectID uint32, diagnosis
 
 func (r *diagnosisRepository) UpsertDiagnosisDataSource(input *model.DiagnosisDataSource) (*model.DiagnosisDataSource, error) {
 	var data model.DiagnosisDataSource
-	if err := r.MasterDB.Where("diagnosis_data_source_id = ?", input.DiagnosisDataSourceID).Assign(DiagnosisDataSource{Name: input.Name, Description: input.Description, MaxScore: input.MaxScore}).FirstOrCreate(&data).Error; err != nil {
+	if err := r.MasterDB.Where("diagnosis_data_source_id = ?", input.DiagnosisDataSourceID).Assign(model.DiagnosisDataSource{Name: input.Name, Description: input.Description, MaxScore: input.MaxScore}).FirstOrCreate(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
 }
 
 func (r *diagnosisRepository) DeleteDiagnosisDataSource(projectID uint32, diagnosisDataSourceID uint32) error {
-	if err := r.MasterDB.Where("diagnosis_data_source_id =  ?", diagnosisDataSourceID).Delete(DiagnosisDataSource{}).Error; err != nil {
+	if err := r.MasterDB.Where("diagnosis_data_source_id =  ?", diagnosisDataSourceID).Delete(model.DiagnosisDataSource{}).Error; err != nil {
 		return err
 	}
 	return nil

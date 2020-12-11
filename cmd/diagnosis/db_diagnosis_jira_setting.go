@@ -39,7 +39,7 @@ func (r *diagnosisRepository) UpsertJiraSetting(data *model.JiraSetting) (*model
 }
 
 func (r *diagnosisRepository) DeleteJiraSetting(projectID uint32, jiraSettingID uint32) error {
-	if err := r.MasterDB.Where("project_id = ? AND jira_setting_id = ?", projectID, jiraSettingID).Delete(JiraSetting{}).Error; err != nil {
+	if err := r.MasterDB.Where("project_id = ? AND jira_setting_id = ?", projectID, jiraSettingID).Delete(model.JiraSetting{}).Error; err != nil {
 		return err
 	}
 	return nil
