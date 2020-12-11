@@ -95,7 +95,7 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 
 }
 
-func (s *sqsHandler) getJira(project string, message *message.DiagnosisQueueMessage) ([]*finding.FindingForUpsert, error) {
+func (s *sqsHandler) getJira(project string, message *message.JiraQueueMessage) ([]*finding.FindingForUpsert, error) {
 	putData := []*finding.FindingForUpsert{}
 	issueList, err := s.jira.listIssues(project)
 	if err != nil {
@@ -127,8 +127,8 @@ func (s *sqsHandler) getJira(project string, message *message.DiagnosisQueueMess
 	return putData, nil
 }
 
-func parseMessage(msg string) (*message.DiagnosisQueueMessage, error) {
-	message := &message.DiagnosisQueueMessage{}
+func parseMessage(msg string) (*message.JiraQueueMessage, error) {
+	message := &message.JiraQueueMessage{}
 	if err := json.Unmarshal([]byte(msg), message); err != nil {
 		return nil, err
 	}

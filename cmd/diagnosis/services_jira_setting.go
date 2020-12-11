@@ -115,53 +115,18 @@ func convertJiraSetting(data *model.JiraSetting) *diagnosis.JiraSetting {
 	}
 }
 
-func (s *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
-	if err := req.Validate(); err != nil {
-		return nil, err
-	}
-	data, err := s.repository.GetJiraSetting(req.ProjectId, req.JiraSettingId)
-	if err != nil {
-		return nil, err
-	}
-	msg := &message.DiagnosisQueueMessage{
+func makeJiraMessage(ProjectID, SettingID uint32, data *model.JiraSetting) (*message.JiraQueueMessage, error) {
+
+	msg := &message.JiraQueueMessage{
 		DataSource:    "diagnosis:jira",
-		JiraSettingID: req.JiraSettingId,
-		ProjectID:     req.ProjectId,
+		JiraSettingID: SettingID,
+		ProjectID:     ProjectID,
 		IdentityField: data.IdentityField,
 		IdentityValue: data.IdentityValue,
 		JiraID:        data.JiraID,
 		JiraKey:       data.JiraKey,
 	}
-	resp, err := s.sqs.send(msg)
-	if err != nil {
-		return nil, err
-	}
-	logger.Info("Invoke scanned.", zap.String("MessageId", *resp.MessageId))
-	return &diagnosis.InvokeScanResponse{Message: "Start Diagnosis."}, nil
-}
-
-func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) (*empty.Empty, error) {
-
-	list, err := s.repository.ListAllJiraSetting()
-	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
-			return &empty.Empty{}, nil
-		}
-		logger.Error("Failed to List All JiraSetting.", zap.Error(err))
-		return nil, err
-	}
-
-	for _, jiraSetting := range *list {
-		if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
-			ProjectId:     jiraSetting.ProjectID,
-			JiraSettingId: jiraSetting.JiraSettingID,
-		}); err != nil {
-			// errorが出ても続行
-			logger.Error("InvokeScanAll error", zap.Error(err))
-		}
-	}
-
-	return &empty.Empty{}, nil
+	return msg, nil
 }
 
 func getStatus(s string) diagnosis.Status {

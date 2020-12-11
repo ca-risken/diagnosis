@@ -1,4 +1,4 @@
-module github.com/CyberAgent/mimosa-diagnosis/cmd/jira
+module github.com/CyberAgent/mimosa-diagnosis/cmd/wpscan
 
 go 1.15
 
@@ -8,7 +8,6 @@ require (
 	github.com/CyberAgent/mimosa-diagnosis/pkg/common v0.0.0-20201203074646-21680d2e8ea0
 	github.com/CyberAgent/mimosa-diagnosis/pkg/message v0.0.0-20201203074646-21680d2e8ea0
 	github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis v0.0.0-20201203074646-21680d2e8ea0
-	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
 	github.com/aws/aws-sdk-go v1.36.6
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
@@ -16,7 +15,6 @@ require (
 	github.com/h2ik/go-sqs-poller/v3 v3.1.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/sirupsen/logrus v1.7.0
-	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/vikyd/zero v0.0.0-20190921142904-0f738d0bc858
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
