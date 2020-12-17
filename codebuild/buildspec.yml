@@ -5,7 +5,7 @@ env:
     IMAGE_DIAGNOSIS: "diagnosis/diagnosis"
     IMAGE_JIRA: "diagnosis/jira"
     IMAGE_WPSCAN: "diagnosis/wpscan"
-    parameter-store:
+  parameter-store:
     GITHUB_USER: "/build/GITHUB_USER"
     GITHUB_TOKEN: "/build/GITHUB_TOKEN"
 
