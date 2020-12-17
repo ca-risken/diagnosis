@@ -198,7 +198,7 @@ func getVersionFindingInformation(version version) (string, float32) {
 	if version.Status == "insecure" {
 		return fmt.Sprintf("WordPress version %v identified (Insecure)", version.Number), 6.0
 	}
-	return fmt.Sprintf("WordPress version %v identified (Insecure)", version.Number), 1.0
+	return fmt.Sprintf("WordPress version %v identified", version.Number), 1.0
 }
 
 func getAccessFindingInformation(access checkAccess, isUserFound bool) (string, float32) {
