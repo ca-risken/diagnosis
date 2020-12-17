@@ -4,7 +4,8 @@ env:
   variables:
     IMAGE_DIAGNOSIS: "diagnosis/diagnosis"
     IMAGE_JIRA: "diagnosis/jira"
-  parameter-store:
+    IMAGE_WPSCAN: "diagnosis/wpscan"
+    parameter-store:
     GITHUB_USER: "/build/GITHUB_USER"
     GITHUB_TOKEN: "/build/GITHUB_TOKEN"
 
@@ -33,15 +34,19 @@ phases:
       - echo Pushing the Docker images...
       - cd ${SRC}/diagnosis        && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_DIAGNOSIS}:${TAG} .
       - cd ${SRC}/jira && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_JIRA}:${TAG} .
+      - cd ${SRC}/wpscan && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_WPSCAN}:${TAG} .
 
       - echo Tagging the images...
       # tag the specific version
       - docker tag ${IMAGE_DIAGNOSIS}:${TAG}       ${REGISTORY}/${IMAGE_DIAGNOSIS}:${TAG}
       - docker tag ${IMAGE_JIRA}:${TAG} ${REGISTORY}/${IMAGE_JIRA}:${TAG}
+      - docker tag ${IMAGE_WPSCAN}:${TAG} ${REGISTORY}/${IMAGE_WPSCAN}:${TAG}
 
       # update latest version
       - docker tag ${IMAGE_DIAGNOSIS}:${TAG}       ${REGISTORY}/${IMAGE_DIAGNOSIS}:latest
       - docker tag ${IMAGE_JIRA}:${TAG} ${REGISTORY}/${IMAGE_JIRA}:latest
+      - docker tag ${IMAGE_WPSCAN}:${TAG} ${REGISTORY}/${IMAGE_WPSCAN}:latest
+
   post_build:
     commands:
       - echo Build completed on `date`
@@ -50,7 +55,9 @@ phases:
       # specific version
       - docker push ${REGISTORY}/${IMAGE_DIAGNOSIS}:${TAG}
       - docker push ${REGISTORY}/${IMAGE_JIRA}:${TAG}
+      - docker push ${REGISTORY}/${IMAGE_WPSCAN}:${TAG}
 
       # latest version
       - docker push ${REGISTORY}/${IMAGE_DIAGNOSIS}:latest
       - docker push ${REGISTORY}/${IMAGE_JIRA}:latest
+      - docker push ${REGISTORY}/${IMAGE_WPSCAN}:latest
