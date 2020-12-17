@@ -34,3 +34,4 @@ export DIAGNOSIS_SVC_ADDR="diagnosis:19001"
 
 # WPScan
 export RESULT_PATH="/tmp"
+export WPSCAN_VULNDB_APIKEY=""

@@ -17,7 +17,8 @@ import (
 )
 
 type wpscanConfig struct {
-	ResultPath string `required:"true" split_words:"true"`
+	ResultPath         string `required:"true" split_words:"true"`
+	WpscanVulndbApikey string `split_words:"true"`
 }
 
 func newWpscanConfig() wpscanConfig {
@@ -32,11 +33,19 @@ func newWpscanConfig() wpscanConfig {
 func (w *wpscanConfig) run(target string, wpscanSettingID uint32) (*wpscanResult, error) {
 	now := time.Now().Unix()
 	filePath := fmt.Sprintf("%s/%v_%v.json", w.ResultPath, wpscanSettingID, now)
-	cmd := exec.Command("wpscan", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
-	err := cmd.Run()
-	if err != nil {
-		appLogger.Errorf("Failed exec WPScan. error: %v", err)
-		return nil, err
+	var cmd *exec.Cmd
+	if !zero.IsZeroVal(w.WpscanVulndbApikey) {
+		appLogger.Infof("API_KEY: %v", w.WpscanVulndbApikey)
+		cmd = exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath, "--api-token", w.WpscanVulndbApikey)
+	} else {
+		cmd = exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
+	}
+	appLogger.Infof("CMD: %v", cmd)
+	_ = cmd.Run()
+	exitCode := cmd.ProcessState.ExitCode()
+	if exitCode != 0 && exitCode != 5 {
+		appLogger.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
+		return nil, fmt.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
 	}
 
 	bytes, err := readAndDeleteFile(filePath)
@@ -148,7 +157,9 @@ func makeFindings(wpscanResult *wpscanResult, message *message.WpscanQueueMessag
 	for _, access := range wpscanResult.AccessList {
 		desc, score := getAccessFindingInformation(access, isUserFound)
 		if !zero.IsZeroVal(desc) {
-			data, err := json.Marshal(map[string]interface{}{"data": map[string]string{"url": message.TargetURL}})
+			data, err := json.Marshal(map[string]interface{}{"data": map[string]string{
+				"url": access.Target,
+			}})
 			if err != nil {
 				return nil, err
 			}
