@@ -33,19 +33,27 @@ func newWpscanConfig() wpscanConfig {
 func (w *wpscanConfig) run(target string, wpscanSettingID uint32) (*wpscanResult, error) {
 	now := time.Now().Unix()
 	filePath := fmt.Sprintf("%s/%v_%v.json", w.ResultPath, wpscanSettingID, now)
-	var cmd *exec.Cmd
 	if !zero.IsZeroVal(w.WpscanVulndbApikey) {
-		appLogger.Infof("API_KEY: %v", w.WpscanVulndbApikey)
-		cmd = exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath, "--api-token", w.WpscanVulndbApikey)
+		cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath, "--api-token", w.WpscanVulndbApikey)
+		err := execWPScan(cmd)
+		if err != nil {
+			appLogger.Warn("APIKey doesn't work. Try scanning without apikey.")
+			cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
+			err = execWPScan(cmd)
+			if err != nil {
+				appLogger.Error("Scan also failed without apikey.")
+				return nil, err
+			}
+		}
+
 	} else {
-		cmd = exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
-	}
-	appLogger.Infof("CMD: %v", cmd)
-	_ = cmd.Run()
-	exitCode := cmd.ProcessState.ExitCode()
-	if exitCode != 0 && exitCode != 5 {
-		appLogger.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
-		return nil, fmt.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
+		cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
+
+		err := execWPScan(cmd)
+		if err != nil {
+			appLogger.Error("Scan failed without apikey.")
+			return nil, err
+		}
 	}
 
 	bytes, err := readAndDeleteFile(filePath)
@@ -59,6 +67,16 @@ func (w *wpscanConfig) run(target string, wpscanSettingID uint32) (*wpscanResult
 	}
 	wpscanResult.AccessList, _ = checkOpen(target)
 	return &wpscanResult, nil
+}
+
+func execWPScan(cmd *exec.Cmd) error {
+	_ = cmd.Run()
+	exitCode := cmd.ProcessState.ExitCode()
+	if exitCode != 0 && exitCode != 5 {
+		appLogger.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
+		return fmt.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
+	}
+	return nil
 }
 
 func checkOpen(wpURL string) ([]checkAccess, error) {
