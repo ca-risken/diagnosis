@@ -31,7 +31,7 @@ func newWpscanConfig() wpscanConfig {
 }
 
 func (w *wpscanConfig) run(target string, wpscanSettingID uint32) (*wpscanResult, error) {
-	now := time.Now().Unix()
+	now := time.Now().UnixNano()
 	filePath := fmt.Sprintf("%s/%v_%v.json", w.ResultPath, wpscanSettingID, now)
 	if !zero.IsZeroVal(w.WpscanVulndbApikey) {
 		cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath, "--api-token", w.WpscanVulndbApikey)
@@ -104,6 +104,10 @@ func checkOpen(wpURL string) ([]checkAccess, error) {
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode == 200 && strings.Index(resp.Request.URL.String(), goal) > -1 {
+			target.IsAccess = true
+			retList = append(retList, target)
+		} else {
+			target.IsAccess = false
 			retList = append(retList, target)
 		}
 	}
@@ -222,6 +226,9 @@ func getVersionFindingInformation(version version) (string, float32) {
 func getAccessFindingInformation(access checkAccess, isUserFound bool) (string, float32) {
 	switch access.Type {
 	case "Login":
+		if !access.IsAccess {
+			return "WordPress login page is closed.", 1.0
+		}
 		if isUserFound {
 			return "WordPress login page is open. And username was found.", 9.0
 		}
@@ -269,10 +276,11 @@ type vulnerability struct {
 }
 
 type checkAccess struct {
-	Target string
-	Goal   string
-	Method string
-	Type   string
+	Target   string
+	Goal     string
+	Method   string
+	Type     string
+	IsAccess bool
 }
 
 func getAccessList(wpURL string) []checkAccess {
