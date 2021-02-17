@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/gassara-kys/go-sqs-poller/worker/v4"
 	"github.com/kelseyhightower/envconfig"
-	"go.uber.org/zap"
+	"github.com/vikyd/zero"
 )
 
 type sqsConfig struct {
@@ -23,13 +23,25 @@ func newSQSConsumer() *worker.Worker {
 	var conf sqsConfig
 	err := envconfig.Process("", &conf)
 	if err != nil {
-		logger.Error("Failed to start sqs consumer.", zap.Error(err))
+		panic(err)
 	}
-
-	sqsClient := sqs.New(session.New(), &aws.Config{
-		Region:   &conf.AWSRegion,
-		Endpoint: &conf.Endpoint,
+	var sqsClient *sqs.SQS
+	sess, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
 	})
+	if err != nil {
+		panic(err)
+	}
+	if !zero.IsZeroVal(&conf.Endpoint) {
+		sqsClient = sqs.New(sess, &aws.Config{
+			Region:   &conf.AWSRegion,
+			Endpoint: &conf.Endpoint,
+		})
+	} else {
+		sqsClient = sqs.New(sess, &aws.Config{
+			Region: &conf.AWSRegion,
+		})
+	}
 	return &worker.Worker{
 		Config: &worker.Config{
 			QueueName:          conf.DiagnosisJiraQueueName,

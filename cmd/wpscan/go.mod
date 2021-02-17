@@ -8,7 +8,8 @@ require (
 	github.com/CyberAgent/mimosa-diagnosis/pkg/common v0.0.0-20201203074646-21680d2e8ea0
 	github.com/CyberAgent/mimosa-diagnosis/pkg/message v0.0.0-20201203074646-21680d2e8ea0
 	github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis v0.0.0-20201203074646-21680d2e8ea0
-	github.com/aws/aws-sdk-go v1.36.6
+	github.com/aws/aws-sdk-go v1.37.10
+	github.com/gassara-kys/go-sqs-poller/worker/v4 v4.0.0-20210215110542-0be358599a2f
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.3 // indirect
