@@ -18,8 +18,6 @@ export DB_LOG_MODE="false"
 
 # AWS
 export AWS_REGION="ap-northeast-1"
-export AWS_ACCESS_KEY_ID="testkey"
-export AWS_SECRET_ACCESS_KEY="testsecretkey"
 export SQS_ENDPOINT="http://sqs:9324"
 export DIAGNOSIS_JIRA_QUEUE_NAME="diagnosis-jira"
 export DIAGNOSIS_JIRA_QUEUE_URL="http://sqs:9324/queue/diagnosis-jira"
@@ -34,4 +32,6 @@ export DIAGNOSIS_SVC_ADDR="diagnosis:19001"
 
 # WPScan
 export RESULT_PATH="/tmp"
+export DIAGNOSIS_WPSCAN_QUEUE_NAME="diagnosis-wpscan"
+export DIAGNOSIS_WPSCAN_QUEUE_URL="http://sqs:9324/queue/diagnosis-wpscan"
 export WPSCAN_VULNDB_APIKEY=""

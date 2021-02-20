@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"time"
 
+	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -10,30 +13,43 @@ import (
 	"go.uber.org/zap"
 )
 
-func (s *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
+func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-
-	dataSource, err := s.repository.GetDiagnosisDataSource(0, req.DiagnosisDataSourceId)
+	dataSource, err := d.repository.GetDiagnosisDataSource(0, req.DiagnosisDataSourceId)
 	if err != nil {
 		return nil, err
 	}
-
 	var resp *sqs.SendMessageOutput
 	switch dataSource.Name {
 	case "diagnosis:jira":
-		data, err := s.repository.GetJiraSetting(req.ProjectId, req.SettingId)
+		data, err := d.repository.GetJiraSetting(req.ProjectId, req.SettingId)
 		if err != nil {
 			return nil, err
 		}
 		msg, err := makeJiraMessage(req.ProjectId, req.SettingId, data)
-		resp, err = s.sqs.send(msg)
+		resp, err = d.sqs.send(msg)
 		if err != nil {
 			return nil, err
 		}
+		if _, err = d.repository.UpsertJiraSetting(&model.JiraSetting{
+			JiraSettingID:         data.JiraSettingID,
+			Name:                  data.Name,
+			DiagnosisDataSourceID: data.DiagnosisDataSourceID,
+			ProjectID:             data.ProjectID,
+			IdentityField:         data.IdentityField,
+			IdentityValue:         data.IdentityValue,
+			JiraID:                data.JiraID,
+			JiraKey:               data.JiraKey,
+			Status:                diagnosis.Status_IN_PROGRESS.String(),
+			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
+			ScanAt:                data.ScanAt,
+		}); err != nil {
+			return nil, err
+		}
 	case "diagnosis:wpscan":
-		data, err := s.repository.GetWpscanSetting(req.ProjectId, req.SettingId)
+		data, err := d.repository.GetWpscanSetting(req.ProjectId, req.SettingId)
 		if err != nil {
 			return nil, err
 		}
@@ -41,8 +57,19 @@ func (s *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		if err != nil {
 			return nil, err
 		}
-		resp, err = s.sqs.sendWpscanMessage(msg)
+		resp, err = d.sqs.sendWpscanMessage(msg)
 		if err != nil {
+			return nil, err
+		}
+		if _, err = d.repository.UpsertWpscanSetting(&model.WpscanSetting{
+			WpscanSettingID:       data.WpscanSettingID,
+			DiagnosisDataSourceID: data.DiagnosisDataSourceID,
+			ProjectID:             data.ProjectID,
+			TargetURL:             data.TargetURL,
+			Status:                diagnosis.Status_IN_PROGRESS.String(),
+			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
+			ScanAt:                data.ScanAt,
+		}); err != nil {
 			return nil, err
 		}
 	default:
