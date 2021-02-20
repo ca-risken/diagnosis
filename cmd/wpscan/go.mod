@@ -1,6 +1,6 @@
 module github.com/CyberAgent/mimosa-diagnosis/cmd/wpscan
 
-go 1.15
+go 1.16
 
 require (
 	github.com/CyberAgent/mimosa-core/proto/alert v0.0.0-20201130105221-b9659eb5f70a

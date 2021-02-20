@@ -139,8 +139,8 @@ func getStatus(s string) diagnosis.Status {
 		return diagnosis.Status_OK
 	case diagnosis.Status_CONFIGURED.String():
 		return diagnosis.Status_CONFIGURED
-	case diagnosis.Status_NOT_CONFIGURED.String():
-		return diagnosis.Status_NOT_CONFIGURED
+	case diagnosis.Status_IN_PROGRESS.String():
+		return diagnosis.Status_IN_PROGRESS
 	case diagnosis.Status_ERROR.String():
 		return diagnosis.Status_ERROR
 	default:
