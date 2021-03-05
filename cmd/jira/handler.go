@@ -53,7 +53,7 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 		logger.Warn("Faild to get jira project", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.String("Project", project))
 		if err := s.putJiraSetting(message.JiraSettingID, message.ProjectID, false, errMap); err != nil {
 			logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Error(err))
-			return err
+			return nil
 		}
 		return nil
 	}
@@ -69,7 +69,7 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 	findings, err := s.getJira(project, message)
 	if err != nil {
 		logger.Error("Faild to get findngs to Diagnosis Jira", zap.Uint32("JiraSettingID", message.JiraSettingID), zap.Uint32("ProjectID", message.ProjectID), zap.Error(err))
-		return err
+		return nil
 	}
 
 	// Put finding to core
