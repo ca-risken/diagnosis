@@ -87,7 +87,7 @@ func (j *jiraClient) searchProjectByJiraKeyID(search string) (bool, error) {
 
 	defer res.Body.Close()
 	if res.StatusCode == 400 {
-		return false, fmt.Errorf(`%v issues found. Please check your value`, issues.Total)
+		return false, fmt.Errorf(`%v projects found. Please check your value`, issues.Total)
 	}
 	if res.StatusCode != 200 {
 		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))

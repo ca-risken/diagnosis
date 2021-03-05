@@ -50,7 +50,7 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 	if err != nil {
 		appLogger.Errorf("Failed exec WPScan, error: %v", err)
 		_ = s.putWpscanSetting(message.WpscanSettingID, message.ProjectID, false, "Failed exec WPScan Ask the system administrator. ")
-		return err
+		return nil
 	}
 	findings, err := makeFindings(wpscanResult, message)
 	if err != nil {
