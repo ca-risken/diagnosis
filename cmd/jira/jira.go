@@ -177,7 +177,6 @@ func (j *jiraClient) listIssues(project string) (*jiraIssues, error) {
 
 	client := new(http.Client)
 	res, err := client.Do(req)
-
 	if err != nil {
 		logger.Error("Failed to list Issues", zap.Error(err))
 		return nil, err

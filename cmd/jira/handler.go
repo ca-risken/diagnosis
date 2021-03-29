@@ -109,10 +109,12 @@ func (s *sqsHandler) getJira(project string, message *message.JiraQueueMessage) 
 			logger.Error("Failed to json encoding error", zap.Error(err))
 			return nil, err
 		}
-		if !isOpen(issue.Fields.Status.Name) {
-			continue
+		var score float32
+		if isOpen(issue.Fields.Status.Name) {
+			score = getScore(issue.Fields.Priority.Name)
+		} else {
+			score = 1.0
 		}
-		score := getScore(issue.Fields.Priority.Name)
 		putData = append(putData, &finding.FindingForUpsert{
 			Description:      issue.Fields.Summary,
 			DataSource:       message.DataSource,
