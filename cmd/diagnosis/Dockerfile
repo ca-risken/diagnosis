@@ -36,6 +36,8 @@ ENV PORT=19001 \
     SQS_ENDPOINT= \
     DIAGNOSIS_JIRA_QUEUE_URL= \
     DIAGNOSIS_JIRA_QUEUE_NAME= \
+    DIAGNOSIS_WPSCAN_QUEUE_URL= \
+    DIAGNOSIS_WPSCAN_QUEUE_NAME= \
     TZ=Asia/Tokyo
 WORKDIR /usr/local/diagnosis
 ENTRYPOINT ["/usr/local/bin/env-injector"]
