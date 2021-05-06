@@ -30,6 +30,7 @@ ENV PORT=19003 \
     ALERT_SVC_ADDR= \
     DIAGNOSIS_SVC_ADDR= \
     RESULT_PATH=/results \
+    WPSCAN_VULNDB_APIKEY= \
     TZ=Asia/Tokyo
 
 WORKDIR /usr/local/wpscan
