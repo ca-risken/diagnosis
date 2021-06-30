@@ -7,6 +7,8 @@ const (
 	TagJira = "jira"
 	// TagWordPress wordpress tag
 	TagWordPress = "wordpress"
+	// TagPortscan portscan tag
+	TagPortscan = "portscan"
 
 	// Diagnosis Resource Type
 

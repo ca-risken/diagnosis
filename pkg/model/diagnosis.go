@@ -43,3 +43,26 @@ type WpscanSetting struct {
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 }
+
+// PortscanSetting Entity
+type PortscanSetting struct {
+	PortscanSettingID     uint32 `gorm:"primary_key"`
+	DiagnosisDataSourceID uint32
+	ProjectID             uint32
+	Name                  string
+	Status                string
+	StatusDetail          string
+	ScanAt                time.Time
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
+}
+
+// PortscanTarget Entity
+type PortscanTarget struct {
+	PortscanTargetID  uint32 `gorm:"primary_key"`
+	PortscanSettingID uint32
+	ProjectID         uint32
+	Target            string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+}

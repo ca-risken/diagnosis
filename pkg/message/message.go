@@ -18,3 +18,11 @@ type WpscanQueueMessage struct {
 	ProjectID       uint32 `json:"project_id"`
 	TargetURL       string `json:"target_url"`
 }
+
+// PortscanQueueMessage is the message for SQS queue for Portscan
+type PortscanQueueMessage struct {
+	DataSource        string `json:"data_source"`
+	PortscanSettingID uint32 `json:"portscan_setting_id"`
+	ProjectID         uint32 `json:"project_id"`
+	Name              string `json:"name"`
+}
