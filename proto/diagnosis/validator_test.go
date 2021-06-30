@@ -413,6 +413,282 @@ func TestValidate_DeleteWpscanSettingRequest(t *testing.T) {
 	}
 }
 
+//PortscanSetting DataSource
+
+func TestValidate_ListPortscanSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *ListPortscanSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &ListPortscanSettingRequest{ProjectId: 1},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &ListPortscanSettingRequest{},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_GetPortscanSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *GetPortscanSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &GetPortscanSettingRequest{ProjectId: 1, PortscanSettingId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &GetPortscanSettingRequest{PortscanSettingId: 2},
+			wantErr: true,
+		},
+		{
+			name:    "NG required(portscan_setting_id)",
+			input:   &GetPortscanSettingRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_PutPortscanSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *PutPortscanSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &PutPortscanSettingRequest{ProjectId: 1001, PortscanSetting: &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_target"}},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(PortscanSetting)",
+			input:   &PutPortscanSettingRequest{ProjectId: 1001},
+			wantErr: true,
+		},
+		{
+			name:    "NG Not Equal(project_id != portscan_setting.project_id)",
+			input:   &PutPortscanSettingRequest{ProjectId: 1001, PortscanSetting: &PortscanSettingForUpsert{ProjectId: 1002, DiagnosisDataSourceId: 1, Name: "hoge_target"}},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(ProjectId)",
+			input:   &PutPortscanSettingRequest{PortscanSetting: &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_target"}},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_DeletePortscanSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *DeletePortscanSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &DeletePortscanSettingRequest{ProjectId: 1, PortscanSettingId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &DeletePortscanSettingRequest{PortscanSettingId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(diagnosis_data_source_id)",
+			input:   &DeletePortscanSettingRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+//PortscanTarget DataSource
+
+func TestValidate_ListPortscanTargetRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *ListPortscanTargetRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &ListPortscanTargetRequest{ProjectId: 1},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &ListPortscanTargetRequest{},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_GetPortscanTargetRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *GetPortscanTargetRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &GetPortscanTargetRequest{ProjectId: 1, PortscanTargetId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &GetPortscanTargetRequest{PortscanTargetId: 2},
+			wantErr: true,
+		},
+		{
+			name:    "NG required(portscan_target_id)",
+			input:   &GetPortscanTargetRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_PutPortscanTargetRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *PutPortscanTargetRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &PutPortscanTargetRequest{ProjectId: 1001, PortscanTarget: &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1, PortscanTargetId: 1, Target: "hoge_target"}},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(PortscanTarget)",
+			input:   &PutPortscanTargetRequest{ProjectId: 1001},
+			wantErr: true,
+		},
+		{
+			name:    "NG Not Equal(project_id != portscan_setting.project_id)",
+			input:   &PutPortscanTargetRequest{ProjectId: 1001, PortscanTarget: &PortscanTargetForUpsert{ProjectId: 1002, PortscanSettingId: 1, PortscanTargetId: 1, Target: "hoge_target"}},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(ProjectId)",
+			input:   &PutPortscanTargetRequest{PortscanTarget: &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1, PortscanTargetId: 1, Target: "hoge_target"}},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_DeletePortscanTargetRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *DeletePortscanTargetRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &DeletePortscanTargetRequest{ProjectId: 1, PortscanTargetId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &DeletePortscanTargetRequest{PortscanTargetId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(diagnosis_data_source_id)",
+			input:   &DeletePortscanTargetRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
 func TestValidate_InvokeScanRequest(t *testing.T) {
 	cases := []struct {
 		name    string
@@ -629,6 +905,104 @@ func TestValidate_WpscanSettingForUpsert(t *testing.T) {
 		{
 			name:    "NG Too large scan_at",
 			input:   &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "hoge_url", ScanAt: 253402268400},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_PortscanSettingForUpsert(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *PortscanSettingForUpsert
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_url"},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &PortscanSettingForUpsert{DiagnosisDataSourceId: 1, Name: "hoge_url"},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(diagnosis_data_source_id)",
+			input:   &PortscanSettingForUpsert{ProjectId: 1001, Name: "hoge_url"},
+			wantErr: true,
+		},
+		{
+			name:    "Too long(name)",
+			input:   &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(name)",
+			input:   &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too small scan_at",
+			input:   &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_url", ScanAt: -1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too large scan_at",
+			input:   &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_url", ScanAt: 253402268400},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_PortscanTargetForUpsert(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *PortscanTargetForUpsert
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1, Target: "hoge_url"},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &PortscanTargetForUpsert{PortscanSettingId: 1, Target: "hoge_url"},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(portscan_setting_id)",
+			input:   &PortscanTargetForUpsert{ProjectId: 1001, Target: "hoge_url"},
+			wantErr: true,
+		},
+		{
+			name:    "Too long(target)",
+			input:   &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1, Target: "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(target)",
+			input:   &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1},
 			wantErr: true,
 		},
 	}

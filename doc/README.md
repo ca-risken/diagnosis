@@ -8,6 +8,10 @@
     - [DiagnosisDataSourceForUpsert](#diagnosis.DiagnosisDataSourceForUpsert)
     - [JiraSetting](#diagnosis.JiraSetting)
     - [JiraSettingForUpsert](#diagnosis.JiraSettingForUpsert)
+    - [PortscanSetting](#diagnosis.PortscanSetting)
+    - [PortscanSettingForUpsert](#diagnosis.PortscanSettingForUpsert)
+    - [PortscanTarget](#diagnosis.PortscanTarget)
+    - [PortscanTargetForUpsert](#diagnosis.PortscanTargetForUpsert)
     - [WpscanSetting](#diagnosis.WpscanSetting)
     - [WpscanSettingForUpsert](#diagnosis.WpscanSettingForUpsert)
   
@@ -16,11 +20,17 @@
 - [diagnosis/services.proto](#diagnosis/services.proto)
     - [DeleteDiagnosisDataSourceRequest](#diagnosis.DeleteDiagnosisDataSourceRequest)
     - [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest)
+    - [DeletePortscanSettingRequest](#diagnosis.DeletePortscanSettingRequest)
+    - [DeletePortscanTargetRequest](#diagnosis.DeletePortscanTargetRequest)
     - [DeleteWpscanSettingRequest](#diagnosis.DeleteWpscanSettingRequest)
     - [GetDiagnosisDataSourceRequest](#diagnosis.GetDiagnosisDataSourceRequest)
     - [GetDiagnosisDataSourceResponse](#diagnosis.GetDiagnosisDataSourceResponse)
     - [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest)
     - [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse)
+    - [GetPortscanSettingRequest](#diagnosis.GetPortscanSettingRequest)
+    - [GetPortscanSettingResponse](#diagnosis.GetPortscanSettingResponse)
+    - [GetPortscanTargetRequest](#diagnosis.GetPortscanTargetRequest)
+    - [GetPortscanTargetResponse](#diagnosis.GetPortscanTargetResponse)
     - [GetWpscanSettingRequest](#diagnosis.GetWpscanSettingRequest)
     - [GetWpscanSettingResponse](#diagnosis.GetWpscanSettingResponse)
     - [InvokeScanRequest](#diagnosis.InvokeScanRequest)
@@ -29,12 +39,20 @@
     - [ListDiagnosisDataSourceResponse](#diagnosis.ListDiagnosisDataSourceResponse)
     - [ListJiraSettingRequest](#diagnosis.ListJiraSettingRequest)
     - [ListJiraSettingResponse](#diagnosis.ListJiraSettingResponse)
+    - [ListPortscanSettingRequest](#diagnosis.ListPortscanSettingRequest)
+    - [ListPortscanSettingResponse](#diagnosis.ListPortscanSettingResponse)
+    - [ListPortscanTargetRequest](#diagnosis.ListPortscanTargetRequest)
+    - [ListPortscanTargetResponse](#diagnosis.ListPortscanTargetResponse)
     - [ListWpscanSettingRequest](#diagnosis.ListWpscanSettingRequest)
     - [ListWpscanSettingResponse](#diagnosis.ListWpscanSettingResponse)
     - [PutDiagnosisDataSourceRequest](#diagnosis.PutDiagnosisDataSourceRequest)
     - [PutDiagnosisDataSourceResponse](#diagnosis.PutDiagnosisDataSourceResponse)
     - [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest)
     - [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse)
+    - [PutPortscanSettingRequest](#diagnosis.PutPortscanSettingRequest)
+    - [PutPortscanSettingResponse](#diagnosis.PutPortscanSettingResponse)
+    - [PutPortscanTargetRequest](#diagnosis.PutPortscanTargetRequest)
+    - [PutPortscanTargetResponse](#diagnosis.PutPortscanTargetResponse)
     - [PutWpscanSettingRequest](#diagnosis.PutWpscanSettingRequest)
     - [PutWpscanSettingResponse](#diagnosis.PutWpscanSettingResponse)
   
@@ -135,6 +153,88 @@
 | status | [Status](#diagnosis.Status) |  |  |
 | status_detail | [string](#string) |  |  |
 | scan_at | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PortscanSetting"></a>
+
+### PortscanSetting
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_setting_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+| name | [string](#string) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
+| status_detail | [string](#string) |  |  |
+| scan_at | [int64](#int64) |  |  |
+| created_at | [int64](#int64) |  |  |
+| updated_at | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PortscanSettingForUpsert"></a>
+
+### PortscanSettingForUpsert
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_setting_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+| name | [string](#string) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
+| status_detail | [string](#string) |  |  |
+| scan_at | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PortscanTarget"></a>
+
+### PortscanTarget
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_target_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_setting_id | [uint32](#uint32) |  |  |
+| target | [string](#string) |  |  |
+| created_at | [int64](#int64) |  |  |
+| updated_at | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PortscanTargetForUpsert"></a>
+
+### PortscanTargetForUpsert
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_target_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_setting_id | [uint32](#uint32) |  |  |
+| target | [string](#string) |  |  |
 
 
 
@@ -248,6 +348,38 @@ Status
 
 
 
+<a name="diagnosis.DeletePortscanSettingRequest"></a>
+
+### DeletePortscanSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.DeletePortscanTargetRequest"></a>
+
+### DeletePortscanTargetRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_target_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
 <a name="diagnosis.DeleteWpscanSettingRequest"></a>
 
 ### DeleteWpscanSettingRequest
@@ -320,6 +452,68 @@ Status
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | jira_setting | [JiraSetting](#diagnosis.JiraSetting) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetPortscanSettingRequest"></a>
+
+### GetPortscanSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetPortscanSettingResponse"></a>
+
+### GetPortscanSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_setting | [PortscanSetting](#diagnosis.PortscanSetting) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetPortscanTargetRequest"></a>
+
+### GetPortscanTargetRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_target_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetPortscanTargetResponse"></a>
+
+### GetPortscanTargetResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_target | [PortscanTarget](#diagnosis.PortscanTarget) |  |  |
 
 
 
@@ -451,6 +645,68 @@ JiraSettingService
 
 
 
+<a name="diagnosis.ListPortscanSettingRequest"></a>
+
+### ListPortscanSettingRequest
+PortscanSettingService
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ListPortscanSettingResponse"></a>
+
+### ListPortscanSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_setting | [PortscanSetting](#diagnosis.PortscanSetting) | repeated |  |
+
+
+
+
+
+
+<a name="diagnosis.ListPortscanTargetRequest"></a>
+
+### ListPortscanTargetRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ListPortscanTargetResponse"></a>
+
+### ListPortscanTargetResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_target | [PortscanTarget](#diagnosis.PortscanTarget) | repeated |  |
+
+
+
+
+
+
 <a name="diagnosis.ListWpscanSettingRequest"></a>
 
 ### ListWpscanSettingRequest
@@ -545,6 +801,68 @@ WpscanSettingService
 
 
 
+<a name="diagnosis.PutPortscanSettingRequest"></a>
+
+### PutPortscanSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_setting | [PortscanSettingForUpsert](#diagnosis.PortscanSettingForUpsert) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutPortscanSettingResponse"></a>
+
+### PutPortscanSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_setting | [PortscanSetting](#diagnosis.PortscanSetting) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutPortscanTargetRequest"></a>
+
+### PutPortscanTargetRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| portscan_target | [PortscanTargetForUpsert](#diagnosis.PortscanTargetForUpsert) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutPortscanTargetResponse"></a>
+
+### PutPortscanTargetResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| portscan_target | [PortscanTarget](#diagnosis.PortscanTarget) |  |  |
+
+
+
+
+
+
 <a name="diagnosis.PutWpscanSettingRequest"></a>
 
 ### PutWpscanSettingRequest
@@ -601,6 +919,14 @@ WpscanSettingService
 | GetWpscanSetting | [GetWpscanSettingRequest](#diagnosis.GetWpscanSettingRequest) | [GetWpscanSettingResponse](#diagnosis.GetWpscanSettingResponse) |  |
 | PutWpscanSetting | [PutWpscanSettingRequest](#diagnosis.PutWpscanSettingRequest) | [PutWpscanSettingResponse](#diagnosis.PutWpscanSettingResponse) |  |
 | DeleteWpscanSetting | [DeleteWpscanSettingRequest](#diagnosis.DeleteWpscanSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
+| ListPortscanSetting | [ListPortscanSettingRequest](#diagnosis.ListPortscanSettingRequest) | [ListPortscanSettingResponse](#diagnosis.ListPortscanSettingResponse) | PortscanSetting |
+| GetPortscanSetting | [GetPortscanSettingRequest](#diagnosis.GetPortscanSettingRequest) | [GetPortscanSettingResponse](#diagnosis.GetPortscanSettingResponse) |  |
+| PutPortscanSetting | [PutPortscanSettingRequest](#diagnosis.PutPortscanSettingRequest) | [PutPortscanSettingResponse](#diagnosis.PutPortscanSettingResponse) |  |
+| DeletePortscanSetting | [DeletePortscanSettingRequest](#diagnosis.DeletePortscanSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
+| ListPortscanTarget | [ListPortscanTargetRequest](#diagnosis.ListPortscanTargetRequest) | [ListPortscanTargetResponse](#diagnosis.ListPortscanTargetResponse) | PortscanTarget |
+| GetPortscanTarget | [GetPortscanTargetRequest](#diagnosis.GetPortscanTargetRequest) | [GetPortscanTargetResponse](#diagnosis.GetPortscanTargetResponse) |  |
+| PutPortscanTarget | [PutPortscanTargetRequest](#diagnosis.PutPortscanTargetRequest) | [PutPortscanTargetResponse](#diagnosis.PutPortscanTargetResponse) |  |
+| DeletePortscanTarget | [DeletePortscanTargetRequest](#diagnosis.DeletePortscanTargetRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 | InvokeScan | [InvokeScanRequest](#diagnosis.InvokeScanRequest) | [InvokeScanResponse](#diagnosis.InvokeScanResponse) | KICK |
 | InvokeScanAll | [.google.protobuf.Empty](#google.protobuf.Empty) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 

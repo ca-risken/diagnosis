@@ -34,6 +34,27 @@ service DiagnosisService {
       returns (PutWpscanSettingResponse) {}
   rpc DeleteWpscanSetting(DeleteWpscanSettingRequest)
       returns (google.protobuf.Empty) {}
+
+  // PortscanSetting
+  rpc ListPortscanSetting(ListPortscanSettingRequest)
+      returns (ListPortscanSettingResponse) {}
+  rpc GetPortscanSetting(GetPortscanSettingRequest)
+      returns (GetPortscanSettingResponse) {}
+  rpc PutPortscanSetting(PutPortscanSettingRequest)
+      returns (PutPortscanSettingResponse) {}
+  rpc DeletePortscanSetting(DeletePortscanSettingRequest)
+      returns (google.protobuf.Empty) {}
+
+  // PortscanTarget
+  rpc ListPortscanTarget(ListPortscanTargetRequest)
+      returns (ListPortscanTargetResponse) {}
+  rpc GetPortscanTarget(GetPortscanTargetRequest)
+      returns (GetPortscanTargetResponse) {}
+  rpc PutPortscanTarget(PutPortscanTargetRequest)
+      returns (PutPortscanTargetResponse) {}
+  rpc DeletePortscanTarget(DeletePortscanTargetRequest)
+      returns (google.protobuf.Empty) {}
+
   // KICK
   rpc InvokeScan(InvokeScanRequest) returns (InvokeScanResponse) {}
   rpc InvokeScanAll(google.protobuf.Empty) returns (google.protobuf.Empty) {}
@@ -125,6 +146,63 @@ message PutWpscanSettingResponse { WpscanSetting wpscan_setting = 1; }
 message DeleteWpscanSettingRequest {
   uint32 project_id = 1;
   uint32 wpscan_setting_id = 2;
+}
+
+// PortscanSettingService
+message ListPortscanSettingRequest {
+  uint32 project_id = 1;
+  uint32 diagnosis_data_source_id = 2;
+}
+
+message ListPortscanSettingResponse {
+  repeated PortscanSetting portscan_setting = 1;
+}
+
+message GetPortscanSettingRequest {
+  uint32 project_id = 1;
+  uint32 portscan_setting_id = 2;
+}
+
+message GetPortscanSettingResponse { PortscanSetting portscan_setting = 1; }
+
+message PutPortscanSettingRequest {
+  uint32 project_id = 1;
+  PortscanSettingForUpsert portscan_setting = 2;
+}
+
+message PutPortscanSettingResponse { PortscanSetting portscan_setting = 1; }
+
+message DeletePortscanSettingRequest {
+  uint32 project_id = 1;
+  uint32 portscan_setting_id = 2;
+}
+
+message ListPortscanTargetRequest {
+  uint32 project_id = 1;
+  uint32 portscan_setting_id = 2;
+}
+
+message ListPortscanTargetResponse {
+  repeated PortscanTarget portscan_target = 1;
+}
+
+message GetPortscanTargetRequest {
+  uint32 project_id = 1;
+  uint32 portscan_target_id = 2;
+}
+
+message GetPortscanTargetResponse { PortscanTarget portscan_target = 1; }
+
+message PutPortscanTargetRequest {
+  uint32 project_id = 1;
+  PortscanTargetForUpsert portscan_target = 2;
+}
+
+message PutPortscanTargetResponse { PortscanTarget portscan_target = 1; }
+
+message DeletePortscanTargetRequest {
+  uint32 project_id = 1;
+  uint32 portscan_target_id = 2;
 }
 
 // KICK Diagnosis
