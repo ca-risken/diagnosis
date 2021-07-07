@@ -46,22 +46,15 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 	}
 	statusDetail := ""
 
-	targets, err := s.getTargets(ctx, message.PortscanSettingID, message.ProjectID)
-	if err != nil {
-		appLogger.Errorf("Failed to list portscan target: Name=%+v, err=%+v", message.Name, err)
-		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
-		return s.putPortscanSetting(message.PortscanSettingID, message.ProjectID, false, statusDetail)
-	}
-
-	portscan.target = targets
+	portscan.target = makeTargets(message.Target)
 
 	findings, err := portscan.getResult(message)
 	if err != nil {
-		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: Name=%+v, err=%+v", message.Name, err)
+		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, err=%+v", message.PortscanSettingID, err)
 	}
 	// Put finding to core
 	if err := s.putFindings(ctx, findings); err != nil {
-		appLogger.Errorf("Failed to put findings: Name=%+v, err=%+v", message.Name, err)
+		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, err=%+v", message.PortscanSettingID, err)
 		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
 		return s.putPortscanSetting(message.PortscanSettingID, message.ProjectID, false, statusDetail)
 	}
@@ -70,29 +63,13 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 		return err
 	}
 	if err := s.analyzeAlert(ctx, message.ProjectID); err != nil {
-		appLogger.Errorf("Failed to analyze alert: Name=%+v, err=%+v", message.Name, err)
+		appLogger.Errorf("Failed to analyze alert: PortscanSettingID=%+v, err=%+v", message.PortscanSettingID, err)
 		return err
 	}
 
-	appLogger.Infof("Scan finished. ProjectID: %v, Name: %v", message.ProjectID, message.Name)
+	appLogger.Infof("Scan finished. ProjectID: %v, PortscanSettingID: %v, Target: %v", message.ProjectID, message.PortscanSettingID, message.Target)
 
 	return nil
-}
-
-func (s *sqsHandler) getTargets(ctx context.Context, portscanSettingID, projectID uint32) ([]target, error) {
-	res, err := s.diagnosisClient.ListPortscanTarget(ctx, &diagnosisClient.ListPortscanTargetRequest{
-		PortscanSettingId: portscanSettingID,
-		ProjectId:         projectID,
-	})
-	if err != nil {
-		return []target{}, err
-	}
-
-	var target []target
-	for _, t := range res.PortscanTarget {
-		target = append(target, makeTargets(t.Target)...)
-	}
-	return target, nil
 }
 
 func (s *sqsHandler) putPortscanSetting(portscanSettingID, projectID uint32, isSuccess bool, errDetail string) error {

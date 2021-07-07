@@ -75,15 +75,25 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	case "diagnosis:portscan":
 		data, err := d.repository.GetPortscanSetting(req.ProjectId, req.SettingId)
 		if err != nil {
+			logger.Error("Error occured when getting PortscanSetting", zap.Error(err))
 			return nil, err
 		}
-		msg, err := makePortscanMessage(data.ProjectID, data.PortscanSettingID, data.Name)
+		portscanTargets, err := d.repository.ListPortscanTarget(req.ProjectId, req.SettingId)
 		if err != nil {
+			logger.Error("Error occured when getting PortscanTargets", zap.Error(err))
 			return nil, err
 		}
-		resp, err = d.sqs.sendPortscanMessage(msg)
-		if err != nil {
-			return nil, err
+		for _, target := range *portscanTargets {
+			msg, err := makePortscanMessage(data.ProjectID, data.PortscanSettingID, target.Target)
+			if err != nil {
+				logger.Error("Error occured when making Portscan message", zap.Error(err))
+				continue
+			}
+			resp, err = d.sqs.sendPortscanMessage(msg)
+			if err != nil {
+				logger.Error("Error occured when sending Portscan message", zap.Error(err))
+				continue
+			}
 		}
 		if _, err = d.repository.UpsertPortscanSetting(&model.PortscanSetting{
 			PortscanSettingID:     data.PortscanSettingID,

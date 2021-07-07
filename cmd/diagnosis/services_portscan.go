@@ -203,12 +203,12 @@ func convertPortscanTarget(data *model.PortscanTarget) *diagnosis.PortscanTarget
 	}
 }
 
-func makePortscanMessage(projectID, settingID uint32, name string) (*message.PortscanQueueMessage, error) {
+func makePortscanMessage(projectID, settingID uint32, target string) (*message.PortscanQueueMessage, error) {
 	msg := &message.PortscanQueueMessage{
 		DataSource:        "diagnosis:portscan",
 		PortscanSettingID: settingID,
 		ProjectID:         projectID,
-		Name:              name,
+		Target:            target,
 	}
 	return msg, nil
 }

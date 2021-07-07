@@ -64,8 +64,8 @@ func makeTargets(targetIPFQDN string) []target {
 	return []target{
 		target{
 			Target:   targetIPFQDN,
-			FromPort: 1,
-			ToPort:   65535,
+			FromPort: 0,
+			ToPort:   0,
 			Protocol: "udp",
 		},
 		target{
