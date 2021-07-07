@@ -22,6 +22,17 @@ type diagnosisRepoInterface interface {
 	GetWpscanSetting(uint32, uint32) (*model.WpscanSetting, error)
 	UpsertWpscanSetting(*model.WpscanSetting) (*model.WpscanSetting, error)
 	DeleteWpscanSetting(uint32, uint32) error
+	ListPortscanSetting(uint32, uint32) (*[]model.PortscanSetting, error)
+	GetPortscanSetting(uint32, uint32) (*model.PortscanSetting, error)
+	UpsertPortscanSetting(*model.PortscanSetting) (*model.PortscanSetting, error)
+	DeletePortscanSetting(uint32, uint32) error
+	ListPortscanTarget(uint32, uint32) (*[]model.PortscanTarget, error)
+	GetPortscanTarget(uint32, uint32) (*model.PortscanTarget, error)
+	GetPortscanTargetByTargetPortscanSettingID(uint32, uint32, string) (*model.PortscanTarget, error)
+	UpsertPortscanTarget(*model.PortscanTarget) (*model.PortscanTarget, error)
+	DeletePortscanTarget(uint32, uint32) error
+	DeletePortscanTargetByPortscanSettingID(uint32, uint32) error
+
 	//for InvokeScan
 	ListAllJiraSetting() (*[]model.JiraSetting, error)
 	ListAllWpscanSetting() (*[]model.WpscanSetting, error)
@@ -55,9 +66,8 @@ type dbConfig struct {
 func initDB(isMaster bool) *gorm.DB {
 	conf := &dbConfig{}
 	if err := envconfig.Process("DB", conf); err != nil {
-		//		logger.Error("Failed to load DB config.", zap.Error(err))
+		panic(fmt.Sprintf("Failed to load DB config., err: %v", err.Error()))
 	}
-
 	var user, pass, host string
 	if isMaster {
 		user = conf.MasterUser

@@ -24,5 +24,5 @@ type PortscanQueueMessage struct {
 	DataSource        string `json:"data_source"`
 	PortscanSettingID uint32 `json:"portscan_setting_id"`
 	ProjectID         uint32 `json:"project_id"`
-	Name              string `json:"name"`
+	Target            string `json:"target"`
 }
