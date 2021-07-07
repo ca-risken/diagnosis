@@ -72,6 +72,30 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		}); err != nil {
 			return nil, err
 		}
+	case "diagnosis:portscan":
+		data, err := d.repository.GetPortscanSetting(req.ProjectId, req.SettingId)
+		if err != nil {
+			return nil, err
+		}
+		msg, err := makePortscanMessage(data.ProjectID, data.PortscanSettingID, data.Name)
+		if err != nil {
+			return nil, err
+		}
+		resp, err = d.sqs.sendPortscanMessage(msg)
+		if err != nil {
+			return nil, err
+		}
+		if _, err = d.repository.UpsertPortscanSetting(&model.PortscanSetting{
+			PortscanSettingID:     data.PortscanSettingID,
+			DiagnosisDataSourceID: data.DiagnosisDataSourceID,
+			ProjectID:             data.ProjectID,
+			Name:                  data.Name,
+			Status:                diagnosis.Status_IN_PROGRESS.String(),
+			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
+			ScanAt:                data.ScanAt,
+		}); err != nil {
+			return nil, err
+		}
 	default:
 		return nil, nil
 	}

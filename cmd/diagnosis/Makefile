@@ -95,6 +95,62 @@ delete-wpscan_setting:
 		-d '{"project_id":1001, "wpscan_setting_id":1001}' \
 		localhost:19001 diagnosis.DiagnosisService.DeleteWpscanSetting
 
+.PHONY: list-portscan_setting
+list-portscan_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.ListPortscanSetting
+
+.PHONY: get-portscan_setting
+get-portscan_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "portscan_setting_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.GetPortscanSetting
+
+.PHONY: put-portscan_setting
+put-portscan_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "portscan_setting": {"diagnosis_data_source_id":1003, "project_id":1001, "name":"test_portscan", "status":"CONFIGURED"}}' \
+		localhost:19001 diagnosis.DiagnosisService.PutPortscanSetting
+
+.PHONY: delete-portscan_setting
+delete-portscan_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "portscan_setting_id":1002}' \
+		localhost:19001 diagnosis.DiagnosisService.DeletePortscanSetting
+
+.PHONY: list-portscan_target
+list-portscan_target:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.ListPortscanTarget
+
+.PHONY: get-portscan_target
+get-portscan_target:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "portscan_target_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.GetPortscanTarget
+
+.PHONY: put-portscan_target
+put-portscan_target:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "portscan_target": {"portscan_setting_id":1001, "project_id":1001, "target":"127.0.0.1"}}' \
+		localhost:19001 diagnosis.DiagnosisService.PutPortscanTarget
+
+.PHONY: delete-portscan_target
+delete-portscan_target:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "portscan_target_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.DeletePortscanTarget
+
 .PHONY: invoke-scan-jira
 invoke-scan-jira:
 	grpcurl \

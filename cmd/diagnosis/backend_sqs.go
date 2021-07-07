@@ -16,13 +16,15 @@ type sqsConfig struct {
 	AWSRegion string `envconfig:"aws_region" default:"ap-northeast-1"`
 	Endpoint  string `envconfig:"sqs_endpoint" default:"http://localhost:9324"`
 
-	DiagnosisJiraQueueURL   string `split_words:"true" required:"true"`
-	DiagnosisWpscanQueueURL string `split_words:"true" required:"true"`
+	DiagnosisJiraQueueURL     string `split_words:"true" required:"true"`
+	DiagnosisWpscanQueueURL   string `split_words:"true" required:"true"`
+	DiagnosisPortscanQueueURL string `split_words:"true" required:"true"`
 }
 
 type sqsAPI interface {
 	send(msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error)
 	sendWpscanMessage(msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error)
+	sendPortscanMessage(msg *message.PortscanQueueMessage) (*sqs.SendMessageOutput, error)
 }
 
 type sqsClient struct {
@@ -51,8 +53,9 @@ func newSQSClient() *sqsClient {
 		svc: session,
 		queueURLMap: map[string]string{
 			// queueURLMap:
-			"diagnosis:jira":   conf.DiagnosisJiraQueueURL,
-			"diagnosis:wpscan": conf.DiagnosisWpscanQueueURL,
+			"diagnosis:jira":     conf.DiagnosisJiraQueueURL,
+			"diagnosis:wpscan":   conf.DiagnosisWpscanQueueURL,
+			"diagnosis:portscan": conf.DiagnosisPortscanQueueURL,
 		},
 	}
 }
@@ -81,6 +84,29 @@ func (s *sqsClient) send(msg *message.JiraQueueMessage) (*sqs.SendMessageOutput,
 }
 
 func (s *sqsClient) sendWpscanMessage(msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error) {
+	url := s.queueURLMap[msg.DataSource]
+	if url == "" {
+		return nil, fmt.Errorf("Unknown data_source, value=%s", msg.DataSource)
+	}
+	buf, err := json.Marshal(msg)
+	if err != nil {
+		logger.Error("Failed to parse message", zap.Error(err))
+		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
+	}
+	logger.Info("Send message", zap.String("MessageBody", string(buf)), zap.String("QueueUrl", url))
+	resp, err := s.svc.SendMessage(&sqs.SendMessageInput{
+		MessageBody:  aws.String(string(buf)),
+		QueueUrl:     &url,
+		DelaySeconds: aws.Int64(1),
+	})
+	if err != nil {
+		logger.Error("Failed to send message", zap.Error(err))
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (s *sqsClient) sendPortscanMessage(msg *message.PortscanQueueMessage) (*sqs.SendMessageOutput, error) {
 	url := s.queueURLMap[msg.DataSource]
 	if url == "" {
 		return nil, fmt.Errorf("Unknown data_source, value=%s", msg.DataSource)
