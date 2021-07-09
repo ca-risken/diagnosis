@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/CyberAgent/mimosa-common/pkg/logging"
 	"github.com/CyberAgent/mimosa-core/proto/alert"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
@@ -37,6 +38,13 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 		appLogger.Errorf("Invalid message: SQS_msg=%+v, err=%+v", msgBody, err)
 		return err
 	}
+	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
+	if err != nil {
+		appLogger.Warnf("Failed to generate requestID: err=%+v", err)
+		requestID = fmt.Sprint(msg.ProjectID)
+	}
+	appLogger.Infof("start Scan, RequestID=%s", requestID)
+
 	ctx := context.Background()
 	// Get portscan
 	portscan, err := newPortscanClient()
@@ -62,7 +70,7 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	if err := s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, true, ""); err != nil {
 		return err
 	}
-	appLogger.Infof("Scan finished. ProjectID: %v, PortscanSettingID: %v, Target: %v", msg.ProjectID, msg.PortscanSettingID, msg.Target)
+	appLogger.Infof("Scan finished. ProjectID: %v, PortscanSettingID: %v, Target: %v, RequestID: %s", msg.ProjectID, msg.PortscanSettingID, msg.Target, requestID)
 
 	if msg.ScanOnly {
 		return nil

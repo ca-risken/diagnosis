@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
+	"github.com/CyberAgent/mimosa-common/pkg/logging"
 	"github.com/CyberAgent/mimosa-core/proto/alert"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/common"
@@ -46,6 +48,12 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 		logger.Error("Invalid message", zap.String("sqs_message", "message"), zap.Error(err))
 		return err
 	}
+	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
+	if err != nil {
+		logger.Warn(fmt.Sprintf("Failed to generate requestID: err=%+v", requestID), zap.Uint32("project", msg.ProjectID))
+		requestID = fmt.Sprint(msg.ProjectID)
+	}
+	logger.Info("start Scan", zap.String("request_id", requestID), zap.Uint32("project", msg.ProjectID))
 
 	// Get jira Project
 	project, errMap := s.jira.getJiraProject(msg.JiraKey, msg.JiraID, msg.IdentityField, msg.IdentityValue)
@@ -84,6 +92,7 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 		logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Error(err))
 		return err
 	}
+	logger.Info("end Scan", zap.String("request_id", requestID), zap.Uint32("project", msg.ProjectID))
 
 	if msg.ScanOnly {
 		return nil

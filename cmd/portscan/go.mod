@@ -3,6 +3,7 @@ module github.com/CyberAgent/mimosa-aws/src/portscan
 go 1.15
 
 require (
+	github.com/CyberAgent/mimosa-common/pkg/logging v0.0.0-20210707094034-b513f64f04b9
 	github.com/CyberAgent/mimosa-common/pkg/portscan v0.0.0-20210707094034-b513f64f04b9
 	github.com/CyberAgent/mimosa-core/proto/alert v0.0.0-20210707124600-11b1f052c30a
 	github.com/CyberAgent/mimosa-core/proto/finding v0.0.0-20210707124600-11b1f052c30a
