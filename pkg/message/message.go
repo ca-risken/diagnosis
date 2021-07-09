@@ -25,6 +25,7 @@ type WpscanQueueMessage struct {
 type PortscanQueueMessage struct {
 	DataSource        string `json:"data_source"`
 	PortscanSettingID uint32 `json:"portscan_setting_id"`
+	PortscanTargetID  uint32 `json:"portscan_target_id"`
 	ProjectID         uint32 `json:"project_id"`
 	Target            string `json:"target"`
 	ScanOnly          bool   `json:"scan_only,string"`
