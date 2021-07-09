@@ -215,6 +215,7 @@
 | project_id | [uint32](#uint32) |  |  |
 | portscan_setting_id | [uint32](#uint32) |  |  |
 | target | [string](#string) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
 | created_at | [int64](#int64) |  |  |
 | updated_at | [int64](#int64) |  |  |
 
@@ -235,6 +236,7 @@
 | project_id | [uint32](#uint32) |  |  |
 | portscan_setting_id | [uint32](#uint32) |  |  |
 | target | [string](#string) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
 
 
 
@@ -562,6 +564,7 @@ KICK Diagnosis
 | project_id | [uint32](#uint32) |  |  |
 | setting_id | [uint32](#uint32) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
+| scan_only | [bool](#bool) |  |  |
 
 
 
@@ -686,6 +689,7 @@ PortscanSettingService
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
 | portscan_setting_id | [uint32](#uint32) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
 
 
 
