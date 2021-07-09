@@ -180,6 +180,7 @@ message DeletePortscanSettingRequest {
 message ListPortscanTargetRequest {
   uint32 project_id = 1;
   uint32 portscan_setting_id = 2;
+  Status status = 3;
 }
 
 message ListPortscanTargetResponse {

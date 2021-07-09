@@ -63,6 +63,7 @@ type PortscanTarget struct {
 	PortscanSettingID uint32
 	ProjectID         uint32
 	Target            string
+	Status            string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 }
