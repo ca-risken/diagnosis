@@ -39,6 +39,8 @@ go-test: proto
 	cd pkg/message      && go test ./...
 	cd cmd/diagnosis    && go test ./...
 	cd cmd/jira         && go test ./...
+	cd cmd/wpscan       && go test ./...
+	cd cmd/portscan     && go test ./...
 
 go-mod-update:
 	cd cmd/diagnosis \
@@ -48,11 +50,21 @@ go-mod-update:
 		&& go get -u \
 			github.com/CyberAgent/mimosa-core/... \
 			github.com/CyberAgent/mimosa-diagnosis/...
+	cd cmd/wpscan \
+		&& go get -u \
+			github.com/CyberAgent/mimosa-core/... \
+			github.com/CyberAgent/mimosa-diagnosis/...
+	cd cmd/portscan \
+		&& go get -u \
+			github.com/CyberAgent/mimosa-core/... \
+			github.com/CyberAgent/mimosa-diagnosis/...
 
 go-mod-tidy: proto
 	cd pkg/message   && go mod tidy
 	cd cmd/diagnosis && go mod tidy
 	cd cmd/jira      && go mod tidy
+	cd cmd/wpscan    && go mod tidy
+	cd cmd/portscan  && go mod tidy
 
 build: go-test
 	. env.sh && docker-compose build

@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
+	"github.com/CyberAgent/mimosa-common/pkg/logging"
 	"github.com/CyberAgent/mimosa-core/proto/alert"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
@@ -34,25 +36,31 @@ func newHandler() *sqsHandler {
 	return h
 }
 
-func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
-	msgBody := aws.StringValue(msg.Body)
+func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
+	msgBody := aws.StringValue(sqsMsg.Body)
 	appLogger.Infof("got message. message: %v", msgBody)
 	// Parse message
-	message, err := parseMessage(msgBody)
+	msg, err := parseMessage(msgBody)
 	if err != nil {
-		appLogger.Errorf("Invalid message. message: %v, error: %v", message, err)
+		appLogger.Errorf("Invalid message. message: %v, error: %v", msgBody, err)
 		return err
 	}
+	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
+	if err != nil {
+		appLogger.Warnf("Failed to generate requestID: err=%+v", err)
+		requestID = fmt.Sprint(msg.ProjectID)
+	}
+	appLogger.Infof("start Scan, RequestID=%s", requestID)
 
 	// Run WPScan
-	wpscanResult, err := s.wpscanConfig.run(message.TargetURL, message.WpscanSettingID)
+	wpscanResult, err := s.wpscanConfig.run(msg.TargetURL, msg.WpscanSettingID)
 	//wpscanResult, err := tmpRun()
 	if err != nil {
 		appLogger.Errorf("Failed exec WPScan, error: %v", err)
-		_ = s.putWpscanSetting(message.WpscanSettingID, message.ProjectID, false, "Failed exec WPScan Ask the system administrator. ")
+		_ = s.putWpscanSetting(msg.WpscanSettingID, msg.ProjectID, false, "Failed exec WPScan Ask the system administrator. ")
 		return nil
 	}
-	findings, err := makeFindings(wpscanResult, message)
+	findings, err := makeFindings(wpscanResult, msg)
 	if err != nil {
 		appLogger.Errorf("Failed making Findings, error: %v", err)
 		return err
@@ -61,19 +69,23 @@ func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
 	// Put Finding and Tag Finding
 	ctx := context.Background()
 	if err := s.putFindings(ctx, findings); err != nil {
-		appLogger.Errorf("Faild to put findings. WpscanSettingID: %v, error: %v", message.WpscanSettingID, err)
+		appLogger.Errorf("Faild to put findings. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return err
 	}
 
 	// Put RelOsintDataSource
-	if err := s.putWpscanSetting(message.WpscanSettingID, message.ProjectID, true, ""); err != nil {
-		appLogger.Errorf("Faild to put rel_osint_data_source. WpscanSettingID: %v, error: %v", message.WpscanSettingID, err)
+	if err := s.putWpscanSetting(msg.WpscanSettingID, msg.ProjectID, true, ""); err != nil {
+		appLogger.Errorf("Faild to put rel_osint_data_source. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return err
 	}
 
+	appLogger.Infof("end Scan, RequestID=%s", requestID)
+	if msg.ScanOnly {
+		return nil
+	}
 	// Call AnalyzeAlert
-	if err := s.CallAnalyzeAlert(ctx, message.ProjectID); err != nil {
-		appLogger.Errorf("Faild to analyze alert. WpscanSettingID: %v, error: %v", message.WpscanSettingID, err)
+	if err := s.CallAnalyzeAlert(ctx, msg.ProjectID); err != nil {
+		appLogger.Errorf("Faild to analyze alert. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return err
 	}
 	return nil

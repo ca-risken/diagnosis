@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/CyberAgent/mimosa-common/pkg/logging"
 	"github.com/CyberAgent/mimosa-core/proto/alert"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
@@ -28,47 +29,56 @@ func newHandler() *sqsHandler {
 	}
 }
 
-func (s *sqsHandler) HandleMessage(msg *sqs.Message) error {
-	msgBody := aws.StringValue(msg.Body)
+func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
+	msgBody := aws.StringValue(sqsMsg.Body)
 	appLogger.Infof("got message: %s", msgBody)
 	// Parse message
-	message, err := parseMessage(msgBody)
+	msg, err := parseMessage(msgBody)
 	if err != nil {
-		appLogger.Errorf("Invalid message: SQS_msg=%+v, err=%+v", msg, err)
+		appLogger.Errorf("Invalid message: SQS_msg=%+v, err=%+v", msgBody, err)
 		return err
 	}
+	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
+	if err != nil {
+		appLogger.Warnf("Failed to generate requestID: err=%+v", err)
+		requestID = fmt.Sprint(msg.ProjectID)
+	}
+	appLogger.Infof("start Scan, RequestID=%s", requestID)
+
 	ctx := context.Background()
 	// Get portscan
 	portscan, err := newPortscanClient()
 	if err != nil {
 		appLogger.Errorf("Failed to create Portscan session: err=%+v", err)
-		return s.putPortscanSetting(message.PortscanSettingID, message.ProjectID, false, err.Error())
+		return s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, false, err.Error())
 	}
 	statusDetail := ""
 
-	portscan.target = makeTargets(message.Target)
+	portscan.target = makeTargets(msg.Target)
 
-	findings, err := portscan.getResult(message)
+	findings, err := portscan.getResult(msg)
 	if err != nil {
-		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, err=%+v", message.PortscanSettingID, err)
+		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, err=%+v", msg.PortscanSettingID, err)
 	}
 	// Put finding to core
 	if err := s.putFindings(ctx, findings); err != nil {
-		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, err=%+v", message.PortscanSettingID, err)
+		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, err=%+v", msg.PortscanSettingID, err)
 		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
-		return s.putPortscanSetting(message.PortscanSettingID, message.ProjectID, false, statusDetail)
+		return s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
 	}
 
-	if err := s.putPortscanSetting(message.PortscanSettingID, message.ProjectID, true, ""); err != nil {
+	if err := s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, true, ""); err != nil {
 		return err
 	}
-	if err := s.analyzeAlert(ctx, message.ProjectID); err != nil {
-		appLogger.Errorf("Failed to analyze alert: PortscanSettingID=%+v, err=%+v", message.PortscanSettingID, err)
+	appLogger.Infof("Scan finished. ProjectID: %v, PortscanSettingID: %v, Target: %v, RequestID: %s", msg.ProjectID, msg.PortscanSettingID, msg.Target, requestID)
+
+	if msg.ScanOnly {
+		return nil
+	}
+	if err := s.analyzeAlert(ctx, msg.ProjectID); err != nil {
+		appLogger.Errorf("Failed to analyze alert: PortscanSettingID=%+v, err=%+v", msg.PortscanSettingID, err)
 		return err
 	}
-
-	appLogger.Infof("Scan finished. ProjectID: %v, PortscanSettingID: %v, Target: %v", message.ProjectID, message.PortscanSettingID, message.Target)
-
 	return nil
 }
 
