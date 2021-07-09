@@ -58,27 +58,59 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 
 	findings, err := portscan.getResult(msg)
 	if err != nil {
-		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, err=%+v", msg.PortscanSettingID, err)
+		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 	}
 	// Put finding to core
 	if err := s.putFindings(ctx, findings); err != nil {
-		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, err=%+v", msg.PortscanSettingID, err)
+		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
 		return s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
 	}
 
-	if err := s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, true, ""); err != nil {
+	if err := s.putPortscanTarget(msg.PortscanTargetID, msg.ProjectID, true); err != nil {
+		appLogger.Errorf("Failed to put portscanTarget: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		return err
 	}
+	//	if err := s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, true, ""); err != nil {
+	//		appLogger.Errorf("Failed to put portscanSetting: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
+	//		return err
+	//	}
 	appLogger.Infof("Scan finished. ProjectID: %v, PortscanSettingID: %v, Target: %v, RequestID: %s", msg.ProjectID, msg.PortscanSettingID, msg.Target, requestID)
 
 	if msg.ScanOnly {
 		return nil
 	}
 	if err := s.analyzeAlert(ctx, msg.ProjectID); err != nil {
-		appLogger.Errorf("Failed to analyze alert: PortscanSettingID=%+v, err=%+v", msg.PortscanSettingID, err)
+		appLogger.Errorf("Failed to analyze alert: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		return err
 	}
+	return nil
+}
+
+func (s *sqsHandler) putPortscanTarget(portscanTargetID, projectID uint32, isSuccess bool) error {
+	ctx := context.Background()
+	resp, err := s.diagnosisClient.GetPortscanTarget(ctx, &diagnosisClient.GetPortscanTargetRequest{PortscanTargetId: portscanTargetID, ProjectId: projectID})
+	if err != nil {
+		return err
+	}
+
+	portscanTarget := &diagnosisClient.PortscanTargetForUpsert{
+		PortscanTargetId:  resp.PortscanTarget.PortscanTargetId,
+		PortscanSettingId: resp.PortscanTarget.PortscanSettingId,
+		ProjectId:         resp.PortscanTarget.ProjectId,
+		Target:            resp.PortscanTarget.Target,
+	}
+
+	if isSuccess {
+		portscanTarget.Status = diagnosisClient.Status_OK
+	} else {
+		portscanTarget.Status = diagnosisClient.Status_ERROR
+	}
+	_, err = s.diagnosisClient.PutPortscanTarget(ctx, &diagnosisClient.PutPortscanTargetRequest{ProjectId: resp.PortscanTarget.ProjectId, PortscanTarget: portscanTarget})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
