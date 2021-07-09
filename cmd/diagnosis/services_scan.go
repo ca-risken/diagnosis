@@ -29,6 +29,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			return nil, err
 		}
 		msg, err := makeJiraMessage(req.ProjectId, req.SettingId, data)
+		msg.ScanOnly = req.ScanOnly
 		resp, err = d.sqs.send(msg)
 		if err != nil {
 			return nil, err
@@ -57,6 +58,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		if err != nil {
 			return nil, err
 		}
+		msg.ScanOnly = req.ScanOnly
 		resp, err = d.sqs.sendWpscanMessage(msg)
 		if err != nil {
 			return nil, err
@@ -89,6 +91,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 				logger.Error("Error occured when making Portscan message", zap.Error(err))
 				continue
 			}
+			msg.ScanOnly = req.ScanOnly
 			resp, err = d.sqs.sendPortscanMessage(msg)
 			if err != nil {
 				logger.Error("Error occured when sending Portscan message", zap.Error(err))
@@ -130,6 +133,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 			ProjectId:             jiraSetting.ProjectID,
 			SettingId:             jiraSetting.JiraSettingID,
 			DiagnosisDataSourceId: jiraSetting.DiagnosisDataSourceID,
+			// ScanOnly:              true, // TODO
 		}); err != nil {
 			// errorが出ても続行
 			logger.Error("InvokeScanAll error", zap.Error(err))
