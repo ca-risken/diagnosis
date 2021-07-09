@@ -28,7 +28,6 @@ type diagnosisRepoInterface interface {
 	DeletePortscanSetting(uint32, uint32) error
 	ListPortscanTarget(uint32, uint32) (*[]model.PortscanTarget, error)
 	GetPortscanTarget(uint32, uint32) (*model.PortscanTarget, error)
-	GetPortscanTargetByTargetPortscanSettingID(uint32, uint32, string) (*model.PortscanTarget, error)
 	UpsertPortscanTarget(*model.PortscanTarget) (*model.PortscanTarget, error)
 	DeletePortscanTarget(uint32, uint32) error
 	DeletePortscanTargetByPortscanSettingID(uint32, uint32) error

@@ -131,26 +131,13 @@ func (s *diagnosisService) PutPortscanTarget(ctx context.Context, req *diagnosis
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	savedData, err := s.repository.GetPortscanTargetByTargetPortscanSettingID(req.ProjectId, req.PortscanTarget.PortscanSettingId, req.PortscanTarget.Target)
-	noRecord := gorm.IsRecordNotFoundError(err)
-	logger.Info("hoge", zap.Error(err), zap.Any("noRecord", noRecord))
-	if err != nil && !noRecord {
-		logger.Error("Failed to Get PortscanTarget", zap.Error(err))
-		return nil, err
-	}
-	if !noRecord {
-		return &diagnosis.PutPortscanTargetResponse{PortscanTarget: convertPortscanTarget(savedData)}, nil
-	}
 
-	var portscanSettingID uint32
-	if !noRecord {
-		portscanSettingID = savedData.PortscanTargetID
-	}
 	data := &model.PortscanTarget{
-		PortscanTargetID:  portscanSettingID,
+		PortscanTargetID:  req.PortscanTarget.PortscanTargetId,
 		ProjectID:         req.ProjectId,
 		PortscanSettingID: req.PortscanTarget.PortscanSettingId,
 		Target:            req.PortscanTarget.Target,
+		Status:            req.PortscanTarget.Status.String(),
 	}
 
 	registerdData, err := s.repository.UpsertPortscanTarget(data)
@@ -198,15 +185,17 @@ func convertPortscanTarget(data *model.PortscanTarget) *diagnosis.PortscanTarget
 		PortscanSettingId: data.PortscanSettingID,
 		ProjectId:         data.ProjectID,
 		Target:            data.Target,
+		Status:            getStatus(data.Status),
 		CreatedAt:         data.CreatedAt.Unix(),
 		UpdatedAt:         data.CreatedAt.Unix(),
 	}
 }
 
-func makePortscanMessage(projectID, settingID uint32, target string) (*message.PortscanQueueMessage, error) {
+func makePortscanMessage(projectID, settingID, portscanTargetID uint32, target string) (*message.PortscanQueueMessage, error) {
 	msg := &message.PortscanQueueMessage{
 		DataSource:        "diagnosis:portscan",
 		PortscanSettingID: settingID,
+		PortscanTargetID:  portscanTargetID,
 		ProjectID:         projectID,
 		Target:            target,
 	}

@@ -68,14 +68,6 @@ func (r *diagnosisRepository) GetPortscanTarget(projectID uint32, portscanTarget
 	return &data, nil
 }
 
-func (r *diagnosisRepository) GetPortscanTargetByTargetPortscanSettingID(projectID, portscanSettingID uint32, target string) (*model.PortscanTarget, error) {
-	var data model.PortscanTarget
-	if err := r.SlaveDB.Where("project_id = ? AND portscan_setting_id = ? AND target = ?", projectID, portscanSettingID, target).First(&data).Error; err != nil {
-		return nil, err
-	}
-	return &data, nil
-}
-
 func (r *diagnosisRepository) UpsertPortscanTarget(data *model.PortscanTarget) (*model.PortscanTarget, error) {
 	var savedData model.PortscanTarget
 	update := portscanTargetToMap(data)
@@ -125,5 +117,6 @@ func portscanTargetToMap(portscanTarget *model.PortscanTarget) map[string]interf
 		"portscan_setting_id": portscanTarget.PortscanSettingID,
 		"project_id":          portscanTarget.ProjectID,
 		"target":              portscanTarget.Target,
+		"status":              portscanTarget.Status,
 	}
 }

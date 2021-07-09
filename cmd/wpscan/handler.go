@@ -73,7 +73,7 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 		return err
 	}
 
-	// Put RelOsintDataSource
+	// Put WpscanSetting
 	if err := s.putWpscanSetting(msg.WpscanSettingID, msg.ProjectID, true, ""); err != nil {
 		appLogger.Errorf("Faild to put rel_osint_data_source. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return err

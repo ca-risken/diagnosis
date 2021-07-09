@@ -3,9 +3,9 @@ module github.com/CyberAgent/mimosa-diagnosis/cmd/diagnosis
 go 1.16
 
 require (
-	github.com/CyberAgent/mimosa-diagnosis/pkg/message v0.0.0-20210708100238-0f0fbc621f57
-	github.com/CyberAgent/mimosa-diagnosis/pkg/model v0.0.0-20210708100238-0f0fbc621f57
-	github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis v0.0.0-20210708100238-0f0fbc621f57
+	github.com/CyberAgent/mimosa-diagnosis/pkg/message v0.0.0-20210709175022-5c9e7e24b6f5
+	github.com/CyberAgent/mimosa-diagnosis/pkg/model v0.0.0-20210709175022-5c9e7e24b6f5
+	github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis v0.0.0-20210709175022-5c9e7e24b6f5
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
 	github.com/aws/aws-sdk-go v1.39.3
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect

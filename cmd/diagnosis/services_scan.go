@@ -86,7 +86,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			return nil, err
 		}
 		for _, target := range *portscanTargets {
-			msg, err := makePortscanMessage(data.ProjectID, data.PortscanSettingID, target.Target)
+			msg, err := makePortscanMessage(data.ProjectID, data.PortscanSettingID, target.PortscanTargetID, target.Target)
 			if err != nil {
 				logger.Error("Error occured when making Portscan message", zap.Error(err))
 				continue
@@ -96,6 +96,16 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			if err != nil {
 				logger.Error("Error occured when sending Portscan message", zap.Error(err))
 				continue
+			}
+			if _, err = d.repository.UpsertPortscanTarget(&model.PortscanTarget{
+				PortscanTargetID:  target.PortscanTargetID,
+				PortscanSettingID: target.PortscanSettingID,
+				ProjectID:         target.ProjectID,
+				Target:            target.Target,
+				Status:            diagnosis.Status_IN_PROGRESS.String(),
+			}); err != nil {
+				logger.Error("Error occured when upsert Portscan target", zap.Error(err))
+				return nil, err
 			}
 		}
 		if _, err = d.repository.UpsertPortscanSetting(&model.PortscanSetting{
