@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 func (s *diagnosisService) ListWpscanSetting(ctx context.Context, req *diagnosis.ListWpscanSettingRequest) (*diagnosis.ListWpscanSettingResponse, error) {
@@ -18,7 +19,7 @@ func (s *diagnosisService) ListWpscanSetting(ctx context.Context, req *diagnosis
 	}
 	list, err := s.repository.ListWpscanSetting(req.ProjectId, req.DiagnosisDataSourceId)
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListWpscanSettingResponse{}, nil
 		}
 		logger.Error("Failed to List WpscanSettinng", zap.Error(err))
@@ -36,7 +37,7 @@ func (s *diagnosisService) GetWpscanSetting(ctx context.Context, req *diagnosis.
 		return nil, err
 	}
 	getData, err := s.repository.GetWpscanSetting(req.ProjectId, req.WpscanSettingId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get WpscanSettinng", zap.Error(err))
 		return nil, err
@@ -50,7 +51,7 @@ func (s *diagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 		return nil, err
 	}
 	savedData, err := s.repository.GetWpscanSetting(req.ProjectId, req.WpscanSetting.WpscanSettingId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get WpscanSetting", zap.Error(err))
 		return nil, err

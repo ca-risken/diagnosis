@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/vikyd/zero"
 )
 

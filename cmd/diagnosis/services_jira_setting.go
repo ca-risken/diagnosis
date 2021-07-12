@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"time"
 
@@ -9,8 +10,8 @@ import (
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 func (s *diagnosisService) ListJiraSetting(ctx context.Context, req *diagnosis.ListJiraSettingRequest) (*diagnosis.ListJiraSettingResponse, error) {
@@ -19,7 +20,7 @@ func (s *diagnosisService) ListJiraSetting(ctx context.Context, req *diagnosis.L
 	}
 	list, err := s.repository.ListJiraSetting(req.ProjectId, req.DiagnosisDataSourceId)
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListJiraSettingResponse{}, nil
 		}
 		logger.Error("Failed to List JiraSettinng", zap.Error(err))
@@ -37,7 +38,7 @@ func (s *diagnosisService) GetJiraSetting(ctx context.Context, req *diagnosis.Ge
 		return nil, err
 	}
 	getData, err := s.repository.GetJiraSetting(req.ProjectId, req.JiraSettingId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get JiraSettinng", zap.Error(err))
 		return nil, err
@@ -51,7 +52,7 @@ func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.Pu
 		return nil, err
 	}
 	savedData, err := s.repository.GetJiraSetting(req.ProjectId, req.JiraSetting.JiraSettingId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get JiraSetting", zap.Error(err))
 		return nil, err
