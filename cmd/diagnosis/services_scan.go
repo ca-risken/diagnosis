@@ -143,7 +143,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 			ProjectId:             jiraSetting.ProjectID,
 			SettingId:             jiraSetting.JiraSettingID,
 			DiagnosisDataSourceId: jiraSetting.DiagnosisDataSourceID,
-			// ScanOnly:              true, // TODO
+			ScanOnly:              true,
 		}); err != nil {
 			// errorが出ても続行
 			logger.Error("InvokeScanAll error", zap.Error(err))
@@ -164,6 +164,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 			ProjectId:             WpscanSetting.ProjectID,
 			SettingId:             WpscanSetting.WpscanSettingID,
 			DiagnosisDataSourceId: WpscanSetting.DiagnosisDataSourceID,
+			ScanOnly:              true,
 		}); err != nil {
 			// errorが出ても続行
 			logger.Error("InvokeScanAll error", zap.Error(err))
