@@ -50,9 +50,6 @@ type PortscanSetting struct {
 	DiagnosisDataSourceID uint32
 	ProjectID             uint32
 	Name                  string
-	Status                string
-	StatusDetail          string
-	ScanAt                time.Time
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 }
@@ -64,6 +61,8 @@ type PortscanTarget struct {
 	ProjectID         uint32
 	Target            string
 	Status            string
+	StatusDetail      string
+	ScanAt            time.Time
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 }
