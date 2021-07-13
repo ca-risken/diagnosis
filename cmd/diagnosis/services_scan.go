@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -9,8 +10,8 @@ import (
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
@@ -131,7 +132,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 
 	listjiraSetting, err := s.repository.ListAllJiraSetting()
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &empty.Empty{}, nil
 		}
 		logger.Error("Failed to List All JiraSetting.", zap.Error(err))
@@ -152,7 +153,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 
 	listWpscanSetting, err := s.repository.ListAllWpscanSetting()
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &empty.Empty{}, nil
 		}
 		logger.Error("Failed to List All WPScanSetting.", zap.Error(err))

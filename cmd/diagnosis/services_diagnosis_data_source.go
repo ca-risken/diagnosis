@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"errors"
 
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *diagnosis.ListDiagnosisDataSourceRequest) (*diagnosis.ListDiagnosisDataSourceResponse, error) {
@@ -16,7 +17,7 @@ func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *dia
 	}
 	list, err := s.repository.ListDiagnosisDataSource(req.ProjectId, req.Name)
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListDiagnosisDataSourceResponse{}, nil
 		}
 		logger.Error("Failed to List DiagnosisDataSource", zap.Error(err))
@@ -34,7 +35,7 @@ func (s *diagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diag
 		return nil, err
 	}
 	getData, err := s.repository.GetDiagnosisDataSource(req.ProjectId, req.DiagnosisDataSourceId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get DiagnosisDataSource", zap.Error(err))
 		return nil, err
@@ -48,7 +49,7 @@ func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diag
 		return nil, err
 	}
 	savedData, err := s.repository.GetDiagnosisDataSource(req.ProjectId, req.DiagnosisDataSource.DiagnosisDataSourceId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get DiagnosisDataSource", zap.Error(err))
 		return nil, err

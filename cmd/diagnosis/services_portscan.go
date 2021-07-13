@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 func (s *diagnosisService) ListPortscanSetting(ctx context.Context, req *diagnosis.ListPortscanSettingRequest) (*diagnosis.ListPortscanSettingResponse, error) {
@@ -18,7 +19,7 @@ func (s *diagnosisService) ListPortscanSetting(ctx context.Context, req *diagnos
 	}
 	list, err := s.repository.ListPortscanSetting(req.ProjectId, req.DiagnosisDataSourceId)
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListPortscanSettingResponse{}, nil
 		}
 		logger.Error("Failed to List PortscanSetting", zap.Error(err))
@@ -36,7 +37,7 @@ func (s *diagnosisService) GetPortscanSetting(ctx context.Context, req *diagnosi
 		return nil, err
 	}
 	getData, err := s.repository.GetPortscanSetting(req.ProjectId, req.PortscanSettingId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get PortscanSetting", zap.Error(err))
 		return nil, err
@@ -50,7 +51,7 @@ func (s *diagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosi
 		return nil, err
 	}
 	savedData, err := s.repository.GetPortscanSetting(req.ProjectId, req.PortscanSetting.PortscanSettingId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get PortscanSetting", zap.Error(err))
 		return nil, err
@@ -100,7 +101,7 @@ func (s *diagnosisService) ListPortscanTarget(ctx context.Context, req *diagnosi
 	}
 	list, err := s.repository.ListPortscanTarget(req.ProjectId, req.PortscanSettingId)
 	if err != nil {
-		if gorm.IsRecordNotFoundError(err) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListPortscanTargetResponse{}, nil
 		}
 		logger.Error("Failed to List PortscanTarget", zap.Error(err))
@@ -118,7 +119,7 @@ func (s *diagnosisService) GetPortscanTarget(ctx context.Context, req *diagnosis
 		return nil, err
 	}
 	getData, err := s.repository.GetPortscanTarget(req.ProjectId, req.PortscanTargetId)
-	noRecord := gorm.IsRecordNotFoundError(err)
+	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get PortscanTarget", zap.Error(err))
 		return nil, err
