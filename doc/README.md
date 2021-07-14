@@ -171,9 +171,6 @@
 | project_id | [uint32](#uint32) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
 | name | [string](#string) |  |  |
-| status | [Status](#diagnosis.Status) |  |  |
-| status_detail | [string](#string) |  |  |
-| scan_at | [int64](#int64) |  |  |
 | created_at | [int64](#int64) |  |  |
 | updated_at | [int64](#int64) |  |  |
 
@@ -194,9 +191,6 @@
 | project_id | [uint32](#uint32) |  |  |
 | diagnosis_data_source_id | [uint32](#uint32) |  |  |
 | name | [string](#string) |  |  |
-| status | [Status](#diagnosis.Status) |  |  |
-| status_detail | [string](#string) |  |  |
-| scan_at | [int64](#int64) |  |  |
 
 
 
@@ -216,6 +210,8 @@
 | portscan_setting_id | [uint32](#uint32) |  |  |
 | target | [string](#string) |  |  |
 | status | [Status](#diagnosis.Status) |  |  |
+| status_detail | [string](#string) |  |  |
+| scan_at | [int64](#int64) |  |  |
 | created_at | [int64](#int64) |  |  |
 | updated_at | [int64](#int64) |  |  |
 
@@ -237,6 +233,8 @@
 | portscan_setting_id | [uint32](#uint32) |  |  |
 | target | [string](#string) |  |  |
 | status | [Status](#diagnosis.Status) |  |  |
+| status_detail | [string](#string) |  |  |
+| scan_at | [int64](#int64) |  |  |
 
 
 

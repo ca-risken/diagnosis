@@ -951,16 +951,6 @@ func TestValidate_PortscanSettingForUpsert(t *testing.T) {
 			input:   &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1},
 			wantErr: true,
 		},
-		{
-			name:    "NG Too small scan_at",
-			input:   &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_url", ScanAt: -1},
-			wantErr: true,
-		},
-		{
-			name:    "NG Too large scan_at",
-			input:   &PortscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_url", ScanAt: 253402268400},
-			wantErr: true,
-		},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -1003,6 +993,16 @@ func TestValidate_PortscanTargetForUpsert(t *testing.T) {
 		{
 			name:    "NG Required(target)",
 			input:   &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too small scan_at",
+			input:   &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1, Target: "hoge_url", ScanAt: -1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too large scan_at",
+			input:   &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1, Target: "hoge_url", ScanAt: 253402268400},
 			wantErr: true,
 		},
 	}

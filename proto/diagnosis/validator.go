@@ -251,8 +251,6 @@ func (r *PortscanSettingForUpsert) Validate() error {
 		validation.Field(&r.DiagnosisDataSourceId, validation.Required),
 		validation.Field(&r.ProjectId, validation.Required),
 		validation.Field(&r.Name, validation.Required, validation.Length(0, 200)),
-		validation.Field(&r.ScanAt, validation.Min(0), validation.Max(253402268399)), //  1970-01-01T00:00:00 ~ 9999-12-31T23:59:59
-		validation.Field(&r.StatusDetail, validation.Length(0, 255)),
 	)
 }
 
@@ -262,5 +260,7 @@ func (r *PortscanTargetForUpsert) Validate() error {
 		validation.Field(&r.ProjectId, validation.Required),
 		validation.Field(&r.PortscanSettingId, validation.Required),
 		validation.Field(&r.Target, validation.Required, validation.Length(0, 300)),
+		validation.Field(&r.ScanAt, validation.Min(0), validation.Max(253402268399)), //  1970-01-01T00:00:00 ~ 9999-12-31T23:59:59
+		validation.Field(&r.StatusDetail, validation.Length(0, 255)),
 	)
 }
