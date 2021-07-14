@@ -104,18 +104,20 @@ func portscanSettingToMap(portscanSetting *model.PortscanSetting) map[string]int
 		"diagnosis_data_source_id": portscanSetting.DiagnosisDataSourceID,
 		"project_id":               portscanSetting.ProjectID,
 		"name":                     portscanSetting.Name,
-		"status":                   portscanSetting.Status,
-		"status_detail":            portscanSetting.StatusDetail,
-		"scan_at":                  portscanSetting.ScanAt,
 	}
 }
 
 func portscanTargetToMap(portscanTarget *model.PortscanTarget) map[string]interface{} {
-	return map[string]interface{}{
+	settingMap := map[string]interface{}{
 		"portscan_Target_id":  portscanTarget.PortscanTargetID,
 		"portscan_setting_id": portscanTarget.PortscanSettingID,
 		"project_id":          portscanTarget.ProjectID,
 		"target":              portscanTarget.Target,
 		"status":              portscanTarget.Status,
+		"status_detail":       portscanTarget.StatusDetail,
 	}
+	if !zero.IsZeroVal(portscanTarget.ScanAt) {
+		settingMap["scan_at"] = portscanTarget.ScanAt
+	}
+	return settingMap
 }

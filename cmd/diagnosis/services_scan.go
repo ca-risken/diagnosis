@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/vikyd/zero"
+
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/service/sqs"
@@ -98,12 +100,18 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 				logger.Error("Error occured when sending Portscan message", zap.Error(err))
 				continue
 			}
+			var scanAt time.Time
+			if !zero.IsZeroVal(target.ScanAt) {
+				scanAt = target.ScanAt
+			}
 			if _, err = d.repository.UpsertPortscanTarget(&model.PortscanTarget{
 				PortscanTargetID:  target.PortscanTargetID,
 				PortscanSettingID: target.PortscanSettingID,
 				ProjectID:         target.ProjectID,
 				Target:            target.Target,
 				Status:            diagnosis.Status_IN_PROGRESS.String(),
+				StatusDetail:      fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
+				ScanAt:            scanAt,
 			}); err != nil {
 				logger.Error("Error occured when upsert Portscan target", zap.Error(err))
 				return nil, err
@@ -114,9 +122,6 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			DiagnosisDataSourceID: data.DiagnosisDataSourceID,
 			ProjectID:             data.ProjectID,
 			Name:                  data.Name,
-			Status:                diagnosis.Status_IN_PROGRESS.String(),
-			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
-			ScanAt:                data.ScanAt,
 		}); err != nil {
 			return nil, err
 		}

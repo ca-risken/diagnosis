@@ -113,7 +113,7 @@ get-portscan_setting:
 put-portscan_setting:
 	grpcurl \
 		-plaintext \
-		-d '{"project_id":1001, "portscan_setting": {"diagnosis_data_source_id":1003, "project_id":1001, "name":"test_portscan", "status":"CONFIGURED"}}' \
+		-d '{"project_id":1001, "portscan_setting": {"diagnosis_data_source_id":1003, "project_id":1001, "name":"test_portscan"}}' \
 		localhost:19001 diagnosis.DiagnosisService.PutPortscanSetting
 
 .PHONY: delete-portscan_setting
@@ -141,7 +141,7 @@ get-portscan_target:
 put-portscan_target:
 	grpcurl \
 		-plaintext \
-		-d '{"project_id":1001, "portscan_target": {"portscan_setting_id":1001, "project_id":1001, "target":"127.0.0.1"}}' \
+		-d '{"project_id":1001, "portscan_target": {"portscan_setting_id":1001, "project_id":1001, "target":"127.0.0.1", "status":"CONFIGURED"}}' \
 		localhost:19001 diagnosis.DiagnosisService.PutPortscanTarget
 
 .PHONY: delete-portscan_target
