@@ -5,6 +5,7 @@ env:
     IMAGE_DIAGNOSIS: "diagnosis/diagnosis"
     IMAGE_JIRA: "diagnosis/jira"
     IMAGE_WPSCAN: "diagnosis/wpscan"
+    IMAGE_PORTSCAN: "diagnosis/portscan"
   parameter-store:
     GITHUB_USER: "/build/GITHUB_USER"
     GITHUB_TOKEN: "/build/GITHUB_TOKEN"
@@ -35,3 +36,4 @@ phases:
       - cd ${SRC}/diagnosis        && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_DIAGNOSIS}:${TAG} .
       - cd ${SRC}/jira && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_JIRA}:${TAG} .
       - cd ${SRC}/wpscan && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_WPSCAN}:${TAG} .
+      - cd ${SRC}/portscan && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_PORTSCAN}:${TAG} .

@@ -53,7 +53,7 @@ func (r *diagnosisRepository) ListAllJiraSetting() (*[]model.JiraSetting, error)
 }
 
 func jiraSettingToMap(jiraSetting *model.JiraSetting) map[string]interface{} {
-	return map[string]interface{}{
+	settingMap := map[string]interface{}{
 		"jira_setting_id":          jiraSetting.JiraSettingID,
 		"name":                     jiraSetting.Name,
 		"diagnosis_data_source_id": jiraSetting.DiagnosisDataSourceID,
@@ -64,6 +64,9 @@ func jiraSettingToMap(jiraSetting *model.JiraSetting) map[string]interface{} {
 		"jira_key":                 jiraSetting.JiraKey,
 		"status":                   jiraSetting.Status,
 		"status_detail":            jiraSetting.StatusDetail,
-		"scan_at":                  jiraSetting.ScanAt,
 	}
+	if !zero.IsZeroVal(jiraSetting.ScanAt) {
+		settingMap["scan_at"] = jiraSetting.ScanAt
+	}
+	return settingMap
 }

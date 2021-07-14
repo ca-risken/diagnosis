@@ -66,9 +66,6 @@ func (s *diagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosi
 		ProjectID:             req.ProjectId,
 		DiagnosisDataSourceID: req.PortscanSetting.DiagnosisDataSourceId,
 		Name:                  req.PortscanSetting.Name,
-		Status:                req.PortscanSetting.Status.String(),
-		StatusDetail:          req.PortscanSetting.StatusDetail,
-		ScanAt:                time.Unix(req.PortscanSetting.ScanAt, 0),
 	}
 
 	registerdData, err := s.repository.UpsertPortscanSetting(data)
@@ -139,6 +136,8 @@ func (s *diagnosisService) PutPortscanTarget(ctx context.Context, req *diagnosis
 		PortscanSettingID: req.PortscanTarget.PortscanSettingId,
 		Target:            req.PortscanTarget.Target,
 		Status:            req.PortscanTarget.Status.String(),
+		StatusDetail:      req.PortscanTarget.StatusDetail,
+		ScanAt:            time.Unix(req.PortscanTarget.ScanAt, 0),
 	}
 
 	registerdData, err := s.repository.UpsertPortscanTarget(data)
@@ -171,9 +170,6 @@ func convertPortscanSetting(data *model.PortscanSetting) *diagnosis.PortscanSett
 		Name:                  data.Name,
 		CreatedAt:             data.CreatedAt.Unix(),
 		UpdatedAt:             data.CreatedAt.Unix(),
-		Status:                getStatus(data.Status),
-		StatusDetail:          data.StatusDetail,
-		ScanAt:                data.ScanAt.Unix(),
 	}
 }
 
@@ -187,6 +183,8 @@ func convertPortscanTarget(data *model.PortscanTarget) *diagnosis.PortscanTarget
 		ProjectId:         data.ProjectID,
 		Target:            data.Target,
 		Status:            getStatus(data.Status),
+		StatusDetail:      data.StatusDetail,
+		ScanAt:            data.ScanAt.Unix(),
 		CreatedAt:         data.CreatedAt.Unix(),
 		UpdatedAt:         data.CreatedAt.Unix(),
 	}

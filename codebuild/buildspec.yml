@@ -5,6 +5,7 @@ env:
     IMAGE_DIAGNOSIS: "diagnosis/diagnosis"
     IMAGE_JIRA: "diagnosis/jira"
     IMAGE_WPSCAN: "diagnosis/wpscan"
+    IMAGE_PORTSCAN: "diagnosis/portscan"
   parameter-store:
     GITHUB_USER: "/build/GITHUB_USER"
     GITHUB_TOKEN: "/build/GITHUB_TOKEN"
@@ -35,17 +36,20 @@ phases:
       - cd ${SRC}/diagnosis        && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_DIAGNOSIS}:${TAG} .
       - cd ${SRC}/jira && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_JIRA}:${TAG} .
       - cd ${SRC}/wpscan && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_WPSCAN}:${TAG} .
+      - cd ${SRC}/portscan && docker build ${BUILD_OPT} --build-arg GITHUB_USER=${GITHUB_USER} --build-arg GITHUB_TOKEN=${GITHUB_TOKEN} -t ${IMAGE_PORTSCAN}:${TAG} .
 
       - echo Tagging the images...
       # tag the specific version
       - docker tag ${IMAGE_DIAGNOSIS}:${TAG}       ${REGISTORY}/${IMAGE_DIAGNOSIS}:${TAG}
       - docker tag ${IMAGE_JIRA}:${TAG} ${REGISTORY}/${IMAGE_JIRA}:${TAG}
       - docker tag ${IMAGE_WPSCAN}:${TAG} ${REGISTORY}/${IMAGE_WPSCAN}:${TAG}
+      - docker tag ${IMAGE_PORTSCAN}:${TAG} ${REGISTORY}/${IMAGE_PORTSCAN}:${TAG}
 
       # update latest version
       - docker tag ${IMAGE_DIAGNOSIS}:${TAG}       ${REGISTORY}/${IMAGE_DIAGNOSIS}:latest
       - docker tag ${IMAGE_JIRA}:${TAG} ${REGISTORY}/${IMAGE_JIRA}:latest
       - docker tag ${IMAGE_WPSCAN}:${TAG} ${REGISTORY}/${IMAGE_WPSCAN}:latest
+      - docker tag ${IMAGE_PORTSCAN}:${TAG} ${REGISTORY}/${IMAGE_PORTSCAN}:latest
 
   post_build:
     commands:
@@ -56,8 +60,10 @@ phases:
       - docker push ${REGISTORY}/${IMAGE_DIAGNOSIS}:${TAG}
       - docker push ${REGISTORY}/${IMAGE_JIRA}:${TAG}
       - docker push ${REGISTORY}/${IMAGE_WPSCAN}:${TAG}
+      - docker push ${REGISTORY}/${IMAGE_PORTSCAN}:${TAG}
 
       # latest version
       - docker push ${REGISTORY}/${IMAGE_DIAGNOSIS}:latest
       - docker push ${REGISTORY}/${IMAGE_JIRA}:latest
       - docker push ${REGISTORY}/${IMAGE_WPSCAN}:latest
+      - docker push ${REGISTORY}/${IMAGE_PORTSCAN}:latest

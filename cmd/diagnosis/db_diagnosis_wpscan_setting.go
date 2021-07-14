@@ -53,13 +53,16 @@ func (r *diagnosisRepository) ListAllWpscanSetting() (*[]model.WpscanSetting, er
 }
 
 func wpscanSettingToMap(wpscanSetting *model.WpscanSetting) map[string]interface{} {
-	return map[string]interface{}{
+	settingMap := map[string]interface{}{
 		"wpscan_setting_id":        wpscanSetting.WpscanSettingID,
 		"diagnosis_data_source_id": wpscanSetting.DiagnosisDataSourceID,
 		"project_id":               wpscanSetting.ProjectID,
 		"target_url":               wpscanSetting.TargetURL,
 		"status":                   wpscanSetting.Status,
 		"status_detail":            wpscanSetting.StatusDetail,
-		"scan_at":                  wpscanSetting.ScanAt,
 	}
+	if !zero.IsZeroVal(wpscanSetting.ScanAt) {
+		settingMap["scan_at"] = wpscanSetting.ScanAt
+	}
+	return settingMap
 }

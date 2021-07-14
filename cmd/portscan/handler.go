@@ -50,7 +50,7 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	portscan, err := newPortscanClient()
 	if err != nil {
 		appLogger.Errorf("Failed to create Portscan session: err=%+v", err)
-		return s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, false, err.Error())
+		return s.putPortscanTarget(msg.PortscanSettingID, msg.ProjectID, false, err.Error())
 	}
 	statusDetail := ""
 
@@ -64,17 +64,14 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	if err := s.putFindings(ctx, findings); err != nil {
 		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
-		return s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
+		return s.putPortscanTarget(msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
 	}
 
-	if err := s.putPortscanTarget(msg.PortscanTargetID, msg.ProjectID, true); err != nil {
+	if err := s.putPortscanTarget(msg.PortscanTargetID, msg.ProjectID, true, ""); err != nil {
 		appLogger.Errorf("Failed to put portscanTarget: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		return err
 	}
-	//	if err := s.putPortscanSetting(msg.PortscanSettingID, msg.ProjectID, true, ""); err != nil {
-	//		appLogger.Errorf("Failed to put portscanSetting: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
-	//		return err
-	//	}
+
 	appLogger.Infof("Scan finished. ProjectID: %v, PortscanSettingID: %v, Target: %v, RequestID: %s", msg.ProjectID, msg.PortscanSettingID, msg.Target, requestID)
 
 	if msg.ScanOnly {
@@ -87,7 +84,7 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	return nil
 }
 
-func (s *sqsHandler) putPortscanTarget(portscanTargetID, projectID uint32, isSuccess bool) error {
+func (s *sqsHandler) putPortscanTarget(portscanTargetID, projectID uint32, isSuccess bool, errDetail string) error {
 	ctx := context.Background()
 	resp, err := s.diagnosisClient.GetPortscanTarget(ctx, &diagnosisClient.GetPortscanTargetRequest{PortscanTargetId: portscanTargetID, ProjectId: projectID})
 	if err != nil {
@@ -99,44 +96,17 @@ func (s *sqsHandler) putPortscanTarget(portscanTargetID, projectID uint32, isSuc
 		PortscanSettingId: resp.PortscanTarget.PortscanSettingId,
 		ProjectId:         resp.PortscanTarget.ProjectId,
 		Target:            resp.PortscanTarget.Target,
+		ScanAt:            time.Now().Unix(),
 	}
 
 	if isSuccess {
 		portscanTarget.Status = diagnosisClient.Status_OK
+		portscanTarget.StatusDetail = ""
 	} else {
 		portscanTarget.Status = diagnosisClient.Status_ERROR
+		portscanTarget.StatusDetail = errDetail
 	}
 	_, err = s.diagnosisClient.PutPortscanTarget(ctx, &diagnosisClient.PutPortscanTargetRequest{ProjectId: resp.PortscanTarget.ProjectId, PortscanTarget: portscanTarget})
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *sqsHandler) putPortscanSetting(portscanSettingID, projectID uint32, isSuccess bool, errDetail string) error {
-	ctx := context.Background()
-	resp, err := s.diagnosisClient.GetPortscanSetting(ctx, &diagnosisClient.GetPortscanSettingRequest{PortscanSettingId: portscanSettingID, ProjectId: projectID})
-	if err != nil {
-		return err
-	}
-
-	portscanSetting := &diagnosisClient.PortscanSettingForUpsert{
-		PortscanSettingId:     resp.PortscanSetting.PortscanSettingId,
-		DiagnosisDataSourceId: resp.PortscanSetting.DiagnosisDataSourceId,
-		ProjectId:             resp.PortscanSetting.ProjectId,
-		Name:                  resp.PortscanSetting.Name,
-		ScanAt:                time.Now().Unix(),
-	}
-
-	if isSuccess {
-		portscanSetting.Status = diagnosisClient.Status_OK
-		portscanSetting.StatusDetail = ""
-	} else {
-		portscanSetting.Status = diagnosisClient.Status_ERROR
-		portscanSetting.StatusDetail = string(errDetail)
-	}
-	_, err = s.diagnosisClient.PutPortscanSetting(ctx, &diagnosisClient.PutPortscanSettingRequest{ProjectId: resp.PortscanSetting.ProjectId, PortscanSetting: portscanSetting})
 	if err != nil {
 		return err
 	}
