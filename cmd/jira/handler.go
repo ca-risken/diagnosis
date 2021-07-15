@@ -160,7 +160,6 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis)
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagJira)
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
-		logger.Info("Success to PutFinding", zap.Any("Finding", f))
 	}
 	return nil
 }

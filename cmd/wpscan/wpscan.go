@@ -205,9 +205,11 @@ func makeFinding(description, dataSourceID string, score float32, data *[]byte, 
 }
 
 func getInterestingFindingInformation(ie interestingFindings) (string, float32) {
-	switch ie.ToS {
-	case "Headers":
+	switch ie.Type {
+	case "headers":
 		return "Software version found by Headers", 1.0
+	case "search_replace_db2":
+		return ie.ToS, 8.0
 	default:
 		return ie.ToS, 1.0
 	}
