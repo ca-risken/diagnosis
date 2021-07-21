@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
+
 	"github.com/CyberAgent/mimosa-common/pkg/portscan"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
+	"github.com/aws/aws-xray-sdk-go/xray"
 )
 
 type portscanAPI interface {
@@ -26,10 +29,12 @@ func newPortscanClient() (*portscanClient, error) {
 	return &p, nil
 }
 
-func (p *portscanClient) getResult(message *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error) {
+func (p *portscanClient) getResult(ctx context.Context, message *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error) {
 	putData := []*finding.FindingForUpsert{}
 
+	_, segment := xray.BeginSubsegment(ctx, "scanTargets")
 	nmapResults, err := p.scan()
+	segment.Close(err)
 	if err != nil {
 		appLogger.Errorf("Faild to Portscan: err=%+v", err)
 		return putData, err
