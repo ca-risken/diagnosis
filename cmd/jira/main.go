@@ -20,5 +20,5 @@ func main() {
 	consumer := newSQSConsumer()
 	logger.Info("Start the jira SQS consumer server...")
 	consumer.Start(ctx,
-		mimosaxray.MessageTracingHandler(conf.EnvName, "aws.cloudsploit", newHandler()))
+		mimosaxray.MessageTracingHandler(conf.EnvName, "diagnosis.jira", newHandler()))
 }
