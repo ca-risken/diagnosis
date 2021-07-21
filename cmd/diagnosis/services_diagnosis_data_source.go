@@ -15,7 +15,7 @@ func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *dia
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	list, err := s.repository.ListDiagnosisDataSource(req.ProjectId, req.Name)
+	list, err := s.repository.ListDiagnosisDataSource(ctx, req.ProjectId, req.Name)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListDiagnosisDataSourceResponse{}, nil
@@ -34,7 +34,7 @@ func (s *diagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diag
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	getData, err := s.repository.GetDiagnosisDataSource(req.ProjectId, req.DiagnosisDataSourceId)
+	getData, err := s.repository.GetDiagnosisDataSource(ctx, req.ProjectId, req.DiagnosisDataSourceId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get DiagnosisDataSource", zap.Error(err))
@@ -48,7 +48,7 @@ func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diag
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	savedData, err := s.repository.GetDiagnosisDataSource(req.ProjectId, req.DiagnosisDataSource.DiagnosisDataSourceId)
+	savedData, err := s.repository.GetDiagnosisDataSource(ctx, req.ProjectId, req.DiagnosisDataSource.DiagnosisDataSourceId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get DiagnosisDataSource", zap.Error(err))
@@ -66,7 +66,7 @@ func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diag
 		MaxScore:              req.DiagnosisDataSource.MaxScore,
 	}
 
-	registerdData, err := s.repository.UpsertDiagnosisDataSource(data)
+	registerdData, err := s.repository.UpsertDiagnosisDataSource(ctx, data)
 	if err != nil {
 		logger.Error("Failed to Put DiagnosisDataSource", zap.Error(err))
 		return nil, err
@@ -78,7 +78,7 @@ func (s *diagnosisService) DeleteDiagnosisDataSource(ctx context.Context, req *d
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	if err := s.repository.DeleteDiagnosisDataSource(req.ProjectId, req.DiagnosisDataSourceId); err != nil {
+	if err := s.repository.DeleteDiagnosisDataSource(ctx, req.ProjectId, req.DiagnosisDataSourceId); err != nil {
 		logger.Error("Failed to Delete DiagnosisDataSource", zap.Error(err))
 		return nil, err
 	}

@@ -1,42 +1,41 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
+	mimosasql "github.com/CyberAgent/mimosa-common/pkg/database/sql"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
 	"github.com/kelseyhightower/envconfig"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	glogger "gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
 )
 
 type diagnosisRepoInterface interface {
-	ListDiagnosisDataSource(uint32, string) (*[]model.DiagnosisDataSource, error)
-	GetDiagnosisDataSource(uint32, uint32) (*model.DiagnosisDataSource, error)
-	UpsertDiagnosisDataSource(*model.DiagnosisDataSource) (*model.DiagnosisDataSource, error)
-	DeleteDiagnosisDataSource(uint32, uint32) error
-	ListJiraSetting(uint32, uint32) (*[]model.JiraSetting, error)
-	GetJiraSetting(uint32, uint32) (*model.JiraSetting, error)
-	UpsertJiraSetting(*model.JiraSetting) (*model.JiraSetting, error)
-	DeleteJiraSetting(uint32, uint32) error
-	ListWpscanSetting(uint32, uint32) (*[]model.WpscanSetting, error)
-	GetWpscanSetting(uint32, uint32) (*model.WpscanSetting, error)
-	UpsertWpscanSetting(*model.WpscanSetting) (*model.WpscanSetting, error)
-	DeleteWpscanSetting(uint32, uint32) error
-	ListPortscanSetting(uint32, uint32) (*[]model.PortscanSetting, error)
-	GetPortscanSetting(uint32, uint32) (*model.PortscanSetting, error)
-	UpsertPortscanSetting(*model.PortscanSetting) (*model.PortscanSetting, error)
-	DeletePortscanSetting(uint32, uint32) error
-	ListPortscanTarget(uint32, uint32) (*[]model.PortscanTarget, error)
-	GetPortscanTarget(uint32, uint32) (*model.PortscanTarget, error)
-	UpsertPortscanTarget(*model.PortscanTarget) (*model.PortscanTarget, error)
-	DeletePortscanTarget(uint32, uint32) error
-	DeletePortscanTargetByPortscanSettingID(uint32, uint32) error
+	ListDiagnosisDataSource(context.Context, uint32, string) (*[]model.DiagnosisDataSource, error)
+	GetDiagnosisDataSource(context.Context, uint32, uint32) (*model.DiagnosisDataSource, error)
+	UpsertDiagnosisDataSource(context.Context, *model.DiagnosisDataSource) (*model.DiagnosisDataSource, error)
+	DeleteDiagnosisDataSource(context.Context, uint32, uint32) error
+	ListJiraSetting(context.Context, uint32, uint32) (*[]model.JiraSetting, error)
+	GetJiraSetting(context.Context, uint32, uint32) (*model.JiraSetting, error)
+	UpsertJiraSetting(context.Context, *model.JiraSetting) (*model.JiraSetting, error)
+	DeleteJiraSetting(context.Context, uint32, uint32) error
+	ListWpscanSetting(context.Context, uint32, uint32) (*[]model.WpscanSetting, error)
+	GetWpscanSetting(context.Context, uint32, uint32) (*model.WpscanSetting, error)
+	UpsertWpscanSetting(context.Context, *model.WpscanSetting) (*model.WpscanSetting, error)
+	DeleteWpscanSetting(context.Context, uint32, uint32) error
+	ListPortscanSetting(context.Context, uint32, uint32) (*[]model.PortscanSetting, error)
+	GetPortscanSetting(context.Context, uint32, uint32) (*model.PortscanSetting, error)
+	UpsertPortscanSetting(context.Context, *model.PortscanSetting) (*model.PortscanSetting, error)
+	DeletePortscanSetting(context.Context, uint32, uint32) error
+	ListPortscanTarget(context.Context, uint32, uint32) (*[]model.PortscanTarget, error)
+	GetPortscanTarget(context.Context, uint32, uint32) (*model.PortscanTarget, error)
+	UpsertPortscanTarget(context.Context, *model.PortscanTarget) (*model.PortscanTarget, error)
+	DeletePortscanTarget(context.Context, uint32, uint32) error
+	DeletePortscanTargetByPortscanSettingID(context.Context, uint32, uint32) error
 
 	//for InvokeScan
-	ListAllJiraSetting() (*[]model.JiraSetting, error)
-	ListAllWpscanSetting() (*[]model.WpscanSetting, error)
+	ListAllJiraSetting(context.Context) (*[]model.JiraSetting, error)
+	ListAllWpscanSetting(context.Context) (*[]model.WpscanSetting, error)
 }
 
 type diagnosisRepository struct {
@@ -82,13 +81,10 @@ func initDB(isMaster bool) *gorm.DB {
 
 	dsn := fmt.Sprintf("%s:%s@tcp([%s]:%d)/%s?charset=utf8mb4&interpolateParams=true&parseTime=true&loc=Local",
 		user, pass, host, conf.Port, conf.Schema)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
+	db, err := mimosasql.Open(dsn, conf.LogMode)
 	if err != nil {
 		fmt.Printf("Failed to open DB. isMaster: %v", isMaster)
 		panic(err)
-	}
-	if conf.LogMode {
-		db.Logger.LogMode(glogger.Info)
 	}
 	return db
 }

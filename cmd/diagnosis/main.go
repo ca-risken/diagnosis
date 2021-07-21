@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"net"
 
+	mimosaxray "github.com/CyberAgent/mimosa-common/pkg/xray"
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
+	"github.com/aws/aws-xray-sdk-go/xray"
+	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -15,6 +18,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	mimosaxray.InitXRay(xray.Config{})
 
 	if err := initLogger(conf.LogLevel); err != nil {
 		panic(err)
@@ -27,7 +31,11 @@ func main() {
 
 	defer syncLogger()
 
-	server := grpc.NewServer()
+	server := grpc.NewServer(
+		grpc.UnaryInterceptor(
+			grpcmiddleware.ChainUnaryServer(
+				xray.UnaryServerInterceptor(),
+				mimosaxray.AnnotateEnvTracingUnaryServerInterceptor(conf.EnvName))))
 	diagnosisServer := newDiagnosisService(conf.DB, conf.SQS)
 	diagnosis.RegisterDiagnosisServiceServer(server, diagnosisServer)
 

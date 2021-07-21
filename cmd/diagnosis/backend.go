@@ -6,6 +6,7 @@ import (
 
 type diagnosisConfig struct {
 	Port     string `default:"19001"`
+	EnvName  string `default:"default" split_words:"true"`
 	LogLevel string `split_words:"true" default:"debug"`
 
 	DB  diagnosisRepoInterface

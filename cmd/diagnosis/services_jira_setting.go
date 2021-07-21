@@ -18,7 +18,7 @@ func (s *diagnosisService) ListJiraSetting(ctx context.Context, req *diagnosis.L
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	list, err := s.repository.ListJiraSetting(req.ProjectId, req.DiagnosisDataSourceId)
+	list, err := s.repository.ListJiraSetting(ctx, req.ProjectId, req.DiagnosisDataSourceId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListJiraSettingResponse{}, nil
@@ -37,7 +37,7 @@ func (s *diagnosisService) GetJiraSetting(ctx context.Context, req *diagnosis.Ge
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	getData, err := s.repository.GetJiraSetting(req.ProjectId, req.JiraSettingId)
+	getData, err := s.repository.GetJiraSetting(ctx, req.ProjectId, req.JiraSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get JiraSettinng", zap.Error(err))
@@ -51,7 +51,7 @@ func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.Pu
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	savedData, err := s.repository.GetJiraSetting(req.ProjectId, req.JiraSetting.JiraSettingId)
+	savedData, err := s.repository.GetJiraSetting(ctx, req.ProjectId, req.JiraSetting.JiraSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get JiraSetting", zap.Error(err))
@@ -76,7 +76,7 @@ func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.Pu
 		ScanAt:                time.Unix(req.JiraSetting.ScanAt, 0),
 	}
 
-	registerdData, err := s.repository.UpsertJiraSetting(data)
+	registerdData, err := s.repository.UpsertJiraSetting(ctx, data)
 	if err != nil {
 		logger.Error("Failed to Put JiraSettinng", zap.Error(err))
 		return nil, err
@@ -88,7 +88,7 @@ func (s *diagnosisService) DeleteJiraSetting(ctx context.Context, req *diagnosis
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	if err := s.repository.DeleteJiraSetting(req.ProjectId, req.JiraSettingId); err != nil {
+	if err := s.repository.DeleteJiraSetting(ctx, req.ProjectId, req.JiraSettingId); err != nil {
 		logger.Error("Failed to Delete JiraSettinng", zap.Error(err))
 		return nil, err
 	}
