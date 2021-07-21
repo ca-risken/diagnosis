@@ -8,6 +8,7 @@ import (
 type BackendConfig struct {
 	//	Port     string `default:"19001"`
 	LogLevel string `split_words:"true" default:"debug"`
+	EnvName  string `default:"default" split_words:"true"`
 
 	//	DB  diagnosisRepoInterface
 	//	SQS *sqsClient

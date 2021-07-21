@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+
+	mimosaxray "github.com/CyberAgent/mimosa-common/pkg/xray"
+	"github.com/aws/aws-xray-sdk-go/xray"
 )
 
 func main() {
@@ -13,7 +16,9 @@ func main() {
 		panic(err)
 	}
 	ctx := context.Background()
+	mimosaxray.InitXRay(xray.Config{})
 	consumer := newSQSConsumer()
 	logger.Info("Start the jira SQS consumer server...")
-	consumer.Start(ctx, newHandler())
+	consumer.Start(ctx,
+		mimosaxray.MessageTracingHandler(conf.EnvName, "aws.cloudsploit", newHandler()))
 }

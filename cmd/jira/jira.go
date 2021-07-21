@@ -1,20 +1,23 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/vikyd/zero"
 	"go.uber.org/zap"
+	"golang.org/x/net/context/ctxhttp"
 )
 
 type jiraAPI interface {
-	getJiraProject(string, string, string, string) (string, map[string]string)
-	listIssues(string) (*jiraIssues, error)
+	getJiraProject(context.Context, string, string, string, string) (string, map[string]string)
+	listIssues(context.Context, string) (*jiraIssues, error)
 }
 
 type jiraClient struct {
@@ -38,10 +41,10 @@ func newJiraClient() *jiraClient {
 	return &jiraClient{config: conf}
 }
 
-func (j *jiraClient) getJiraProject(jiraKey, jiraID, IdentityField, IdentityValue string) (string, map[string]string) {
+func (j *jiraClient) getJiraProject(ctx context.Context, jiraKey, jiraID, IdentityField, IdentityValue string) (string, map[string]string) {
 	errDetail := make(map[string]string)
 	if !zero.IsZeroVal(jiraKey) {
-		_, err := j.searchProjectByJiraKeyID(jiraKey)
+		_, err := j.searchProjectByJiraKeyID(ctx, jiraKey)
 		if err != nil {
 			errDetail["jiraKey"] = err.Error()
 		} else {
@@ -49,7 +52,7 @@ func (j *jiraClient) getJiraProject(jiraKey, jiraID, IdentityField, IdentityValu
 		}
 	}
 	if !zero.IsZeroVal(jiraID) {
-		_, err := j.searchProjectByJiraKeyID(jiraID)
+		_, err := j.searchProjectByJiraKeyID(ctx, jiraID)
 		if err != nil {
 			errDetail["jiraID"] = err.Error()
 		} else {
@@ -57,7 +60,7 @@ func (j *jiraClient) getJiraProject(jiraKey, jiraID, IdentityField, IdentityValu
 		}
 	}
 	if !zero.IsZeroVal(IdentityField) && !zero.IsZeroVal(IdentityValue) {
-		pj, err := j.getProjectByIdentityKey(IdentityField, IdentityValue)
+		pj, err := j.getProjectByIdentityKey(ctx, IdentityField, IdentityValue)
 		if err != nil {
 			errDetail["IdentityField"] = err.Error()
 		} else {
@@ -68,7 +71,7 @@ func (j *jiraClient) getJiraProject(jiraKey, jiraID, IdentityField, IdentityValu
 	return "", errDetail
 
 }
-func (j *jiraClient) searchProjectByJiraKeyID(search string) (bool, error) {
+func (j *jiraClient) searchProjectByJiraKeyID(ctx context.Context, search string) (bool, error) {
 	var issues jiraIssues
 	url := j.config.JiraUrl + `rest/api/2/search`
 	req, _ := http.NewRequest("GET", url, nil)
@@ -79,7 +82,7 @@ func (j *jiraClient) searchProjectByJiraKeyID(search string) (bool, error) {
 	params.Add("maxResults", "1000")
 	req.URL.RawQuery = params.Encode()
 	client := new(http.Client)
-	res, err := client.Do(req)
+	res, err := ctxhttp.Do(ctx, xray.Client(client), req)
 	if err != nil {
 		logger.Error("Failed to list projects. sk the System Administrator", zap.Error(err))
 		return false, err
@@ -111,7 +114,7 @@ func (j *jiraClient) searchProjectByJiraKeyID(search string) (bool, error) {
 	return true, nil
 }
 
-func (j *jiraClient) getProjectByIdentityKey(identityField, identityValue string) (string, error) {
+func (j *jiraClient) getProjectByIdentityKey(ctx context.Context, identityField, identityValue string) (string, error) {
 	var issues jiraIssues
 	url := j.config.JiraUrl + `rest/api/2/search`
 	req, _ := http.NewRequest("GET", url, nil)
@@ -125,7 +128,7 @@ func (j *jiraClient) getProjectByIdentityKey(identityField, identityValue string
 	req.URL.RawQuery = params.Encode()
 
 	client := new(http.Client)
-	res, err := client.Do(req)
+	res, err := ctxhttp.Do(ctx, xray.Client(client), req)
 
 	if err != nil {
 		logger.Error("Failed to list projects", zap.Error(err))
@@ -163,7 +166,7 @@ func (j *jiraClient) getProjectByIdentityKey(identityField, identityValue string
 	return issueList[0].Fields.Project.Key, nil
 }
 
-func (j *jiraClient) listIssues(project string) (*jiraIssues, error) {
+func (j *jiraClient) listIssues(ctx context.Context, project string) (*jiraIssues, error) {
 	var issues jiraIssues
 	url := j.config.JiraUrl + `rest/api/2/search`
 	req, _ := http.NewRequest("GET", url, nil)
@@ -176,7 +179,7 @@ func (j *jiraClient) listIssues(project string) (*jiraIssues, error) {
 	req.URL.RawQuery = params.Encode()
 
 	client := new(http.Client)
-	res, err := client.Do(req)
+	res, err := ctxhttp.Do(ctx, xray.Client(client), req)
 	if err != nil {
 		logger.Error("Failed to list Issues", zap.Error(err))
 		return nil, err
@@ -218,7 +221,7 @@ type jiraIssues struct {
 type jiraIssue struct {
 	Key    string `json:"key"`
 	Fields struct {
-		Date     string   `json:"created"`
+		Date     string `json:"created"`
 		Priority struct { // <- 構造体の中にネストさせて構造体を定義
 			Name string `json:"name"`
 		} `json:"priority"`

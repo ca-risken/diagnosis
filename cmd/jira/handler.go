@@ -39,7 +39,7 @@ func newHandler() *sqsHandler {
 	return h
 }
 
-func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
+func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) error {
 	msgBody := aws.StringValue(sqsMsg.Body)
 	logger.Info("got message", zap.String("message", msgBody))
 	// Parse message
@@ -56,10 +56,10 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	logger.Info("start Scan", zap.String("request_id", requestID), zap.Uint32("project", msg.ProjectID))
 
 	// Get jira Project
-	project, errMap := s.jira.getJiraProject(msg.JiraKey, msg.JiraID, msg.IdentityField, msg.IdentityValue)
+	project, errMap := s.jira.getJiraProject(ctx, msg.JiraKey, msg.JiraID, msg.IdentityField, msg.IdentityValue)
 	if zero.IsZeroVal(project) {
 		logger.Warn("Faild to get jira project", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.String("Project", project))
-		if err := s.putJiraSetting(msg.JiraSettingID, msg.ProjectID, false, errMap); err != nil {
+		if err := s.putJiraSetting(ctx, msg.JiraSettingID, msg.ProjectID, false, errMap); err != nil {
 			logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Error(err))
 			return nil
 		}
@@ -67,28 +67,27 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	}
 
 	if zero.IsZeroVal(project) {
-		if err := s.putJiraSetting(msg.JiraSettingID, msg.ProjectID, false, errMap); err != nil {
+		if err := s.putJiraSetting(ctx, msg.JiraSettingID, msg.ProjectID, false, errMap); err != nil {
 			logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Error(err))
 			return err
 		}
 	}
 
 	// Get jira
-	findings, err := s.getJira(project, msg)
+	findings, err := s.getJira(ctx, project, msg)
 	if err != nil {
 		logger.Error("Faild to get findngs to Diagnosis Jira", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Uint32("ProjectID", msg.ProjectID), zap.Error(err))
 		return nil
 	}
 
 	// Put finding to core
-	ctx := context.Background()
 	if err := s.putFindings(ctx, findings); err != nil {
 		logger.Error("Faild to put findngs", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Uint32("ProjectID", msg.ProjectID), zap.Error(err))
 		return err
 	}
 
 	// Put JiraSetting
-	if err := s.putJiraSetting(msg.JiraSettingID, msg.ProjectID, true, nil); err != nil {
+	if err := s.putJiraSetting(ctx, msg.JiraSettingID, msg.ProjectID, true, nil); err != nil {
 		logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Error(err))
 		return err
 	}
@@ -106,9 +105,9 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 
 }
 
-func (s *sqsHandler) getJira(project string, message *message.JiraQueueMessage) ([]*finding.FindingForUpsert, error) {
+func (s *sqsHandler) getJira(ctx context.Context, project string, message *message.JiraQueueMessage) ([]*finding.FindingForUpsert, error) {
 	putData := []*finding.FindingForUpsert{}
-	issueList, err := s.jira.listIssues(project)
+	issueList, err := s.jira.listIssues(ctx, project)
 	if err != nil {
 		logger.Error("Jira.listIssues", zap.Error(err))
 		return nil, err
@@ -180,8 +179,7 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 	return nil
 }
 
-func (s *sqsHandler) putJiraSetting(jiraSettingID, projectID uint32, isSuccess bool, errMap map[string]string) error {
-	ctx := context.Background()
+func (s *sqsHandler) putJiraSetting(ctx context.Context, jiraSettingID, projectID uint32, isSuccess bool, errMap map[string]string) error {
 	resp, err := s.diagnosisClient.GetJiraSetting(ctx, &diagnosis.GetJiraSettingRequest{JiraSettingId: jiraSettingID, ProjectId: projectID})
 	if err != nil {
 		return err
