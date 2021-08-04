@@ -221,7 +221,7 @@ type jiraIssues struct {
 type jiraIssue struct {
 	Key    string `json:"key"`
 	Fields struct {
-		Date     string `json:"created"`
+		Date     string   `json:"created"`
 		Priority struct { // <- 構造体の中にネストさせて構造体を定義
 			Name string `json:"name"`
 		} `json:"priority"`

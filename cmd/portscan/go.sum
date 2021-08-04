@@ -7,8 +7,8 @@ github.com/CyberAgent/mimosa-common/pkg/logging v0.0.0-20210713075629-8fad8ef789
 github.com/CyberAgent/mimosa-common/pkg/logging v0.0.0-20210713075629-8fad8ef7892d/go.mod h1:4h+dXymMJmVmPhgFyqakPDiLqQjwcyMBgDOt5/mBcsQ=
 github.com/CyberAgent/mimosa-common/pkg/portscan v0.0.0-20210713075629-8fad8ef7892d h1:9T/Azj61L8TUzs+fgWiSmrXQ4vk54i5LL1Wqt0c1rMY=
 github.com/CyberAgent/mimosa-common/pkg/portscan v0.0.0-20210713075629-8fad8ef7892d/go.mod h1:eNbf0xH1n0P3ZTmyvbL4mLePMO3pbI8eFHwiKAOzc18=
-github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210721063343-44cefe7f590e h1:DzIvZgeArHkGZNsnhtEYJBCH3s4hBRjOZ2tTyf/97uI=
-github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210721063343-44cefe7f590e/go.mod h1:ruMCA0DIAer5E8qgURueEzZCovjqOKsTCobUMm2bDtw=
+github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210803120909-2cc57e3c75d2 h1:kR25hdxiwJZKpHO5fQBuso+8ob5ukisUXfauAKV/BQM=
+github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210803120909-2cc57e3c75d2/go.mod h1:5oT6h4M/jXOoae5d3i7STExxv/eV68F6yuc0Isbvli0=
 github.com/CyberAgent/mimosa-core/proto/alert v0.0.0-20210712081026-7152ed72951d h1:C2+gsy6MeBbk1iKbI1iEGORPNtLSPNLzkpja1FdFXWI=
 github.com/CyberAgent/mimosa-core/proto/alert v0.0.0-20210712081026-7152ed72951d/go.mod h1:nvD041tKVn+T4IKOblxaY22WvhwRHVxsQH1BZxuHra4=
 github.com/CyberAgent/mimosa-core/proto/finding v0.0.0-20210324123727-e579ab181157/go.mod h1:FwE1hGzqaS0cI4VbiayqpCUHKCaRsrfsDi/eB/vXf44=
@@ -35,6 +35,7 @@ github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d h1:Byv0BzEl
 github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
 github.com/aws/aws-sdk-go v1.17.12/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/aws/aws-sdk-go v1.37.10/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
+github.com/aws/aws-sdk-go v1.39.3/go.mod h1:585smgzpB/KqRA+K3y/NL/oYRqQvpNJYvLm+LY1U59Q=
 github.com/aws/aws-sdk-go v1.39.6 h1:7NoOv+XsP/7A6Yaieg8r2+bnPD3ZTARa/5tHl8N8JKY=
 github.com/aws/aws-sdk-go v1.39.6/go.mod h1:585smgzpB/KqRA+K3y/NL/oYRqQvpNJYvLm+LY1U59Q=
 github.com/aws/aws-sdk-go-v2 v1.6.0/go.mod h1:tI4KhsR5VkzlUa2DZAdwx7wCAYGwkZZ1H31PYrBFx1w=

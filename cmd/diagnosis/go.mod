@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/CyberAgent/mimosa-common/pkg/database v0.0.0-20210721063343-44cefe7f590e
-	github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210721063343-44cefe7f590e
+	github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210803120909-2cc57e3c75d2
 	github.com/CyberAgent/mimosa-diagnosis/pkg/message v0.0.0-20210714042048-32f6643f79bf
 	github.com/CyberAgent/mimosa-diagnosis/pkg/model v0.0.0-20210714042048-32f6643f79bf
 	github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis v0.0.0-20210714042048-32f6643f79bf
@@ -23,6 +23,5 @@ require (
 	google.golang.org/genproto v0.0.0-20210714021259-044028024a4f // indirect
 	google.golang.org/grpc v1.39.0
 	gopkg.in/yaml.v2 v2.3.0 // indirect
-	gorm.io/driver/mysql v1.1.1
 	gorm.io/gorm v1.21.12
 )

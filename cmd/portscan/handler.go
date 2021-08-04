@@ -13,6 +13,7 @@ import (
 	diagnosisClient "github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
+	"github.com/aws/aws-xray-sdk-go/xray"
 )
 
 type sqsHandler struct {
@@ -55,7 +56,9 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 
 	portscan.target = makeTargets(msg.Target)
 
-	findings, err := portscan.getResult(ctx, msg)
+	xctx, segment := xray.BeginSubsegment(ctx, "getResult")
+	findings, err := portscan.getResult(xctx, msg)
+	segment.Close(err)
 	if err != nil {
 		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 	}

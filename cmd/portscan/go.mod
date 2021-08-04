@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/CyberAgent/mimosa-common/pkg/logging v0.0.0-20210713075629-8fad8ef7892d
 	github.com/CyberAgent/mimosa-common/pkg/portscan v0.0.0-20210713075629-8fad8ef7892d
-	github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210721063343-44cefe7f590e
+	github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210803120909-2cc57e3c75d2
 	github.com/CyberAgent/mimosa-core/proto/alert v0.0.0-20210712081026-7152ed72951d
 	github.com/CyberAgent/mimosa-core/proto/finding v0.0.0-20210712081026-7152ed72951d
 	github.com/CyberAgent/mimosa-diagnosis/pkg/common v0.0.0-20210714042048-32f6643f79bf
