@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
+	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/kelseyhightower/envconfig"
 	"go.uber.org/zap"
 )
@@ -22,9 +24,9 @@ type sqsConfig struct {
 }
 
 type sqsAPI interface {
-	send(msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error)
-	sendWpscanMessage(msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error)
-	sendPortscanMessage(msg *message.PortscanQueueMessage) (*sqs.SendMessageOutput, error)
+	send(ctx context.Context, msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error)
+	sendWpscanMessage(ctx context.Context, msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error)
+	sendPortscanMessage(ctx context.Context, msg *message.PortscanQueueMessage) (*sqs.SendMessageOutput, error)
 }
 
 type sqsClient struct {
@@ -48,6 +50,7 @@ func newSQSClient() *sqsClient {
 		Region:   &conf.AWSRegion,
 		Endpoint: &conf.Endpoint,
 	})
+	xray.AWS(session.Client)
 
 	return &sqsClient{
 		svc: session,
@@ -60,7 +63,7 @@ func newSQSClient() *sqsClient {
 	}
 }
 
-func (s *sqsClient) send(msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error) {
+func (s *sqsClient) send(ctx context.Context, msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error) {
 	url := s.queueURLMap[msg.DataSource]
 	if url == "" {
 		return nil, fmt.Errorf("Unknown data_source, value=%s", msg.DataSource)
@@ -71,7 +74,7 @@ func (s *sqsClient) send(msg *message.JiraQueueMessage) (*sqs.SendMessageOutput,
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
 	logger.Info("Send message", zap.String("MessageBody", string(buf)), zap.String("QueueUrl", url))
-	resp, err := s.svc.SendMessage(&sqs.SendMessageInput{
+	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
@@ -83,7 +86,7 @@ func (s *sqsClient) send(msg *message.JiraQueueMessage) (*sqs.SendMessageOutput,
 	return resp, nil
 }
 
-func (s *sqsClient) sendWpscanMessage(msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error) {
+func (s *sqsClient) sendWpscanMessage(ctx context.Context, msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error) {
 	url := s.queueURLMap[msg.DataSource]
 	if url == "" {
 		return nil, fmt.Errorf("Unknown data_source, value=%s", msg.DataSource)
@@ -94,7 +97,7 @@ func (s *sqsClient) sendWpscanMessage(msg *message.WpscanQueueMessage) (*sqs.Sen
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
 	logger.Info("Send message", zap.String("MessageBody", string(buf)), zap.String("QueueUrl", url))
-	resp, err := s.svc.SendMessage(&sqs.SendMessageInput{
+	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
@@ -106,7 +109,7 @@ func (s *sqsClient) sendWpscanMessage(msg *message.WpscanQueueMessage) (*sqs.Sen
 	return resp, nil
 }
 
-func (s *sqsClient) sendPortscanMessage(msg *message.PortscanQueueMessage) (*sqs.SendMessageOutput, error) {
+func (s *sqsClient) sendPortscanMessage(ctx context.Context, msg *message.PortscanQueueMessage) (*sqs.SendMessageOutput, error) {
 	url := s.queueURLMap[msg.DataSource]
 	if url == "" {
 		return nil, fmt.Errorf("Unknown data_source, value=%s", msg.DataSource)
@@ -117,7 +120,7 @@ func (s *sqsClient) sendPortscanMessage(msg *message.PortscanQueueMessage) (*sqs
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
 	logger.Info("Send message", zap.String("MessageBody", string(buf)), zap.String("QueueUrl", url))
-	resp, err := s.svc.SendMessage(&sqs.SendMessageInput{
+	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),

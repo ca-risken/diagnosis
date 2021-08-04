@@ -14,6 +14,7 @@ import (
 	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
+	"github.com/aws/aws-xray-sdk-go/xray"
 )
 
 type sqsHandler struct {
@@ -36,7 +37,7 @@ func newHandler() *sqsHandler {
 	return h
 }
 
-func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
+func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) error {
 	msgBody := aws.StringValue(sqsMsg.Body)
 	appLogger.Infof("got message. message: %v", msgBody)
 	// Parse message
@@ -53,11 +54,13 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	appLogger.Infof("start Scan, RequestID=%s", requestID)
 
 	// Run WPScan
+	_, segment := xray.BeginSubsegment(ctx, "runWPScan")
 	wpscanResult, err := s.wpscanConfig.run(msg.TargetURL, msg.WpscanSettingID)
+	segment.Close(err)
 	//wpscanResult, err := tmpRun()
 	if err != nil {
 		appLogger.Errorf("Failed exec WPScan, error: %v", err)
-		_ = s.putWpscanSetting(msg.WpscanSettingID, msg.ProjectID, false, "Failed exec WPScan Ask the system administrator. ")
+		_ = s.putWpscanSetting(ctx, msg.WpscanSettingID, msg.ProjectID, false, "Failed exec WPScan Ask the system administrator. ")
 		return nil
 	}
 	findings, err := makeFindings(wpscanResult, msg)
@@ -67,14 +70,13 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	}
 
 	// Put Finding and Tag Finding
-	ctx := context.Background()
 	if err := s.putFindings(ctx, findings); err != nil {
 		appLogger.Errorf("Faild to put findings. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return err
 	}
 
 	// Put WpscanSetting
-	if err := s.putWpscanSetting(msg.WpscanSettingID, msg.ProjectID, true, ""); err != nil {
+	if err := s.putWpscanSetting(ctx, msg.WpscanSettingID, msg.ProjectID, true, ""); err != nil {
 		appLogger.Errorf("Faild to put rel_osint_data_source. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return err
 	}
@@ -103,8 +105,7 @@ func parseMessage(msg string) (*message.WpscanQueueMessage, error) {
 	return message, nil
 }
 
-func (s *sqsHandler) putWpscanSetting(wpscanSettingID, projectID uint32, isSuccess bool, errDetail string) error {
-	ctx := context.Background()
+func (s *sqsHandler) putWpscanSetting(ctx context.Context, wpscanSettingID, projectID uint32, isSuccess bool, errDetail string) error {
 	resp, err := s.diagnosisClient.GetWpscanSetting(ctx, &diagnosis.GetWpscanSettingRequest{WpscanSettingId: wpscanSettingID, ProjectId: projectID})
 	if err != nil {
 		return err

@@ -13,6 +13,7 @@ import (
 	diagnosisClient "github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
+	"github.com/aws/aws-xray-sdk-go/xray"
 )
 
 type sqsHandler struct {
@@ -29,7 +30,7 @@ func newHandler() *sqsHandler {
 	}
 }
 
-func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
+func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) error {
 	msgBody := aws.StringValue(sqsMsg.Body)
 	appLogger.Infof("got message: %s", msgBody)
 	// Parse message
@@ -45,18 +46,19 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	}
 	appLogger.Infof("start Scan, RequestID=%s", requestID)
 
-	ctx := context.Background()
 	// Get portscan
 	portscan, err := newPortscanClient()
 	if err != nil {
 		appLogger.Errorf("Failed to create Portscan session: err=%+v", err)
-		return s.putPortscanTarget(msg.PortscanSettingID, msg.ProjectID, false, err.Error())
+		return s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, err.Error())
 	}
 	statusDetail := ""
 
 	portscan.target = makeTargets(msg.Target)
 
-	findings, err := portscan.getResult(msg)
+	xctx, segment := xray.BeginSubsegment(ctx, "getResult")
+	findings, err := portscan.getResult(xctx, msg)
+	segment.Close(err)
 	if err != nil {
 		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 	}
@@ -64,10 +66,10 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	if err := s.putFindings(ctx, findings); err != nil {
 		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
-		return s.putPortscanTarget(msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
+		return s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
 	}
 
-	if err := s.putPortscanTarget(msg.PortscanTargetID, msg.ProjectID, true, ""); err != nil {
+	if err := s.putPortscanTarget(ctx, msg.PortscanTargetID, msg.ProjectID, true, ""); err != nil {
 		appLogger.Errorf("Failed to put portscanTarget: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		return err
 	}
@@ -84,8 +86,7 @@ func (s *sqsHandler) HandleMessage(sqsMsg *sqs.Message) error {
 	return nil
 }
 
-func (s *sqsHandler) putPortscanTarget(portscanTargetID, projectID uint32, isSuccess bool, errDetail string) error {
-	ctx := context.Background()
+func (s *sqsHandler) putPortscanTarget(ctx context.Context, portscanTargetID, projectID uint32, isSuccess bool, errDetail string) error {
 	resp, err := s.diagnosisClient.GetPortscanTarget(ctx, &diagnosisClient.GetPortscanTargetRequest{PortscanTargetId: portscanTargetID, ProjectId: projectID})
 	if err != nil {
 		return err

@@ -17,7 +17,7 @@ func (s *diagnosisService) ListWpscanSetting(ctx context.Context, req *diagnosis
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	list, err := s.repository.ListWpscanSetting(req.ProjectId, req.DiagnosisDataSourceId)
+	list, err := s.repository.ListWpscanSetting(ctx, req.ProjectId, req.DiagnosisDataSourceId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListWpscanSettingResponse{}, nil
@@ -36,7 +36,7 @@ func (s *diagnosisService) GetWpscanSetting(ctx context.Context, req *diagnosis.
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	getData, err := s.repository.GetWpscanSetting(req.ProjectId, req.WpscanSettingId)
+	getData, err := s.repository.GetWpscanSetting(ctx, req.ProjectId, req.WpscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get WpscanSettinng", zap.Error(err))
@@ -50,7 +50,7 @@ func (s *diagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	savedData, err := s.repository.GetWpscanSetting(req.ProjectId, req.WpscanSetting.WpscanSettingId)
+	savedData, err := s.repository.GetWpscanSetting(ctx, req.ProjectId, req.WpscanSetting.WpscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get WpscanSetting", zap.Error(err))
@@ -71,7 +71,7 @@ func (s *diagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 		ScanAt:                time.Unix(req.WpscanSetting.ScanAt, 0),
 	}
 
-	registerdData, err := s.repository.UpsertWpscanSetting(data)
+	registerdData, err := s.repository.UpsertWpscanSetting(ctx, data)
 	if err != nil {
 		logger.Error("Failed to Put WpscanSetting", zap.Error(err))
 		return nil, err
@@ -83,7 +83,7 @@ func (s *diagnosisService) DeleteWpscanSetting(ctx context.Context, req *diagnos
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	if err := s.repository.DeleteWpscanSetting(req.ProjectId, req.WpscanSettingId); err != nil {
+	if err := s.repository.DeleteWpscanSetting(ctx, req.ProjectId, req.WpscanSettingId); err != nil {
 		logger.Error("Failed to Delete WpscanSettinng", zap.Error(err))
 		return nil, err
 	}

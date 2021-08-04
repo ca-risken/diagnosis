@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/CyberAgent/mimosa-common/pkg/portscan"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
@@ -26,7 +28,7 @@ func newPortscanClient() (*portscanClient, error) {
 	return &p, nil
 }
 
-func (p *portscanClient) getResult(message *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error) {
+func (p *portscanClient) getResult(ctx context.Context, message *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error) {
 	putData := []*finding.FindingForUpsert{}
 
 	nmapResults, err := p.scan()
