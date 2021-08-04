@@ -7,5 +7,5 @@ run:
 enque:
 	aws sqs send-message \
 		--endpoint-url http://localhost:9324 \
-		--queue-url http://localhost:9324/queue/aws-portscan \
-		--message-body '{"aws_id":1001, "aws_data_source_id":1005, "data_source":"aws:portscan", "project_id":1001, "account_id":"315855282677", "assume_role_arn":"arn:aws:iam::315855282677:role/stg-security-monitor", "external_id":""}'
+		--queue-url http://localhost:9324/queue/diagnosis-portscan \
+		--message-body '{"data_source":"diagnosis:portscan", "project_id":1001, "portscan_setting_id":1001, "portscan_target_id":1001, "target":"127.0.0.1", "scan_only":"false"}'
