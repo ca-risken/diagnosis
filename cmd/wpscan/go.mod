@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/CyberAgent/mimosa-common/pkg/logging v0.0.0-20210707094034-b513f64f04b9
-	github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210721063343-44cefe7f590e
+	github.com/CyberAgent/mimosa-common/pkg/xray v0.0.0-20210803120909-2cc57e3c75d2
 	github.com/CyberAgent/mimosa-core/proto/alert v0.0.0-20210707124600-11b1f052c30a
 	github.com/CyberAgent/mimosa-core/proto/finding v0.0.0-20210707124600-11b1f052c30a
 	github.com/CyberAgent/mimosa-diagnosis/pkg/common v0.0.0-20210708100238-0f0fbc621f57
