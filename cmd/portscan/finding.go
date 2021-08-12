@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 
 	"github.com/CyberAgent/mimosa-common/pkg/portscan"
 	"github.com/CyberAgent/mimosa-core/proto/finding"
@@ -15,7 +16,8 @@ import (
 func makeFindings(results []*portscan.NmapResult, message *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error) {
 	var findings []*finding.FindingForUpsert
 	for _, r := range results {
-		data, err := json.Marshal(map[string]portscan.NmapResult{"data": *r})
+		externalLink := makeURL(r.Target, r.Port)
+		data, err := json.Marshal(map[string]interface{}{"data": *r, "external_link": externalLink})
 		if err != nil {
 			return nil, err
 		}
@@ -58,4 +60,15 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 func generateDataSourceID(input string) string {
 	hash := sha256.Sum256([]byte(input))
 	return hex.EncodeToString(hash[:])
+}
+
+func makeURL(target string, port int) string {
+	switch port {
+	case 443:
+		return fmt.Sprintf("https://%v", target)
+	case 80:
+		return fmt.Sprintf("http://%v", target)
+	default:
+		return fmt.Sprintf("http://%v:%v", target, port)
+	}
 }
