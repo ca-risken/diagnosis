@@ -1,18 +1,28 @@
-FROM golang AS builder
+FROM golang:1.16 AS builder
+
 WORKDIR /go/src/github.com/CyberAgent/mimosa-diagnosis/cmd/portscan/
+
 ADD *.go go.* ./
-ENV CGO_ENABLED=0 GO111MODULE=on GOPRIVATE="github.com/CyberAgent/*,github.com/ca-risken/*"
+ENV CGO_ENABLED=0 GOPRIVATE="github.com/CyberAgent/*,github.com/ca-risken/*"
+ARG ENV_INJECTOR_VERSION=v0.0.6
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
+ARG GOOS=linux
+ARG GOARCH=amd64
 RUN echo "machine github.com" > ~/.netrc
 RUN echo "login $GITHUB_USER" >> ~/.netrc
 RUN echo "password $GITHUB_TOKEN" >> ~/.netrc
-RUN go install -v
+RUN GOOS=${GOOS} GOARCH=${GOARCH} go build && cp portscan /go/bin/
+
+WORKDIR /go/src/github.com/gassara-kys
+RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_VERSION} \
+  && cd env-injector \
+  && GOOS=${GOOS} GOARCH=${GOARCH} go build \
+  && cp env-injector /go/bin/
 
 FROM alpine
-RUN apk add --no-cache ca-certificates tzdata nmap nmap-scripts \
-  && cd /tmp/ && wget -q https://github.com/gassara-kys/env-injector/releases/download/v0.0.6/env-injector_0.0.6_Linux_x86_64.tar.gz \
-  && tar xvfz env-injector_0.0.6_Linux_x86_64.tar.gz && mv env-injector /usr/local/bin/ && rm -rf /tmp/*
+RUN apk add --no-cache ca-certificates tzdata nmap nmap-scripts
+COPY --from=builder /go/bin/env-injector /usr/local/bin/
 COPY --from=builder /go/bin/portscan /usr/local/portscan/bin/
 ENV DEBUG= \
   AWS_REGION= \
