@@ -7,10 +7,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/CyberAgent/mimosa-common/pkg/portscan"
-	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/common"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
+	"github.com/ca-risken/common/pkg/portscan"
+	"github.com/ca-risken/core/proto/finding"
 )
 
 func makeFindings(results []*portscan.NmapResult, message *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error) {

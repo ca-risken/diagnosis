@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/CyberAgent/mimosa-core/proto/finding"
 	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
+	"github.com/ca-risken/core/proto/finding"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/vikyd/zero"
 )
