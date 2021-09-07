@@ -689,6 +689,282 @@ func TestValidate_DeletePortscanTargetRequest(t *testing.T) {
 	}
 }
 
+//ApplicationScan DataSource
+
+func TestValidate_ListApplicationScanRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *ListApplicationScanRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &ListApplicationScanRequest{ProjectId: 1},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &ListApplicationScanRequest{},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_GetApplicationScanRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *GetApplicationScanRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &GetApplicationScanRequest{ProjectId: 1, ApplicationScanId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &GetApplicationScanRequest{ApplicationScanId: 2},
+			wantErr: true,
+		},
+		{
+			name:    "NG required(portscan_setting_id)",
+			input:   &GetApplicationScanRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_PutApplicationScanRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *PutApplicationScanRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &PutApplicationScanRequest{ProjectId: 1001, ApplicationScan: &ApplicationScanForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_target", ScanAt: 0}},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(ApplicationScan)",
+			input:   &PutApplicationScanRequest{ProjectId: 1001},
+			wantErr: true,
+		},
+		{
+			name:    "NG Not Equal(project_id != portscan_setting.project_id)",
+			input:   &PutApplicationScanRequest{ProjectId: 1001, ApplicationScan: &ApplicationScanForUpsert{ProjectId: 1002, DiagnosisDataSourceId: 1, Name: "hoge_target", ScanAt: 0}},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(ProjectId)",
+			input:   &PutApplicationScanRequest{ApplicationScan: &ApplicationScanForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_target", ScanAt: 0}},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_DeleteApplicationScanRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *DeleteApplicationScanRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &DeleteApplicationScanRequest{ProjectId: 1, ApplicationScanId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &DeleteApplicationScanRequest{ApplicationScanId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(application_scan_id)",
+			input:   &DeleteApplicationScanRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+//ApplicationScanBasicSetting DataSource
+
+func TestValidate_ListApplicationScanBasicSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *ListApplicationScanBasicSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &ListApplicationScanBasicSettingRequest{ProjectId: 1},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &ListApplicationScanBasicSettingRequest{},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_GetApplicationScanBasicSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *GetApplicationScanBasicSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &GetApplicationScanBasicSettingRequest{ProjectId: 1, ApplicationScanBasicSettingId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG required(project_id)",
+			input:   &GetApplicationScanBasicSettingRequest{ApplicationScanBasicSettingId: 2},
+			wantErr: true,
+		},
+		{
+			name:    "NG required(portscan_target_id)",
+			input:   &GetApplicationScanBasicSettingRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_PutApplicationScanBasicSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *PutApplicationScanBasicSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &PutApplicationScanBasicSettingRequest{ProjectId: 1001, ApplicationScanBasicSetting: &ApplicationScanBasicSettingForUpsert{ProjectId: 1001, ApplicationScanId: 1, ApplicationScanBasicSettingId: 1, Target: "hoge_target"}},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(ApplicationScanBasicSetting)",
+			input:   &PutApplicationScanBasicSettingRequest{ProjectId: 1001},
+			wantErr: true,
+		},
+		{
+			name:    "NG Not Equal(project_id != portscan_setting.project_id)",
+			input:   &PutApplicationScanBasicSettingRequest{ProjectId: 1001, ApplicationScanBasicSetting: &ApplicationScanBasicSettingForUpsert{ProjectId: 1002, ApplicationScanId: 1, ApplicationScanBasicSettingId: 1, Target: "hoge_target"}},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(ProjectId)",
+			input:   &PutApplicationScanBasicSettingRequest{ApplicationScanBasicSetting: &ApplicationScanBasicSettingForUpsert{ProjectId: 1001, ApplicationScanId: 1, ApplicationScanBasicSettingId: 1, Target: "hoge_target"}},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_DeleteApplicationScanBasicSettingRequest(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *DeleteApplicationScanBasicSettingRequest
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &DeleteApplicationScanBasicSettingRequest{ProjectId: 1, ApplicationScanBasicSettingId: 2},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &DeleteApplicationScanBasicSettingRequest{ApplicationScanBasicSettingId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(application_scan_basic_setting_id)",
+			input:   &DeleteApplicationScanBasicSettingRequest{ProjectId: 1},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
 func TestValidate_InvokeScanRequest(t *testing.T) {
 	cases := []struct {
 		name    string
@@ -1003,6 +1279,114 @@ func TestValidate_PortscanTargetForUpsert(t *testing.T) {
 		{
 			name:    "NG Too large scan_at",
 			input:   &PortscanTargetForUpsert{ProjectId: 1001, PortscanSettingId: 1, Target: "hoge_url", ScanAt: 253402268400},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_ApplicationScanForUpsert(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *ApplicationScanForUpsert
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &ApplicationScanForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "hoge_url"},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &ApplicationScanForUpsert{DiagnosisDataSourceId: 1, Name: "hoge_url"},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(diagnosis_data_source_id)",
+			input:   &ApplicationScanForUpsert{ProjectId: 1001, Name: "hoge_url"},
+			wantErr: true,
+		},
+		{
+			name:    "Too long(name)",
+			input:   &ApplicationScanForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, Name: "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901"},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(name)",
+			input:   &ApplicationScanForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too small scan_at",
+			input:   &ApplicationScanForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, ScanAt: -1},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too large max_depth",
+			input:   &ApplicationScanForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, ScanAt: 253402268400},
+			wantErr: true,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := c.input.Validate()
+			if c.wantErr && err == nil {
+				t.Fatal("Unexpected no error")
+			} else if !c.wantErr && err != nil {
+				t.Fatalf("Unexpected error occured: wantErr=%t, err=%+v", c.wantErr, err)
+			}
+		})
+	}
+}
+
+func TestValidate_ApplicationScanBasicSettingForUpsert(t *testing.T) {
+	cases := []struct {
+		name    string
+		input   *ApplicationScanBasicSettingForUpsert
+		wantErr bool
+	}{
+		{
+			name:    "OK",
+			input:   &ApplicationScanBasicSettingForUpsert{ProjectId: 1001, ApplicationScanId: 1, Target: "hoge_url", MaxDepth: 10, MaxChildren: 10},
+			wantErr: false,
+		},
+		{
+			name:    "NG Required(project_id)",
+			input:   &ApplicationScanBasicSettingForUpsert{ApplicationScanId: 1, Target: "hoge_url", MaxDepth: 10, MaxChildren: 10},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(portscan_setting_id)",
+			input:   &ApplicationScanBasicSettingForUpsert{ProjectId: 1001, Target: "hoge_url", MaxDepth: 10, MaxChildren: 10},
+			wantErr: true,
+		},
+		{
+			name:    "Too long(target)",
+			input:   &ApplicationScanBasicSettingForUpsert{ProjectId: 1001, ApplicationScanId: 1, Target: "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901", MaxDepth: 10, MaxChildren: 10},
+			wantErr: true,
+		},
+		{
+			name:    "NG Required(target)",
+			input:   &ApplicationScanBasicSettingForUpsert{ProjectId: 1001, ApplicationScanId: 1, MaxDepth: 10, MaxChildren: 10},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too large max_depth",
+			input:   &ApplicationScanBasicSettingForUpsert{ProjectId: 1001, ApplicationScanId: 1, Target: "hoge_url", MaxDepth: 101, MaxChildren: 10},
+			wantErr: true,
+		},
+		{
+			name:    "NG Too large max_children",
+			input:   &ApplicationScanBasicSettingForUpsert{ProjectId: 1001, ApplicationScanId: 1, Target: "hoge_url", MaxDepth: 10, MaxChildren: 101},
 			wantErr: true,
 		},
 	}
