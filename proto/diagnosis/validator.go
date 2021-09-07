@@ -196,6 +196,82 @@ func (r *DeletePortscanTargetRequest) Validate() error {
 	)
 }
 
+// ApplicationScan
+
+// Validate ListApplicationScanRequest
+func (r *ListApplicationScanRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+	)
+}
+
+// Validate GetApplicationScanRequest
+func (r *GetApplicationScanRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.ApplicationScanId, validation.Required),
+	)
+}
+
+// Validate PutApplicationScanRequest
+func (r *PutApplicationScanRequest) Validate() error {
+	if r.ApplicationScan == nil {
+		return errors.New("Required ApplicationScan")
+	}
+	if err := validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.In(r.ApplicationScan.ProjectId), validation.Required),
+	); err != nil {
+		return err
+	}
+	return r.ApplicationScan.Validate()
+}
+
+// Validate DeleteApplicationScanRequest
+func (r *DeleteApplicationScanRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.ApplicationScanId, validation.Required),
+	)
+}
+
+// ApplicationScanBasicSetting
+
+// Validate ListApplicationScanBasicSettingRequest
+func (r *ListApplicationScanBasicSettingRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+	)
+}
+
+// Validate GetApplicationScanBasicSettingRequest
+func (r *GetApplicationScanBasicSettingRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.ApplicationScanBasicSettingId, validation.Required),
+	)
+}
+
+// Validate PutApplicationScanBasicSettingRequest
+func (r *PutApplicationScanBasicSettingRequest) Validate() error {
+	if r.ApplicationScanBasicSetting == nil {
+		return errors.New("Required ApplicationScanBasicSetting")
+	}
+	if err := validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.In(r.ApplicationScanBasicSetting.ProjectId), validation.Required),
+	); err != nil {
+		return err
+	}
+	return r.ApplicationScanBasicSetting.Validate()
+}
+
+// Validate DeleteApplicationScanBasicSettingRequest
+func (r *DeleteApplicationScanBasicSettingRequest) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.ApplicationScanBasicSettingId, validation.Required),
+	)
+}
+
 // Validate InvokeScanRequest
 func (r *InvokeScanRequest) Validate() error {
 	return validation.ValidateStruct(r,
@@ -262,5 +338,27 @@ func (r *PortscanTargetForUpsert) Validate() error {
 		validation.Field(&r.Target, validation.Required, validation.Length(0, 300)),
 		validation.Field(&r.ScanAt, validation.Min(0), validation.Max(253402268399)), //  1970-01-01T00:00:00 ~ 9999-12-31T23:59:59
 		validation.Field(&r.StatusDetail, validation.Length(0, 255)),
+	)
+}
+
+// Validate ApplicationScanForUpsert
+func (r *ApplicationScanForUpsert) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.DiagnosisDataSourceId, validation.Required),
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.Name, validation.Required, validation.Length(0, 200)),
+		validation.Field(&r.ScanAt, validation.Min(0), validation.Max(253402268399)), //  1970-01-01T00:00:00 ~ 9999-12-31T23:59:59
+		validation.Field(&r.StatusDetail, validation.Length(0, 255)),
+	)
+}
+
+// Validate ApplicationScanBasicSettingForUpsert
+func (r *ApplicationScanBasicSettingForUpsert) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.ProjectId, validation.Required),
+		validation.Field(&r.ApplicationScanId, validation.Required),
+		validation.Field(&r.Target, validation.Required, validation.Length(0, 255)),
+		validation.Field(&r.MaxDepth, validation.Min(uint32(0)), validation.Max(uint32(100))),
+		validation.Field(&r.MaxChildren, validation.Min(uint32(0)), validation.Max(uint32(100))),
 	)
 }
