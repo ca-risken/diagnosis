@@ -9,6 +9,8 @@ const (
 	TagWordPress = "wordpress"
 	// TagPortscan portscan tag
 	TagPortscan = "portscan"
+	// TagApplicationScan application-scan tag
+	TagApplicationScan = "application-scan"
 
 	// Diagnosis Resource Type
 
