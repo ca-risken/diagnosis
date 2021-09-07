@@ -55,6 +55,27 @@ service DiagnosisService {
   rpc DeletePortscanTarget(DeletePortscanTargetRequest)
       returns (google.protobuf.Empty) {}
 
+  // ApplicationScan
+  rpc ListApplicationScan(ListApplicationScanRequest)
+      returns (ListApplicationScanResponse) {}
+  rpc GetApplicationScan(GetApplicationScanRequest)
+      returns (GetApplicationScanResponse) {}
+  rpc PutApplicationScan(PutApplicationScanRequest)
+      returns (PutApplicationScanResponse) {}
+  rpc DeleteApplicationScan(DeleteApplicationScanRequest)
+      returns (google.protobuf.Empty) {}
+
+  // ApplicationScanBasicSetting
+  rpc ListApplicationScanBasicSetting(ListApplicationScanBasicSettingRequest)
+      returns (ListApplicationScanBasicSettingResponse) {}
+  rpc GetApplicationScanBasicSetting(GetApplicationScanBasicSettingRequest)
+      returns (GetApplicationScanBasicSettingResponse) {}
+  rpc PutApplicationScanBasicSetting(PutApplicationScanBasicSettingRequest)
+      returns (PutApplicationScanBasicSettingResponse) {}
+  rpc DeleteApplicationScanBasicSetting(
+      DeleteApplicationScanBasicSettingRequest)
+      returns (google.protobuf.Empty) {}
+
   // KICK
   rpc InvokeScan(InvokeScanRequest) returns (InvokeScanResponse) {}
   rpc InvokeScanAll(google.protobuf.Empty) returns (google.protobuf.Empty) {}
@@ -204,6 +225,67 @@ message PutPortscanTargetResponse { PortscanTarget portscan_target = 1; }
 message DeletePortscanTargetRequest {
   uint32 project_id = 1;
   uint32 portscan_target_id = 2;
+}
+
+// ApplicationScanService
+message ListApplicationScanRequest {
+  uint32 project_id = 1;
+  uint32 diagnosis_data_source_id = 2;
+}
+
+message ListApplicationScanResponse {
+  repeated ApplicationScan application_scan = 1;
+}
+
+message GetApplicationScanRequest {
+  uint32 project_id = 1;
+  uint32 application_scan_id = 2;
+}
+
+message GetApplicationScanResponse { ApplicationScan application_scan = 1; }
+
+message PutApplicationScanRequest {
+  uint32 project_id = 1;
+  ApplicationScanForUpsert application_scan = 2;
+}
+
+message PutApplicationScanResponse { ApplicationScan application_scan = 1; }
+
+message DeleteApplicationScanRequest {
+  uint32 project_id = 1;
+  uint32 application_scan_id = 2;
+}
+
+message ListApplicationScanBasicSettingRequest {
+  uint32 project_id = 1;
+  uint32 application_scan_id = 2;
+}
+
+message ListApplicationScanBasicSettingResponse {
+  repeated ApplicationScanBasicSetting application_scan_basic_setting = 1;
+}
+
+message GetApplicationScanBasicSettingRequest {
+  uint32 project_id = 1;
+  uint32 application_scan_basic_setting_id = 2;
+}
+
+message GetApplicationScanBasicSettingResponse {
+  ApplicationScanBasicSetting application_scan_basic_setting = 1;
+}
+
+message PutApplicationScanBasicSettingRequest {
+  uint32 project_id = 1;
+  ApplicationScanBasicSettingForUpsert application_scan_basic_setting = 2;
+}
+
+message PutApplicationScanBasicSettingResponse {
+  ApplicationScanBasicSetting application_scan_basic_setting = 1;
+}
+
+message DeleteApplicationScanBasicSettingRequest {
+  uint32 project_id = 1;
+  uint32 application_scan_basic_setting_id = 2;
 }
 
 // KICK Diagnosis

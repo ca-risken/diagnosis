@@ -4,6 +4,10 @@
 ## Table of Contents
 
 - [diagnosis/entities.proto](#diagnosis/entities.proto)
+    - [ApplicationScan](#diagnosis.ApplicationScan)
+    - [ApplicationScanBasicSetting](#diagnosis.ApplicationScanBasicSetting)
+    - [ApplicationScanBasicSettingForUpsert](#diagnosis.ApplicationScanBasicSettingForUpsert)
+    - [ApplicationScanForUpsert](#diagnosis.ApplicationScanForUpsert)
     - [DiagnosisDataSource](#diagnosis.DiagnosisDataSource)
     - [DiagnosisDataSourceForUpsert](#diagnosis.DiagnosisDataSourceForUpsert)
     - [JiraSetting](#diagnosis.JiraSetting)
@@ -18,11 +22,17 @@
     - [Status](#diagnosis.Status)
   
 - [diagnosis/services.proto](#diagnosis/services.proto)
+    - [DeleteApplicationScanBasicSettingRequest](#diagnosis.DeleteApplicationScanBasicSettingRequest)
+    - [DeleteApplicationScanRequest](#diagnosis.DeleteApplicationScanRequest)
     - [DeleteDiagnosisDataSourceRequest](#diagnosis.DeleteDiagnosisDataSourceRequest)
     - [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest)
     - [DeletePortscanSettingRequest](#diagnosis.DeletePortscanSettingRequest)
     - [DeletePortscanTargetRequest](#diagnosis.DeletePortscanTargetRequest)
     - [DeleteWpscanSettingRequest](#diagnosis.DeleteWpscanSettingRequest)
+    - [GetApplicationScanBasicSettingRequest](#diagnosis.GetApplicationScanBasicSettingRequest)
+    - [GetApplicationScanBasicSettingResponse](#diagnosis.GetApplicationScanBasicSettingResponse)
+    - [GetApplicationScanRequest](#diagnosis.GetApplicationScanRequest)
+    - [GetApplicationScanResponse](#diagnosis.GetApplicationScanResponse)
     - [GetDiagnosisDataSourceRequest](#diagnosis.GetDiagnosisDataSourceRequest)
     - [GetDiagnosisDataSourceResponse](#diagnosis.GetDiagnosisDataSourceResponse)
     - [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest)
@@ -35,6 +45,10 @@
     - [GetWpscanSettingResponse](#diagnosis.GetWpscanSettingResponse)
     - [InvokeScanRequest](#diagnosis.InvokeScanRequest)
     - [InvokeScanResponse](#diagnosis.InvokeScanResponse)
+    - [ListApplicationScanBasicSettingRequest](#diagnosis.ListApplicationScanBasicSettingRequest)
+    - [ListApplicationScanBasicSettingResponse](#diagnosis.ListApplicationScanBasicSettingResponse)
+    - [ListApplicationScanRequest](#diagnosis.ListApplicationScanRequest)
+    - [ListApplicationScanResponse](#diagnosis.ListApplicationScanResponse)
     - [ListDiagnosisDataSourceRequest](#diagnosis.ListDiagnosisDataSourceRequest)
     - [ListDiagnosisDataSourceResponse](#diagnosis.ListDiagnosisDataSourceResponse)
     - [ListJiraSettingRequest](#diagnosis.ListJiraSettingRequest)
@@ -45,6 +59,10 @@
     - [ListPortscanTargetResponse](#diagnosis.ListPortscanTargetResponse)
     - [ListWpscanSettingRequest](#diagnosis.ListWpscanSettingRequest)
     - [ListWpscanSettingResponse](#diagnosis.ListWpscanSettingResponse)
+    - [PutApplicationScanBasicSettingRequest](#diagnosis.PutApplicationScanBasicSettingRequest)
+    - [PutApplicationScanBasicSettingResponse](#diagnosis.PutApplicationScanBasicSettingResponse)
+    - [PutApplicationScanRequest](#diagnosis.PutApplicationScanRequest)
+    - [PutApplicationScanResponse](#diagnosis.PutApplicationScanResponse)
     - [PutDiagnosisDataSourceRequest](#diagnosis.PutDiagnosisDataSourceRequest)
     - [PutDiagnosisDataSourceResponse](#diagnosis.PutDiagnosisDataSourceResponse)
     - [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest)
@@ -66,6 +84,92 @@
 <p align="right"><a href="#top">Top</a></p>
 
 ## diagnosis/entities.proto
+
+
+
+<a name="diagnosis.ApplicationScan"></a>
+
+### ApplicationScan
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+| name | [string](#string) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
+| status_detail | [string](#string) |  |  |
+| scan_at | [int64](#int64) |  |  |
+| created_at | [int64](#int64) |  |  |
+| updated_at | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ApplicationScanBasicSetting"></a>
+
+### ApplicationScanBasicSetting
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan_basic_setting_id | [uint32](#uint32) |  |  |
+| application_scan_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| target | [string](#string) |  |  |
+| max_depth | [uint32](#uint32) |  |  |
+| max_children | [uint32](#uint32) |  |  |
+| created_at | [int64](#int64) |  |  |
+| updated_at | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ApplicationScanBasicSettingForUpsert"></a>
+
+### ApplicationScanBasicSettingForUpsert
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan_basic_setting_id | [uint32](#uint32) |  |  |
+| application_scan_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| target | [string](#string) |  |  |
+| max_depth | [uint32](#uint32) |  |  |
+| max_children | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ApplicationScanForUpsert"></a>
+
+### ApplicationScanForUpsert
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan_id | [uint32](#uint32) |  |  |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+| name | [string](#string) |  |  |
+| status | [Status](#diagnosis.Status) |  |  |
+| status_detail | [string](#string) |  |  |
+| scan_at | [int64](#int64) |  |  |
+
+
+
 
 
 
@@ -316,6 +420,38 @@ Status
 
 
 
+<a name="diagnosis.DeleteApplicationScanBasicSettingRequest"></a>
+
+### DeleteApplicationScanBasicSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| application_scan_basic_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.DeleteApplicationScanRequest"></a>
+
+### DeleteApplicationScanRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| application_scan_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
 <a name="diagnosis.DeleteDiagnosisDataSourceRequest"></a>
 
 ### DeleteDiagnosisDataSourceRequest
@@ -390,6 +526,68 @@ Status
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
 | wpscan_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetApplicationScanBasicSettingRequest"></a>
+
+### GetApplicationScanBasicSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| application_scan_basic_setting_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetApplicationScanBasicSettingResponse"></a>
+
+### GetApplicationScanBasicSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan_basic_setting | [ApplicationScanBasicSetting](#diagnosis.ApplicationScanBasicSetting) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetApplicationScanRequest"></a>
+
+### GetApplicationScanRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| application_scan_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.GetApplicationScanResponse"></a>
+
+### GetApplicationScanResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan | [ApplicationScan](#diagnosis.ApplicationScan) |  |  |
 
 
 
@@ -584,6 +782,68 @@ KICK Diagnosis
 
 
 
+<a name="diagnosis.ListApplicationScanBasicSettingRequest"></a>
+
+### ListApplicationScanBasicSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| application_scan_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ListApplicationScanBasicSettingResponse"></a>
+
+### ListApplicationScanBasicSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan_basic_setting | [ApplicationScanBasicSetting](#diagnosis.ApplicationScanBasicSetting) | repeated |  |
+
+
+
+
+
+
+<a name="diagnosis.ListApplicationScanRequest"></a>
+
+### ListApplicationScanRequest
+ApplicationScanService
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.ListApplicationScanResponse"></a>
+
+### ListApplicationScanResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan | [ApplicationScan](#diagnosis.ApplicationScan) | repeated |  |
+
+
+
+
+
+
 <a name="diagnosis.ListDiagnosisDataSourceRequest"></a>
 
 ### ListDiagnosisDataSourceRequest
@@ -734,6 +994,68 @@ WpscanSettingService
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | wpscan_setting | [WpscanSetting](#diagnosis.WpscanSetting) | repeated |  |
+
+
+
+
+
+
+<a name="diagnosis.PutApplicationScanBasicSettingRequest"></a>
+
+### PutApplicationScanBasicSettingRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| application_scan_basic_setting | [ApplicationScanBasicSettingForUpsert](#diagnosis.ApplicationScanBasicSettingForUpsert) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutApplicationScanBasicSettingResponse"></a>
+
+### PutApplicationScanBasicSettingResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan_basic_setting | [ApplicationScanBasicSetting](#diagnosis.ApplicationScanBasicSetting) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutApplicationScanRequest"></a>
+
+### PutApplicationScanRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| project_id | [uint32](#uint32) |  |  |
+| application_scan | [ApplicationScanForUpsert](#diagnosis.ApplicationScanForUpsert) |  |  |
+
+
+
+
+
+
+<a name="diagnosis.PutApplicationScanResponse"></a>
+
+### PutApplicationScanResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| application_scan | [ApplicationScan](#diagnosis.ApplicationScan) |  |  |
 
 
 
@@ -929,6 +1251,14 @@ WpscanSettingService
 | GetPortscanTarget | [GetPortscanTargetRequest](#diagnosis.GetPortscanTargetRequest) | [GetPortscanTargetResponse](#diagnosis.GetPortscanTargetResponse) |  |
 | PutPortscanTarget | [PutPortscanTargetRequest](#diagnosis.PutPortscanTargetRequest) | [PutPortscanTargetResponse](#diagnosis.PutPortscanTargetResponse) |  |
 | DeletePortscanTarget | [DeletePortscanTargetRequest](#diagnosis.DeletePortscanTargetRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
+| ListApplicationScan | [ListApplicationScanRequest](#diagnosis.ListApplicationScanRequest) | [ListApplicationScanResponse](#diagnosis.ListApplicationScanResponse) | ApplicationScan |
+| GetApplicationScan | [GetApplicationScanRequest](#diagnosis.GetApplicationScanRequest) | [GetApplicationScanResponse](#diagnosis.GetApplicationScanResponse) |  |
+| PutApplicationScan | [PutApplicationScanRequest](#diagnosis.PutApplicationScanRequest) | [PutApplicationScanResponse](#diagnosis.PutApplicationScanResponse) |  |
+| DeleteApplicationScan | [DeleteApplicationScanRequest](#diagnosis.DeleteApplicationScanRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
+| ListApplicationScanBasicSetting | [ListApplicationScanBasicSettingRequest](#diagnosis.ListApplicationScanBasicSettingRequest) | [ListApplicationScanBasicSettingResponse](#diagnosis.ListApplicationScanBasicSettingResponse) | ApplicationScanBasicSetting |
+| GetApplicationScanBasicSetting | [GetApplicationScanBasicSettingRequest](#diagnosis.GetApplicationScanBasicSettingRequest) | [GetApplicationScanBasicSettingResponse](#diagnosis.GetApplicationScanBasicSettingResponse) |  |
+| PutApplicationScanBasicSetting | [PutApplicationScanBasicSettingRequest](#diagnosis.PutApplicationScanBasicSettingRequest) | [PutApplicationScanBasicSettingResponse](#diagnosis.PutApplicationScanBasicSettingResponse) |  |
+| DeleteApplicationScanBasicSetting | [DeleteApplicationScanBasicSettingRequest](#diagnosis.DeleteApplicationScanBasicSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 | InvokeScan | [InvokeScanRequest](#diagnosis.InvokeScanRequest) | [InvokeScanResponse](#diagnosis.InvokeScanResponse) | KICK |
 | InvokeScanAll | [.google.protobuf.Empty](#google.protobuf.Empty) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 

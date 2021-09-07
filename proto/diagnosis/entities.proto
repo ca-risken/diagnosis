@@ -109,6 +109,48 @@ message PortscanTargetForUpsert {
   int64 scan_at = 7;
 }
 
+message ApplicationScan {
+  uint32 application_scan_id = 1;
+  uint32 project_id = 2;
+  uint32 diagnosis_data_source_id = 3;
+  string name = 4;
+  Status status = 5;
+  string status_detail = 6;
+  int64 scan_at = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
+}
+
+message ApplicationScanForUpsert {
+  uint32 application_scan_id = 1;
+  uint32 project_id = 2;
+  uint32 diagnosis_data_source_id = 3;
+  string name = 4;
+  Status status = 5;
+  string status_detail = 6;
+  int64 scan_at = 7;
+}
+
+message ApplicationScanBasicSetting {
+  uint32 application_scan_basic_setting_id = 1;
+  uint32 application_scan_id = 2;
+  uint32 project_id = 3;
+  string target = 4;
+  uint32 max_depth = 5;
+  uint32 max_children = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
+}
+
+message ApplicationScanBasicSettingForUpsert {
+  uint32 application_scan_basic_setting_id = 1;
+  uint32 application_scan_id = 2;
+  uint32 project_id = 3;
+  string target = 4;
+  uint32 max_depth = 5;
+  uint32 max_children = 6;
+}
+
 // Status
 enum Status {
   UNKNOWN = 0;
