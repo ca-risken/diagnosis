@@ -1,20 +1,30 @@
-FROM golang:1.15 AS builder
+FROM golang:1.16 AS builder
+
 WORKDIR /go/src/github.com/CyberAgent/mimosa-diagnosis/src/wpscan/
+
 ADD *.go go.* ./
-ENV CGO_ENABLED=0 GO111MODULE=on GOPRIVATE="github.com/CyberAgent/*,github.com/ca-risken/*"
+ENV CGO_ENABLED=0 GOPRIVATE="github.com/CyberAgent/*,github.com/ca-risken/*"
+ARG ENV_INJECTOR_VERSION=v0.0.6
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
+ARG GOOS=linux
+ARG GOARCH=amd64
 RUN echo "machine github.com" > ~/.netrc
 RUN echo "login $GITHUB_USER" >> ~/.netrc
 RUN echo "password $GITHUB_TOKEN" >> ~/.netrc
-RUN go install -v
+RUN GOOS=${GOOS} GOARCH=${GOARCH} go build && cp wpscan /go/bin/
 
-FROM wpscanteam/wpscan:latest
+WORKDIR /go/src/github.com/gassara-kys
+RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_VERSION} \
+  && cd env-injector \
+  && GOOS=${GOOS} GOARCH=${GOARCH} go build \
+  && cp env-injector /go/bin/
+
+FROM public.ecr.aws/w4a9j2y8/risken-diagnosis/wpscan-base:v3.8.18
 USER root 
 RUN apk add --no-cache ca-certificates tzdata \
-  && cd /tmp/ && wget -q https://github.com/gassara-kys/env-injector/releases/download/v0.0.6/env-injector_0.0.6_Linux_x86_64.tar.gz \
-  && tar xvfz env-injector_0.0.6_Linux_x86_64.tar.gz && mv env-injector /usr/local/bin/ && rm -rf /tmp/* \
-  && mkdir /results
+    && mkdir /results
+COPY --from=builder /go/bin/env-injector /usr/local/bin/
 COPY --from=builder /go/bin/wpscan /usr/local/wpscan/bin/
 ENV PORT=19003 \
   AWS_REGION= \
