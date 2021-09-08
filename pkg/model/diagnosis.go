@@ -80,14 +80,14 @@ type ApplicationScan struct {
 	UpdatedAt             time.Time
 }
 
-// PortscanTarget Entity
+// ApplicationScanBasicSetting Entity
 type ApplicationScanBasicSetting struct {
-	PortscanTargetID  uint32 `gorm:"primary_key"`
-	PortscanSettingID uint32
-	ProjectID         uint32
-	Target            string
-	MaxDepth          uint32
-	MaxChildren       uint32
-	CreatedAt         time.Time
-	UpdatedAt         time.Time
+	ApplicationScanBasicSettingID uint32 `gorm:"primary_key"`
+	ApplicationScanID             uint32
+	ProjectID                     uint32
+	Target                        string
+	MaxDepth                      uint32
+	MaxChildren                   uint32
+	CreatedAt                     time.Time
+	UpdatedAt                     time.Time
 }
