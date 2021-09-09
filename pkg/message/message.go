@@ -36,7 +36,7 @@ type ApplicationScanQueueMessage struct {
 	DataSource          string `json:"data_source"`
 	ApplicationScanID   uint32 `json:"application_scan_id"`
 	ProjectID           uint32 `json:"project_id"`
-	Target              string `json:"target"`
+	Name                string `json:"name"`
 	ApplicationScanType string `json:"application_scan_type"`
 	ScanOnly            bool   `json:"scan_only,string"`
 }
