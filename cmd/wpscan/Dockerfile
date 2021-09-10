@@ -7,17 +7,15 @@ ENV CGO_ENABLED=0 GOPRIVATE="github.com/CyberAgent/*,github.com/ca-risken/*"
 ARG ENV_INJECTOR_VERSION=v0.0.6
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
-ARG GOOS=linux
-ARG GOARCH=amd64
 RUN echo "machine github.com" > ~/.netrc
 RUN echo "login $GITHUB_USER" >> ~/.netrc
 RUN echo "password $GITHUB_TOKEN" >> ~/.netrc
-RUN GOOS=${GOOS} GOARCH=${GOARCH} go build && cp wpscan /go/bin/
+RUN go build && cp wpscan /go/bin/
 
 WORKDIR /go/src/github.com/gassara-kys
 RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_VERSION} \
   && cd env-injector \
-  && GOOS=${GOOS} GOARCH=${GOARCH} go build \
+  && go build \
   && cp env-injector /go/bin/
 
 FROM public.ecr.aws/w4a9j2y8/risken-diagnosis/wpscan-base:v3.8.18
