@@ -1,4 +1,4 @@
-TARGETS = diagnosis jira wpscan portscan
+TARGETS = diagnosis jira wpscan portscan application_scan
 BUILD_TARGETS = $(TARGETS:=.build)
 BUILD_CI_TARGETS = $(TARGETS:=.build-ci)
 IMAGE_PUSH_TARGETS = $(TARGETS:=.push-image)
@@ -103,13 +103,18 @@ go-mod-update:
 		&& go get -u \
 			github.com/ca-risken/core/... \
 			github.com/ca-risken/diagnosis/...
+	cd cmd/application_scan \
+		&& go get -u \
+			github.com/ca-risken/core/... \
+			github.com/ca-risken/diagnosis/...
 
 .PHONY: go-mod-tidy
 go-mod-tidy: proto
-	cd pkg/message   && go mod tidy
-	cd cmd/diagnosis && go mod tidy
-	cd cmd/jira      && go mod tidy
-	cd cmd/wpscan    && go mod tidy
-	cd cmd/portscan  && go mod tidy
+	cd pkg/message           && go mod tidy
+	cd cmd/diagnosis         && go mod tidy
+	cd cmd/jira              && go mod tidy
+	cd cmd/wpscan            && go mod tidy
+	cd cmd/portscan          && go mod tidy
+	cd cmd/application_scan  && go mod tidy
 
 FAKE:

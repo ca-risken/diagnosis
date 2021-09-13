@@ -5,8 +5,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/common"
 	"github.com/ca-risken/core/proto/finding"
+	"github.com/ca-risken/diagnosis/pkg/common"
 )
 
 func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert) error {

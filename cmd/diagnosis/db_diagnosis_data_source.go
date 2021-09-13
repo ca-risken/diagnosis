@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
+	"github.com/ca-risken/diagnosis/pkg/model"
 )
 
 func (r *diagnosisRepository) ListDiagnosisDataSource(ctx context.Context, projectID uint32, name string) (*[]model.DiagnosisDataSource, error) {

@@ -7,14 +7,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/common"
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
-	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/ca-risken/common/pkg/logging"
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
+	"github.com/ca-risken/diagnosis/pkg/common"
+	"github.com/ca-risken/diagnosis/pkg/message"
+	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/vikyd/zero"
 	"go.uber.org/zap"
 )

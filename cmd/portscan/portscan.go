@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
 	"github.com/ca-risken/common/pkg/portscan"
 	"github.com/ca-risken/core/proto/finding"
+	"github.com/ca-risken/diagnosis/pkg/message"
 )
 
 type portscanAPI interface {

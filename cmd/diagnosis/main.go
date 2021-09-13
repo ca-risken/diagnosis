@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
 	"github.com/aws/aws-xray-sdk-go/xray"
 	mimosaxray "github.com/ca-risken/common/pkg/xray"
+	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
