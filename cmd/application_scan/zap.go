@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
 	"github.com/ca-risken/core/proto/finding"
+	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/kelseyhightower/envconfig"
 )
 

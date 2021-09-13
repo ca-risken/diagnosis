@@ -1,6 +1,6 @@
 FROM golang:1.16 AS builder
 
-WORKDIR /go/src/github.com/CyberAgent/mimosa-diagnosis/src/jira/
+WORKDIR /go/src/github.com/ca-risken/diagnosis/src/jira/
 
 ADD *.go go.* ./
 ENV CGO_ENABLED=0 GOPRIVATE="github.com/CyberAgent/*,github.com/ca-risken/*"

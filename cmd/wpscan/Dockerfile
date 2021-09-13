@@ -1,6 +1,6 @@
 FROM golang:1.16 AS builder
 
-WORKDIR /go/src/github.com/CyberAgent/mimosa-diagnosis/src/wpscan/
+WORKDIR /go/src/github.com/ca-risken/diagnosis/src/wpscan/
 
 ADD *.go go.* ./
 ENV CGO_ENABLED=0 GOPRIVATE="github.com/CyberAgent/*,github.com/ca-risken/*"
@@ -21,7 +21,7 @@ RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_
 FROM public.ecr.aws/w4a9j2y8/risken-diagnosis/wpscan-base:v3.8.18
 USER root 
 RUN apk add --no-cache ca-certificates tzdata \
-    && mkdir /results
+  && mkdir /results
 COPY --from=builder /go/bin/env-injector /usr/local/bin/
 COPY --from=builder /go/bin/wpscan /usr/local/wpscan/bin/
 ENV PORT=19003 \

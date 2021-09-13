@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/message"
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
-	"github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis"
+	"github.com/ca-risken/diagnosis/pkg/message"
+	"github.com/ca-risken/diagnosis/pkg/model"
+	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

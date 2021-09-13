@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/CyberAgent/mimosa-diagnosis/pkg/model"
+	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/vikyd/zero"
 )
 
