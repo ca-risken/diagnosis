@@ -90,19 +90,19 @@ pkg-test:
 go-mod-update:
 	cd cmd/diagnosis \
 		&& go get -u \
-			github.com/CyberAgent/mimosa-diagnosis/...
+			github.com/ca-risken/diagnosis/...
 	cd cmd/jira \
 		&& go get -u \
-			github.com/CyberAgent/mimosa-core/... \
-			github.com/CyberAgent/mimosa-diagnosis/...
+			github.com/ca-risken/core/... \
+			github.com/ca-risken/diagnosis/...
 	cd cmd/wpscan \
 		&& go get -u \
-			github.com/CyberAgent/mimosa-core/... \
-			github.com/CyberAgent/mimosa-diagnosis/...
+			github.com/ca-risken/core/... \
+			github.com/ca-risken/diagnosis/...
 	cd cmd/portscan \
 		&& go get -u \
-			github.com/CyberAgent/mimosa-core/... \
-			github.com/CyberAgent/mimosa-diagnosis/...
+			github.com/ca-risken/core/... \
+			github.com/ca-risken/diagnosis/...
 
 .PHONY: go-mod-tidy
 go-mod-tidy: proto

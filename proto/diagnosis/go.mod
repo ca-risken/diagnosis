@@ -1,4 +1,4 @@
-module github.com/CyberAgent/mimosa-diagnosis/proto/diagnosis
+module github.com/ca-risken/diagnosis/proto/diagnosis
 
 go 1.16
 
