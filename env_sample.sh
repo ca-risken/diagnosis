@@ -29,6 +29,8 @@ export DIAGNOSIS_WPSCAN_QUEUE_NAME="diagnosis-wpscan"
 export DIAGNOSIS_WPSCAN_QUEUE_URL="http://sqs:9324/queue/diagnosis-wpscan"
 export DIAGNOSIS_PORTSCAN_QUEUE_NAME="diagnosis-portscan"
 export DIAGNOSIS_PORTSCAN_QUEUE_URL="http://sqs:9324/queue/diagnosis-portscan"
+export DIAGNOSIS_APPLICATION_SCAN_QUEUE_BANE="diagnosis-applicationscan"
+export DIAGNOSIS_APPLICATION_SCAN_QUEUE_URL="http://sqs:9324/queue/diagnosis-applicationscan"
 export DIAGNOSIS_JIRA_URL="https://ca-security.atlassian.net/"
 export DIAGNOSIS_JIRA_USER_ID="jira-user"
 export DIAGNOSIS_JIRA_USER_PASSWORD="jira-password"
@@ -44,3 +46,8 @@ export WPSCAN_VULNDB_APIKEY="wpscan-api"
 
 # Portscan
 export MAX_NUMBER_OF_MESSAGE="10"
+
+# Application Scan
+export ZAP_PORT="8080"
+export ZAP_API_KEY_NAME="apikey"
+export ZAP_API_KEY_HEADER="X-ZAP-API-Key"

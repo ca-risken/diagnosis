@@ -165,6 +165,20 @@ invoke-scan-wpscan:
 		-d '{"project_id":1001, "setting_id":1001,"diagnosis_data_source_id":1002}' \
 		localhost:19001 diagnosis.DiagnosisService.InvokeScan
 
+.PHONY: invoke-scan-portscan
+invoke-scan-portscan:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "setting_id":1001,"diagnosis_data_source_id":1003}' \
+		localhost:19001 diagnosis.DiagnosisService.InvokeScan
+
+.PHONY: invoke-scan-application-scan
+invoke-scan-application-scan:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "setting_id":1001,"diagnosis_data_source_id":1004}' \
+		localhost:19001 diagnosis.DiagnosisService.InvokeScan
+
 .PHONY: invoke-scan-all
 invoke-scan-all:
 	grpcurl \
