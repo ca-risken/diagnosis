@@ -1,3 +1,3 @@
-module github.com/CyberAgent/mimosa-diagnosis/pkg/message
+module github.com/ca-risken/diagnosis/pkg/message
 
-go 1.15
+go 1.16

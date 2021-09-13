@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package diagnosis;
-option go_package = "github.com/CyberAgent/mimosa-diagnosis/pkg/pb/diagnosis";
+option go_package = "github.com/ca-risken/diagnosis/pkg/pb/diagnosis";
 
 message DiagnosisDataSource {
   uint32 diagnosis_data_source_id = 1;
