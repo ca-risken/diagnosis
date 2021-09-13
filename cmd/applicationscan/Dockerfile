@@ -1,6 +1,6 @@
 FROM golang:1.16 AS builder
 
-WORKDIR /go/src/github.com/ca-risken/diagnosis/cmd/application_scan/
+WORKDIR /go/src/github.com/ca-risken/diagnosis/cmd/applicationscan/
 
 ADD *.go go.* ./
 ENV CGO_ENABLED=0 GOPRIVATE="github.com/CyberAgent/*,github.com/ca-risken/*"
@@ -10,7 +10,7 @@ ARG GITHUB_TOKEN
 RUN echo "machine github.com" > ~/.netrc
 RUN echo "login $GITHUB_USER" >> ~/.netrc
 RUN echo "password $GITHUB_TOKEN" >> ~/.netrc
-RUN go build && cp application_scan /go/bin/
+RUN go build && cp applicationscan /go/bin/
 
 WORKDIR /go/src/github.com/gassara-kys
 RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_VERSION} \
@@ -20,7 +20,7 @@ RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_
 
 FROM owasp/zap2docker-bare:latest
 COPY --from=builder /go/bin/env-injector /usr/local/bin/
-COPY --from=builder /go/bin/application_scan /usr/local/application_scan/bin/
+COPY --from=builder /go/bin/applicationscan /usr/local/applicationscan/bin/
 ENV DEBUG= \
   AWS_REGION= \
   AWS_ACCESS_KEY_ID= \
@@ -39,6 +39,6 @@ ENV DEBUG= \
   AWS_SVC_ADDR= \
   ZAP_PORT= \
   TZ=Asia/Tokyo
-WORKDIR /usr/local/application_scan
+WORKDIR /usr/local/applicationscan
 ENTRYPOINT ["/usr/local/bin/env-injector"]
-CMD ["bin/application_scan"]
+CMD ["bin/applicationscan"]

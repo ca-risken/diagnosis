@@ -1,4 +1,4 @@
-module github.com/ca-risken/diagnosis/cmd/application_scan
+module github.com/ca-risken/diagnosis/cmd/applicationscan
 
 go 1.16
 
