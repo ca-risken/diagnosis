@@ -124,6 +124,37 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		}); err != nil {
 			return nil, err
 		}
+	case "diagnosis:application-scan":
+		data, err := d.repository.GetApplicationScan(ctx, req.ProjectId, req.SettingId)
+		if err != nil {
+			logger.Error("Error occured when getting PortscanSetting", zap.Error(err))
+			return nil, err
+		}
+		msg, err := makeApplicationScanMessage(req.ProjectId, req.SettingId, data.Name)
+		if err != nil {
+			return nil, err
+		}
+		msg.ScanOnly = req.ScanOnly
+		resp, err = d.sqs.sendApplicationScanMessage(ctx, msg)
+		if err != nil {
+			return nil, err
+		}
+		var scanAt time.Time
+		if !zero.IsZeroVal(data.ScanAt) {
+			scanAt = data.ScanAt
+		}
+		if _, err = d.repository.UpsertApplicationScan(ctx, &model.ApplicationScan{
+			ApplicationScanID:     data.ApplicationScanID,
+			DiagnosisDataSourceID: data.DiagnosisDataSourceID,
+			ProjectID:             data.ProjectID,
+			Name:                  data.Name,
+			Status:                diagnosis.Status_IN_PROGRESS.String(),
+			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
+			ScanAt:                scanAt,
+		}); err != nil {
+			logger.Error("Error occured when upsert Application scan", zap.Error(err))
+			return nil, err
+		}
 	default:
 		return nil, nil
 	}

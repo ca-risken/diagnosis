@@ -32,6 +32,14 @@ type diagnosisRepoInterface interface {
 	UpsertPortscanTarget(context.Context, *model.PortscanTarget) (*model.PortscanTarget, error)
 	DeletePortscanTarget(context.Context, uint32, uint32) error
 	DeletePortscanTargetByPortscanSettingID(context.Context, uint32, uint32) error
+	ListApplicationScan(context.Context, uint32, uint32) (*[]model.ApplicationScan, error)
+	GetApplicationScan(context.Context, uint32, uint32) (*model.ApplicationScan, error)
+	UpsertApplicationScan(context.Context, *model.ApplicationScan) (*model.ApplicationScan, error)
+	DeleteApplicationScan(context.Context, uint32, uint32) error
+	ListApplicationScanBasicSetting(context.Context, uint32, uint32) (*[]model.ApplicationScanBasicSetting, error)
+	GetApplicationScanBasicSetting(context.Context, uint32, uint32) (*model.ApplicationScanBasicSetting, error)
+	UpsertApplicationScanBasicSetting(context.Context, *model.ApplicationScanBasicSetting) (*model.ApplicationScanBasicSetting, error)
+	DeleteApplicationScanBasicSetting(context.Context, uint32, uint32) error
 
 	//for InvokeScan
 	ListAllJiraSetting(context.Context) (*[]model.JiraSetting, error)
