@@ -113,12 +113,12 @@ services:
       - ALERT_SVC_ADDR=${ALERT_SVC_ADDR}
       - DIAGNOSIS_SVC_ADDR=${DIAGNOSIS_SVC_ADDR}
       - MAX_NUMBER_OF_MESSAGE=${MAX_NUMBER_OF_MESSAGE}
-  application_scan:
+  applicationscan:
     networks:
       - local-shared
       - diagnosis
     build:
-      context: ./cmd/application_scan
+      context: ./cmd/applicationscan
       args:
         - GITHUB_USER=${GITHUB_USER}
         - GITHUB_TOKEN=${GITHUB_TOKEN}
