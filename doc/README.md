@@ -19,6 +19,7 @@
     - [WpscanSetting](#diagnosis.WpscanSetting)
     - [WpscanSettingForUpsert](#diagnosis.WpscanSettingForUpsert)
   
+    - [ApplicationScanType](#diagnosis.ApplicationScanType)
     - [Status](#diagnosis.Status)
   
 - [diagnosis/services.proto](#diagnosis/services.proto)
@@ -104,6 +105,7 @@
 | scan_at | [int64](#int64) |  |  |
 | created_at | [int64](#int64) |  |  |
 | updated_at | [int64](#int64) |  |  |
+| scan_type | [ApplicationScanType](#diagnosis.ApplicationScanType) |  |  |
 
 
 
@@ -167,6 +169,7 @@
 | status | [Status](#diagnosis.Status) |  |  |
 | status_detail | [string](#string) |  |  |
 | scan_at | [int64](#int64) |  |  |
+| scan_type | [ApplicationScanType](#diagnosis.ApplicationScanType) |  |  |
 
 
 
@@ -389,6 +392,17 @@
 
 
  
+
+
+<a name="diagnosis.ApplicationScanType"></a>
+
+### ApplicationScanType
+Status
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| BASIC | 0 |  |
+
 
 
 <a name="diagnosis.Status"></a>

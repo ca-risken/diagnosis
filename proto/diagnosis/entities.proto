@@ -119,6 +119,7 @@ message ApplicationScan {
   int64 scan_at = 7;
   int64 created_at = 8;
   int64 updated_at = 9;
+  ApplicationScanType scan_type = 10;
 }
 
 message ApplicationScanForUpsert {
@@ -129,6 +130,7 @@ message ApplicationScanForUpsert {
   Status status = 5;
   string status_detail = 6;
   int64 scan_at = 7;
+  ApplicationScanType scan_type = 8;
 }
 
 message ApplicationScanBasicSetting {
@@ -159,3 +161,6 @@ enum Status {
   IN_PROGRESS = 3;
   ERROR = 4;
 }
+
+// Status
+enum ApplicationScanType { BASIC = 0; }
