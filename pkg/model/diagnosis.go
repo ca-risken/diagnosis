@@ -73,6 +73,7 @@ type ApplicationScan struct {
 	DiagnosisDataSourceID uint32
 	ProjectID             uint32
 	Name                  string
+	ScanType              string
 	Status                string
 	StatusDetail          string
 	ScanAt                time.Time
