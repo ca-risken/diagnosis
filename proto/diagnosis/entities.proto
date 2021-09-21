@@ -163,4 +163,7 @@ enum Status {
 }
 
 // Status
-enum ApplicationScanType { BASIC = 0; }
+enum ApplicationScanType {
+  NOT_CONFIGURED = 0;
+  BASIC = 1;
+}
