@@ -401,7 +401,8 @@ Status
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| BASIC | 0 |  |
+| NOT_CONFIGURED | 0 |  |
+| BASIC | 1 |  |
 
 
 
