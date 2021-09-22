@@ -866,12 +866,12 @@ func TestValidate_GetApplicationScanBasicSettingRequest(t *testing.T) {
 	}{
 		{
 			name:    "OK",
-			input:   &GetApplicationScanBasicSettingRequest{ProjectId: 1, ApplicationScanBasicSettingId: 2},
+			input:   &GetApplicationScanBasicSettingRequest{ProjectId: 1, ApplicationScanId: 2},
 			wantErr: false,
 		},
 		{
 			name:    "NG required(project_id)",
-			input:   &GetApplicationScanBasicSettingRequest{ApplicationScanBasicSettingId: 2},
+			input:   &GetApplicationScanBasicSettingRequest{ApplicationScanId: 2},
 			wantErr: true,
 		},
 		{

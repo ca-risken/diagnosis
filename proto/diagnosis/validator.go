@@ -247,7 +247,7 @@ func (r *ListApplicationScanBasicSettingRequest) Validate() error {
 func (r *GetApplicationScanBasicSettingRequest) Validate() error {
 	return validation.ValidateStruct(r,
 		validation.Field(&r.ProjectId, validation.Required),
-		validation.Field(&r.ApplicationScanBasicSettingId, validation.Required),
+		validation.Field(&r.ApplicationScanId, validation.Required),
 	)
 }
 
