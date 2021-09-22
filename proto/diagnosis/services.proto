@@ -267,7 +267,7 @@ message ListApplicationScanBasicSettingResponse {
 
 message GetApplicationScanBasicSettingRequest {
   uint32 project_id = 1;
-  uint32 application_scan_basic_setting_id = 2;
+  uint32 application_scan_id = 2;
 }
 
 message GetApplicationScanBasicSettingResponse {

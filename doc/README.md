@@ -556,7 +556,7 @@ Status
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | project_id | [uint32](#uint32) |  |  |
-| application_scan_basic_setting_id | [uint32](#uint32) |  |  |
+| application_scan_id | [uint32](#uint32) |  |  |
 
 
 
