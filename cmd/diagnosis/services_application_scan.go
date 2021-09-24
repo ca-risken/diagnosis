@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/ca-risken/diagnosis/pkg/message"
@@ -66,6 +67,7 @@ func (s *diagnosisService) PutApplicationScan(ctx context.Context, req *diagnosi
 		ProjectID:             req.ProjectId,
 		DiagnosisDataSourceID: req.ApplicationScan.DiagnosisDataSourceId,
 		Name:                  req.ApplicationScan.Name,
+		ScanType:              req.ApplicationScan.ScanType.String(),
 		Status:                req.ApplicationScan.Status.String(),
 		StatusDetail:          req.ApplicationScan.StatusDetail,
 		ScanAt:                time.Unix(req.ApplicationScan.ScanAt, 0),
@@ -118,7 +120,7 @@ func (s *diagnosisService) GetApplicationScanBasicSetting(ctx context.Context, r
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
-	getData, err := s.repository.GetApplicationScanBasicSetting(ctx, req.ProjectId, req.ApplicationScanBasicSettingId)
+	getData, err := s.repository.GetApplicationScanBasicSetting(ctx, req.ProjectId, req.ApplicationScanId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
 		logger.Error("Failed to Get ApplicationScanBasicSetting", zap.Error(err))
@@ -170,6 +172,7 @@ func convertApplicationScan(data *model.ApplicationScan) *diagnosis.ApplicationS
 		DiagnosisDataSourceId: data.DiagnosisDataSourceID,
 		ProjectId:             data.ProjectID,
 		Name:                  data.Name,
+		ScanType:              getScanType(data.ScanType),
 		Status:                getStatus(data.Status),
 		StatusDetail:          data.StatusDetail,
 		ScanAt:                data.ScanAt.Unix(),
@@ -194,13 +197,26 @@ func convertApplicationScanBasicSetting(data *model.ApplicationScanBasicSetting)
 	}
 }
 
-func makeApplicationScanMessage(projectID, applicationScanID uint32, name string) (*message.ApplicationScanQueueMessage, error) {
+func getScanType(s string) diagnosis.ApplicationScanType {
+	statusKey := strings.ToUpper(s)
+	if _, ok := diagnosis.ApplicationScanType_value[statusKey]; !ok {
+		return diagnosis.ApplicationScanType_NOT_CONFIGURED
+	}
+	switch statusKey {
+	case diagnosis.ApplicationScanType_BASIC.String():
+		return diagnosis.ApplicationScanType_BASIC
+	default:
+		return diagnosis.ApplicationScanType_NOT_CONFIGURED
+	}
+}
+
+func makeApplicationScanMessage(projectID, applicationScanID uint32, name, scanType string) (*message.ApplicationScanQueueMessage, error) {
 	msg := &message.ApplicationScanQueueMessage{
 		DataSource:          "diagnosis:application-scan",
 		ApplicationScanID:   applicationScanID,
 		ProjectID:           projectID,
 		Name:                name,
-		ApplicationScanType: "basic",
+		ApplicationScanType: scanType,
 	}
 	return msg, nil
 }

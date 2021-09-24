@@ -61,9 +61,9 @@ func (r *diagnosisRepository) ListApplicationScanBasicSetting(ctx context.Contex
 	return &data, nil
 }
 
-func (r *diagnosisRepository) GetApplicationScanBasicSetting(ctx context.Context, projectID uint32, applicationScanBasicSettingID uint32) (*model.ApplicationScanBasicSetting, error) {
+func (r *diagnosisRepository) GetApplicationScanBasicSetting(ctx context.Context, projectID uint32, applicationScanID uint32) (*model.ApplicationScanBasicSetting, error) {
 	var data model.ApplicationScanBasicSetting
-	if err := r.SlaveDB.WithContext(ctx).Where("project_id = ? AND application_scan_basic_setting_id = ?", projectID, applicationScanBasicSettingID).First(&data).Error; err != nil {
+	if err := r.SlaveDB.WithContext(ctx).Where("project_id = ? AND application_scan_id = ?", projectID, applicationScanID).First(&data).Error; err != nil {
 		return nil, err
 	}
 	return &data, nil
@@ -99,6 +99,7 @@ func applicationScanToMap(applicationScan *model.ApplicationScan) map[string]int
 		"diagnosis_data_source_id": applicationScan.DiagnosisDataSourceID,
 		"project_id":               applicationScan.ProjectID,
 		"name":                     applicationScan.Name,
+		"scan_type":                applicationScan.ScanType,
 		"status":                   applicationScan.Status,
 		"status_detail":            applicationScan.StatusDetail,
 	}

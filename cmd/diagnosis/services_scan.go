@@ -130,7 +130,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			logger.Error("Error occured when getting PortscanSetting", zap.Error(err))
 			return nil, err
 		}
-		msg, err := makeApplicationScanMessage(req.ProjectId, req.SettingId, data.Name)
+		msg, err := makeApplicationScanMessage(req.ProjectId, req.SettingId, data.Name, data.ScanType)
 		if err != nil {
 			return nil, err
 		}
@@ -148,6 +148,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			DiagnosisDataSourceID: data.DiagnosisDataSourceID,
 			ProjectID:             data.ProjectID,
 			Name:                  data.Name,
+			ScanType:              data.ScanType,
 			Status:                diagnosis.Status_IN_PROGRESS.String(),
 			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
 			ScanAt:                scanAt,

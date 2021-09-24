@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -83,13 +84,15 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	_, segment := xray.BeginSubsegment(ctx, "runApplicationScan")
 	pID := cli.executeZap(apiKey)
 	var scanResult *zapResult
-	switch msg.ApplicationScanType {
-	case "basic":
+	switch strings.ToUpper(msg.ApplicationScanType) {
+	case "BASIC":
 		scanResult, err = s.handleBasicScan(ctx, cli, msg.ApplicationScanID, msg.ProjectID, msg.Name)
+	default:
+		err = errors.New("ScanType is not configured.")
 	}
-	err = cli.terminateZap(pID)
-	if err != nil {
-		appLogger.Errorf("Failed to terminate Zap, error: %v", err)
+	errTerminate := cli.terminateZap(pID)
+	if errTerminate != nil {
+		appLogger.Errorf("Failed to terminate Zap, error: %v", errTerminate)
 		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
 		return nil
 	}
@@ -113,7 +116,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 
 	// Put ApplicationScan
 	if err := s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, true, ""); err != nil {
-		appLogger.Errorf("Faild to put rel_osint_data_source. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
+		appLogger.Errorf("Faild to put applicationscan. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
 		return err
 	}
 
@@ -178,9 +181,10 @@ func (s *sqsHandler) putApplicationScan(ctx context.Context, applicationScanID, 
 		DiagnosisDataSourceId: resp.ApplicationScan.DiagnosisDataSourceId,
 		ProjectId:             resp.ApplicationScan.ProjectId,
 		Name:                  resp.ApplicationScan.Name,
+		ScanType:              resp.ApplicationScan.ScanType,
+		Status:                getStatus(isSuccess),
 		ScanAt:                time.Now().Unix(),
 	}
-	applicationScan.Status = getStatus(isSuccess)
 	if isSuccess {
 		applicationScan.StatusDetail = ""
 	} else {
@@ -195,15 +199,11 @@ func (s *sqsHandler) putApplicationScan(ctx context.Context, applicationScanID, 
 }
 
 func (s *sqsHandler) GetBasicScanSetting(ctx context.Context, projectID, applicationScanID uint32) (*diagnosis.ApplicationScanBasicSetting, error) {
-	resp, err := s.diagnosisClient.ListApplicationScanBasicSetting(ctx, &diagnosis.ListApplicationScanBasicSettingRequest{ApplicationScanId: applicationScanID, ProjectId: projectID})
+	resp, err := s.diagnosisClient.GetApplicationScanBasicSetting(ctx, &diagnosis.GetApplicationScanBasicSettingRequest{ApplicationScanId: applicationScanID, ProjectId: projectID})
 	if err != nil {
 		return nil, err
 	}
-	settings := resp.ApplicationScanBasicSetting
-	if len(settings) != 1 {
-		return nil, errors.New(fmt.Sprintf("%v ApplicationScan BasicSetting found, Ask the Administrator.", len(settings)))
-	}
-	return resp.ApplicationScanBasicSetting[0], nil
+	return resp.ApplicationScanBasicSetting, nil
 }
 
 func (s *sqsHandler) CallAnalyzeAlert(ctx context.Context, projectID uint32) error {
