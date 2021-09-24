@@ -150,7 +150,61 @@ delete-portscan_target:
 		-plaintext \
 		-d '{"project_id":1001, "portscan_target_id":1001}' \
 		localhost:19001 diagnosis.DiagnosisService.DeletePortscanTarget
+.PHONY: list-application_scan
+list-application_scan:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.ListApplicationScan
 
+.PHONY: get-application_scan
+get-application_scan:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "application_scan_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.GetApplicationScan
+
+.PHONY: put-application_scan
+put-application_scan:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "application_scan": {"diagnosis_data_source_id":1004, "project_id":1001, "name":"test_target","scan_type":"BASIC","status":"CONFIGURED"}}' \
+		localhost:19001 diagnosis.DiagnosisService.PutApplicationScan
+
+.PHONY: delete-application_scan
+delete-application_scan:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "application_scan_id":1002}' \
+		localhost:19001 diagnosis.DiagnosisService.DeleteApplicationScan
+
+.PHONY: list-application_scan_basic_setting
+list-application_scan_basic_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.ListApplicationScanBasicSetting
+
+.PHONY: get-application_scan_basic_setting
+get-application_scan_basic_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "application_scan_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.GetApplicationScanBasicSetting
+
+.PHONY: put-application_scan_basic_setting
+put-application_scan_basic_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "application_scan_basic_setting": {"application_scan_id":1001, "project_id":1001, "target":"http://localhost:8080", "max_depth":10, "max_children": 10}}' \
+		localhost:19001 diagnosis.DiagnosisService.PutApplicationScanBasicSetting
+
+.PHONY: delete-application_scan_basic_setting
+delete-application_scan_basic_setting:
+	grpcurl \
+		-plaintext \
+		-d '{"project_id":1001, "application_scan_basic_setting_id":1001}' \
+		localhost:19001 diagnosis.DiagnosisService.DeleteApplicationScanBasicSetting
 .PHONY: invoke-scan-jira
 invoke-scan-jira:
 	grpcurl \

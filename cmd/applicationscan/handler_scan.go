@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -49,10 +50,20 @@ func (c *zapClient) HandleSpiderScan(contextName string, maxChildren uint32) err
 		return err
 	}
 	spiderScanID := retSpiderScan["scan"]
+	if spiderScanID == nil {
+		err = errors.New("SpiderScanID is null")
+		appLogger.Errorf("Failed to get spider scan ID, error: %v", err)
+		return err
+	}
 	for {
 		retSpiderStatus, err := c.SpiderStatus(spiderScanID.(string))
 		if err != nil {
 			appLogger.Errorf("Failed to get status spider, error: %v", err)
+			return err
+		}
+		if retSpiderStatus["status"] == nil {
+			err = errors.New("SpiderScanStatus is null")
+			appLogger.Errorf("Failed to get spider scan status, error: %v", err)
 			return err
 		}
 		spiderStatus, err := strconv.Atoi(retSpiderStatus["status"].(string))
@@ -76,10 +87,20 @@ func (c *zapClient) HandleActiveScan() error {
 		appLogger.Errorf("Failed to execute active scan, error: %v", err)
 		return err
 	}
-	AscanScanID := retAscanScan["scan"]
+	ascanScanID := retAscanScan["scan"]
+	if ascanScanID == nil {
+		err = errors.New("ActiveScanID is null")
+		appLogger.Errorf("Failed to get active scan ID, error: %v", err)
+		return err
+	}
 	for {
-		retAscanStatus, err := c.AscanStatus(AscanScanID.(string))
+		retAscanStatus, err := c.AscanStatus(ascanScanID.(string))
 		if err != nil {
+			appLogger.Errorf("Failed to get active scan status, error: %v", err)
+			return err
+		}
+		if retAscanStatus["status"] == nil {
+			err = errors.New("ActiveScanStatus is null")
 			appLogger.Errorf("Failed to get active scan status, error: %v", err)
 			return err
 		}

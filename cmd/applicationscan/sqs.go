@@ -18,7 +18,7 @@ type sqsConfig struct {
 
 	DiagnosisApplicationScanQueueName string `split_words:"true" default:"diagnosis-applicationscan"`
 	DiagnosisApplicationScanQueueURL  string `split_words:"true" default:"http://localhost:9324/queue/diagnosis-applicationscan"`
-	MaxNumberOfMessage                int64  `split_words:"true" default:"5"`
+	MaxNumberOfMessage                int64  `split_words:"true" default:"1"`
 	WaitTimeSecond                    int64  `split_words:"true" default:"20"`
 }
 
