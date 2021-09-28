@@ -23,7 +23,7 @@ phases:
 
       - echo Logging in to Amazon ECR...
       - codebuild-breakpoint
-      - $(aws ecr-public get-login-password --region ${REPO_REGION} | docker login --username AWS --password-stdin ${REGISTORY})
+      - aws ecr-public get-login-password --region ${REPO_REGION} | docker login --username AWS --password-stdin ${REGISTORY}
   build:
     commands:
       - echo Build applicationscan base image started on `date`
