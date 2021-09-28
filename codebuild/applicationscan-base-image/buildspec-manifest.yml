@@ -19,7 +19,7 @@ phases:
       - echo Setting environment variables
       - BUILD_OPT="--no-cache --pull"
       - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-      - REGISTORY="public.ecr.aws/w4a9j2y8/"
+      - REGISTORY="public.ecr.aws/w4a9j2y8"
       - REPO_REGION="us-east-1"
 
       - echo Logging in to Amazon ECR...
