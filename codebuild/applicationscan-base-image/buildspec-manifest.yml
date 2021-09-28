@@ -23,7 +23,7 @@ phases:
       - REPO_REGION="us-east-1"
 
       - echo Logging in to Amazon ECR...
-      - $(aws ecr-public get-login-password --region ${REPO_REGION} | docker login --username AWS --password-stdin ${REGISTORY})
+      - aws ecr-public get-login-password --region ${REPO_REGION} | docker login --username AWS --password-stdin ${REGISTORY}
   build:
     commands:
       - echo Build applicationscan base image manifest started on `date`
