@@ -20,6 +20,11 @@ func (c *zapClient) HandleBasicSetting(name string, maxDepth, maxChildren uint32
 		appLogger.Errorf("Failed to create context, error: %v", err)
 		return err
 	}
+	if retNewContext["contextId"] == nil {
+		err = errors.New("ContextID is null")
+		appLogger.Errorf("Failed to get context ID, error: %v", err)
+		return err
+	}
 	c.contextID = retNewContext["contextId"].(string)
 	_, err = c.IncludeInContext(name, c.targetURL+".*")
 	if err != nil {
@@ -82,7 +87,7 @@ func (c *zapClient) HandleSpiderScan(contextName string, maxChildren uint32) err
 func (c *zapClient) HandleActiveScan() error {
 	// Exec Scan
 
-	retAscanScan, err := c.AscanScan(c.targetURL, "True", "True", "Default Policy", "", "", c.contextID)
+	retAscanScan, err := c.AscanScan("", "True", "True", "Default Policy", "", "", c.contextID)
 	if err != nil {
 		appLogger.Errorf("Failed to execute active scan, error: %v", err)
 		return err

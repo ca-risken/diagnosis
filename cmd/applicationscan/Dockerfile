@@ -18,7 +18,7 @@ RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_
   && go build \
   && cp env-injector /go/bin/
 
-FROM owasp/zap2docker-bare:latest
+FROM public.ecr.aws/w4a9j2y8/diagnosis/applicationscan-base:v2.10.0
 COPY --from=builder /go/bin/env-injector /usr/local/bin/
 COPY --from=builder /go/bin/applicationscan /usr/local/applicationscan/bin/
 ENV DEBUG= \
