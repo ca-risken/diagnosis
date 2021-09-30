@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/ca-risken/common/pkg/logging"
+	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/pkg/message"
@@ -58,7 +59,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	msg, err := parseMessage(msgBody)
 	if err != nil {
 		appLogger.Errorf("Invalid message. message: %v, error: %v", msgBody, err)
-		return err
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
@@ -73,13 +74,13 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	if err != nil {
 		appLogger.Errorf("Failed to create ZapClient, error: %v", err)
 		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return nil
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	if err != nil {
 		appLogger.Errorf("Failed to generate API Key, error: %v", err)
 		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return nil
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	_, segment := xray.BeginSubsegment(ctx, "runApplicationScan")
 	pID := cli.executeZap(apiKey)
@@ -94,30 +95,30 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	if errTerminate != nil {
 		appLogger.Errorf("Failed to terminate Zap, error: %v", errTerminate)
 		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return nil
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	segment.Close(err)
 	if err != nil {
 		appLogger.Errorf("Failed to exec basicScan, error: %v", err)
 		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return nil
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	findings, err := makeFindings(scanResult, msg, cli.targetURL)
 	if err != nil {
 		appLogger.Errorf("Failed making Findings, error: %v", err)
-		return err
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	// Put Finding and Tag Finding
 	if err := s.putFindings(ctx, findings); err != nil {
 		appLogger.Errorf("Faild to put findings. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
-		return err
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	// Put ApplicationScan
 	if err := s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, true, ""); err != nil {
 		appLogger.Errorf("Faild to put applicationscan. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
-		return err
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	appLogger.Infof("end Scan, RequestID=%s", requestID)
@@ -127,7 +128,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	// Call AnalyzeAlert
 	if err := s.CallAnalyzeAlert(ctx, msg.ProjectID); err != nil {
 		appLogger.Errorf("Faild to analyze alert. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
-		return err
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	return nil
 

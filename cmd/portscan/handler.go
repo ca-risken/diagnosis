@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/ca-risken/common/pkg/logging"
+	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/pkg/message"
@@ -37,7 +38,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	msg, err := parseMessage(msgBody)
 	if err != nil {
 		appLogger.Errorf("Invalid message: SQS_msg=%+v, err=%+v", msgBody, err)
-		return err
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
@@ -50,7 +51,8 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	portscan, err := newPortscanClient()
 	if err != nil {
 		appLogger.Errorf("Failed to create Portscan session: err=%+v", err)
-		return s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, err.Error())
+		_ = s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, err.Error())
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	statusDetail := ""
 
@@ -66,12 +68,13 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	if err := s.putFindings(ctx, findings); err != nil {
 		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
-		return s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
+		_ = s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	if err := s.putPortscanTarget(ctx, msg.PortscanTargetID, msg.ProjectID, true, ""); err != nil {
 		appLogger.Errorf("Failed to put portscanTarget: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
-		return err
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	appLogger.Infof("Scan finished. ProjectID: %v, PortscanSettingID: %v, Target: %v, RequestID: %s", msg.ProjectID, msg.PortscanSettingID, msg.Target, requestID)
@@ -81,7 +84,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	}
 	if err := s.analyzeAlert(ctx, msg.ProjectID); err != nil {
 		appLogger.Errorf("Failed to analyze alert: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
-		return err
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	return nil
 }
