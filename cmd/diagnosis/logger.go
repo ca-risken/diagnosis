@@ -1,17 +1,15 @@
 package main
 
 import (
-	"go.uber.org/zap"
+	"github.com/sirupsen/logrus"
 )
 
-var logger *zap.Logger
+var (
+	appLogger = newAppLogger()
+)
 
-func initLogger(level string) error {
-	logger, _ = zap.NewDevelopment()
-
-	return nil
-}
-
-func syncLogger() {
-	logger.Sync()
+func newAppLogger() *logrus.Logger {
+	logger := logrus.New()
+	logger.SetFormatter(&logrus.JSONFormatter{})
+	return logger
 }

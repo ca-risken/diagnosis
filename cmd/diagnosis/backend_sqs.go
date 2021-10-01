@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/kelseyhightower/envconfig"
-	"go.uber.org/zap"
 )
 
 type sqsConfig struct {
@@ -25,7 +24,7 @@ type sqsConfig struct {
 }
 
 type sqsAPI interface {
-	send(ctx context.Context, msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error)
+	sendJiraMessage(ctx context.Context, msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error)
 	sendWpscanMessage(ctx context.Context, msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error)
 	sendPortscanMessage(ctx context.Context, msg *message.PortscanQueueMessage) (*sqs.SendMessageOutput, error)
 	sendApplicationScanMessage(ctx context.Context, msg *message.ApplicationScanQueueMessage) (*sqs.SendMessageOutput, error)
@@ -66,24 +65,24 @@ func newSQSClient() *sqsClient {
 	}
 }
 
-func (s *sqsClient) send(ctx context.Context, msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error) {
+func (s *sqsClient) sendJiraMessage(ctx context.Context, msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error) {
 	url := s.queueURLMap[msg.DataSource]
 	if url == "" {
 		return nil, fmt.Errorf("Unknown data_source, value=%s", msg.DataSource)
 	}
 	buf, err := json.Marshal(msg)
 	if err != nil {
-		logger.Error("Failed to parse message", zap.Error(err))
+		appLogger.Errorf("Failed to parse message, error: %v", err)
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
-	logger.Info("Send message", zap.String("MessageBody", string(buf)), zap.String("QueueUrl", url))
+	appLogger.Infof("Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
 	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
 	})
 	if err != nil {
-		logger.Error("Failed to send message", zap.Error(err))
+		appLogger.Errorf("Failed to send message, error: %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -96,17 +95,17 @@ func (s *sqsClient) sendWpscanMessage(ctx context.Context, msg *message.WpscanQu
 	}
 	buf, err := json.Marshal(msg)
 	if err != nil {
-		logger.Error("Failed to parse message", zap.Error(err))
+		appLogger.Errorf("Failed to parse message, error: %v", err)
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
-	logger.Info("Send message", zap.String("MessageBody", string(buf)), zap.String("QueueUrl", url))
+	appLogger.Infof("Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
 	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
 	})
 	if err != nil {
-		logger.Error("Failed to send message", zap.Error(err))
+		appLogger.Errorf("Failed to send message, error: %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -119,17 +118,17 @@ func (s *sqsClient) sendPortscanMessage(ctx context.Context, msg *message.Portsc
 	}
 	buf, err := json.Marshal(msg)
 	if err != nil {
-		logger.Error("Failed to parse message", zap.Error(err))
+		appLogger.Errorf("Failed to parse message, error: %v", err)
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
-	logger.Info("Send message", zap.String("MessageBody", string(buf)), zap.String("QueueUrl", url))
+	appLogger.Infof("Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
 	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
 	})
 	if err != nil {
-		logger.Error("Failed to send message", zap.Error(err))
+		appLogger.Errorf("Failed to send message, error: %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -142,17 +141,17 @@ func (s *sqsClient) sendApplicationScanMessage(ctx context.Context, msg *message
 	}
 	buf, err := json.Marshal(msg)
 	if err != nil {
-		logger.Error("Failed to parse message", zap.Error(err))
+		appLogger.Errorf("Failed to parse message, error: %v", err)
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
-	logger.Info("Send message", zap.String("MessageBody", string(buf)), zap.String("QueueUrl", url))
+	appLogger.Infof("Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
 	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
 	})
 	if err != nil {
-		logger.Error("Failed to send message", zap.Error(err))
+		appLogger.Errorf("Failed to send message, error: %v", err)
 		return nil, err
 	}
 	return resp, nil

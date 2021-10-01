@@ -49,7 +49,7 @@ func newSQSConsumer() *worker.Worker {
 			MaxNumberOfMessage: conf.MaxNumberOfMessage,
 			WaitTimeSecond:     conf.WaitTimeSecond,
 		},
-		Log:       sqsLogger,
+		Log:       appLogger,
 		SqsClient: sqsClient,
 	}
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +19,7 @@ func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *dia
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListDiagnosisDataSourceResponse{}, nil
 		}
-		logger.Error("Failed to List DiagnosisDataSource", zap.Error(err))
+		appLogger.Errorf("Failed to List DiagnosisDataSource, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListDiagnosisDataSourceResponse{}
@@ -37,7 +36,7 @@ func (s *diagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diag
 	getData, err := s.repository.GetDiagnosisDataSource(ctx, req.ProjectId, req.DiagnosisDataSourceId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get DiagnosisDataSource", zap.Error(err))
+		appLogger.Errorf("Failed to Get DiagnosisDataSource, error: %v", err)
 		return nil, err
 	}
 
@@ -51,7 +50,7 @@ func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diag
 	savedData, err := s.repository.GetDiagnosisDataSource(ctx, req.ProjectId, req.DiagnosisDataSource.DiagnosisDataSourceId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get DiagnosisDataSource", zap.Error(err))
+		appLogger.Errorf("Failed to Get DiagnosisDataSource, error: %v", err)
 		return nil, err
 	}
 
@@ -68,7 +67,7 @@ func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diag
 
 	registerdData, err := s.repository.UpsertDiagnosisDataSource(ctx, data)
 	if err != nil {
-		logger.Error("Failed to Put DiagnosisDataSource", zap.Error(err))
+		appLogger.Errorf("Failed to Put DiagnosisDataSource, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutDiagnosisDataSourceResponse{DiagnosisDataSource: convertDiagnosisDataSource(registerdData)}, nil
@@ -79,7 +78,7 @@ func (s *diagnosisService) DeleteDiagnosisDataSource(ctx context.Context, req *d
 		return nil, err
 	}
 	if err := s.repository.DeleteDiagnosisDataSource(ctx, req.ProjectId, req.DiagnosisDataSourceId); err != nil {
-		logger.Error("Failed to Delete DiagnosisDataSource", zap.Error(err))
+		appLogger.Errorf("Failed to Delete DiagnosisDataSource, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil

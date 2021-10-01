@@ -9,7 +9,6 @@ import (
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +21,7 @@ func (s *diagnosisService) ListWpscanSetting(ctx context.Context, req *diagnosis
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListWpscanSettingResponse{}, nil
 		}
-		logger.Error("Failed to List WpscanSettinng", zap.Error(err))
+		appLogger.Errorf("Failed to List WpscanSettinng, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListWpscanSettingResponse{}
@@ -39,7 +38,7 @@ func (s *diagnosisService) GetWpscanSetting(ctx context.Context, req *diagnosis.
 	getData, err := s.repository.GetWpscanSetting(ctx, req.ProjectId, req.WpscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get WpscanSettinng", zap.Error(err))
+		appLogger.Errorf("Failed to Get WpscanSettinng, error: %v", err)
 		return nil, err
 	}
 
@@ -53,7 +52,7 @@ func (s *diagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 	savedData, err := s.repository.GetWpscanSetting(ctx, req.ProjectId, req.WpscanSetting.WpscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get WpscanSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Get WpscanSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -73,7 +72,7 @@ func (s *diagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 
 	registerdData, err := s.repository.UpsertWpscanSetting(ctx, data)
 	if err != nil {
-		logger.Error("Failed to Put WpscanSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Put WpscanSetting, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutWpscanSettingResponse{WpscanSetting: convertWpscanSetting(registerdData)}, nil
@@ -84,7 +83,7 @@ func (s *diagnosisService) DeleteWpscanSetting(ctx context.Context, req *diagnos
 		return nil, err
 	}
 	if err := s.repository.DeleteWpscanSetting(ctx, req.ProjectId, req.WpscanSettingId); err != nil {
-		logger.Error("Failed to Delete WpscanSettinng", zap.Error(err))
+		appLogger.Errorf("Failed to Delete WpscanSettinng, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil

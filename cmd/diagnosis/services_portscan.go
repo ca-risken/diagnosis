@@ -9,7 +9,6 @@ import (
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +21,7 @@ func (s *diagnosisService) ListPortscanSetting(ctx context.Context, req *diagnos
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListPortscanSettingResponse{}, nil
 		}
-		logger.Error("Failed to List PortscanSetting", zap.Error(err))
+		appLogger.Errorf("Failed to List PortscanSetting, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListPortscanSettingResponse{}
@@ -39,7 +38,7 @@ func (s *diagnosisService) GetPortscanSetting(ctx context.Context, req *diagnosi
 	getData, err := s.repository.GetPortscanSetting(ctx, req.ProjectId, req.PortscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get PortscanSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Get PortscanSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -53,7 +52,7 @@ func (s *diagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosi
 	savedData, err := s.repository.GetPortscanSetting(ctx, req.ProjectId, req.PortscanSetting.PortscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get PortscanSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Get PortscanSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -70,7 +69,7 @@ func (s *diagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosi
 
 	registerdData, err := s.repository.UpsertPortscanSetting(ctx, data)
 	if err != nil {
-		logger.Error("Failed to Put PortscanSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Put PortscanSetting, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutPortscanSettingResponse{PortscanSetting: convertPortscanSetting(registerdData)}, nil
@@ -81,12 +80,12 @@ func (s *diagnosisService) DeletePortscanSetting(ctx context.Context, req *diagn
 		return nil, err
 	}
 	if err := s.repository.DeletePortscanSetting(ctx, req.ProjectId, req.PortscanSettingId); err != nil {
-		logger.Error("Failed to Delete PortscanSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Delete PortscanSetting, error: %v", err)
 		return nil, err
 	}
 	// Delete PortscanTargetBySetting
 	if err := s.repository.DeletePortscanTargetByPortscanSettingID(ctx, req.ProjectId, req.PortscanSettingId); err != nil {
-		logger.Error("Failed to Delete PortscanTargetByPortscanSettingID", zap.Error(err))
+		appLogger.Errorf("Failed to Delete PortscanTargetByPortscanSettingID, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil
@@ -101,7 +100,7 @@ func (s *diagnosisService) ListPortscanTarget(ctx context.Context, req *diagnosi
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListPortscanTargetResponse{}, nil
 		}
-		logger.Error("Failed to List PortscanTarget", zap.Error(err))
+		appLogger.Errorf("Failed to List PortscanTarget, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListPortscanTargetResponse{}
@@ -118,7 +117,7 @@ func (s *diagnosisService) GetPortscanTarget(ctx context.Context, req *diagnosis
 	getData, err := s.repository.GetPortscanTarget(ctx, req.ProjectId, req.PortscanTargetId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get PortscanTarget", zap.Error(err))
+		appLogger.Errorf("Failed to Get PortscanTarget, error: %v", err)
 		return nil, err
 	}
 
@@ -142,7 +141,7 @@ func (s *diagnosisService) PutPortscanTarget(ctx context.Context, req *diagnosis
 
 	registerdData, err := s.repository.UpsertPortscanTarget(ctx, data)
 	if err != nil {
-		logger.Error("Failed to Put PortscanTarget", zap.Error(err))
+		appLogger.Errorf("Failed to Put PortscanTarget, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutPortscanTargetResponse{PortscanTarget: convertPortscanTarget(registerdData)}, nil
@@ -153,7 +152,7 @@ func (s *diagnosisService) DeletePortscanTarget(ctx context.Context, req *diagno
 		return nil, err
 	}
 	if err := s.repository.DeletePortscanTarget(ctx, req.ProjectId, req.PortscanTargetId); err != nil {
-		logger.Error("Failed to Delete PortscanTarget", zap.Error(err))
+		appLogger.Errorf("Failed to Delete PortscanTarget, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil

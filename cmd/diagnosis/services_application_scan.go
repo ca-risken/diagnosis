@@ -10,7 +10,6 @@ import (
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +22,7 @@ func (s *diagnosisService) ListApplicationScan(ctx context.Context, req *diagnos
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListApplicationScanResponse{}, nil
 		}
-		logger.Error("Failed to List ApplicationScan", zap.Error(err))
+		appLogger.Errorf("Failed to List ApplicationScan, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListApplicationScanResponse{}
@@ -40,7 +39,7 @@ func (s *diagnosisService) GetApplicationScan(ctx context.Context, req *diagnosi
 	getData, err := s.repository.GetApplicationScan(ctx, req.ProjectId, req.ApplicationScanId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get ApplicationScan", zap.Error(err))
+		appLogger.Errorf("Failed to Get ApplicationScan, error: %v", err)
 		return nil, err
 	}
 
@@ -54,7 +53,7 @@ func (s *diagnosisService) PutApplicationScan(ctx context.Context, req *diagnosi
 	savedData, err := s.repository.GetApplicationScan(ctx, req.ProjectId, req.ApplicationScan.ApplicationScanId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get ApplicationScan", zap.Error(err))
+		appLogger.Errorf("Failed to Get ApplicationScan, error: %v", err)
 		return nil, err
 	}
 
@@ -75,7 +74,7 @@ func (s *diagnosisService) PutApplicationScan(ctx context.Context, req *diagnosi
 
 	registerdData, err := s.repository.UpsertApplicationScan(ctx, data)
 	if err != nil {
-		logger.Error("Failed to Put ApplicationScan", zap.Error(err))
+		appLogger.Errorf("Failed to Put ApplicationScan, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutApplicationScanResponse{ApplicationScan: convertApplicationScan(registerdData)}, nil
@@ -86,12 +85,12 @@ func (s *diagnosisService) DeleteApplicationScan(ctx context.Context, req *diagn
 		return nil, err
 	}
 	if err := s.repository.DeleteApplicationScan(ctx, req.ProjectId, req.ApplicationScanId); err != nil {
-		logger.Error("Failed to Delete ApplicationScan", zap.Error(err))
+		appLogger.Errorf("Failed to Delete ApplicationScan, error: %v", err)
 		return nil, err
 	}
 	// Delete ApplicationScanBasicSetting
 	//	if err := s.repository.DeleteApplicationScanBasicSettingByApplicationScanID(ctx, req.ProjectId, req.ApplicationScanId); err != nil {
-	//		logger.Error("Failed to Delete ApplicationScanBasicSettingByApplicationScanID", zap.Error(err))
+	//		appLogger.Errorf("Failed to Delete ApplicationScanBasicSettingByApplicationScanID, error: %v", err)
 	//		return nil, err
 	//	}
 	return &empty.Empty{}, nil
@@ -106,7 +105,7 @@ func (s *diagnosisService) ListApplicationScanBasicSetting(ctx context.Context, 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListApplicationScanBasicSettingResponse{}, nil
 		}
-		logger.Error("Failed to List ApplicationScanBasicSetting", zap.Error(err))
+		appLogger.Errorf("Failed to List ApplicationScanBasicSetting, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListApplicationScanBasicSettingResponse{}
@@ -123,7 +122,7 @@ func (s *diagnosisService) GetApplicationScanBasicSetting(ctx context.Context, r
 	getData, err := s.repository.GetApplicationScanBasicSetting(ctx, req.ProjectId, req.ApplicationScanId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get ApplicationScanBasicSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Get ApplicationScanBasicSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -146,7 +145,7 @@ func (s *diagnosisService) PutApplicationScanBasicSetting(ctx context.Context, r
 
 	registerdData, err := s.repository.UpsertApplicationScanBasicSetting(ctx, data)
 	if err != nil {
-		logger.Error("Failed to Put ApplicationScanBasicSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Put ApplicationScanBasicSetting, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutApplicationScanBasicSettingResponse{ApplicationScanBasicSetting: convertApplicationScanBasicSetting(registerdData)}, nil
@@ -157,7 +156,7 @@ func (s *diagnosisService) DeleteApplicationScanBasicSetting(ctx context.Context
 		return nil, err
 	}
 	if err := s.repository.DeleteApplicationScanBasicSetting(ctx, req.ProjectId, req.ApplicationScanBasicSettingId); err != nil {
-		logger.Error("Failed to Delete ApplicationScanBasicSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Delete ApplicationScanBasicSetting, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil

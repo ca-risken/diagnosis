@@ -10,13 +10,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/ca-risken/common/pkg/logging"
+	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/vikyd/zero"
-	"go.uber.org/zap"
 )
 
 type sqsHandler struct {
@@ -29,46 +29,46 @@ type sqsHandler struct {
 func newHandler() *sqsHandler {
 	h := &sqsHandler{}
 	h.jira = newJiraClient()
-	logger.Info("Start Jira Client")
+	appLogger.Info("Start Jira Client")
 	h.findingClient = newFindingClient()
-	logger.Info("Start Finding Client")
+	appLogger.Info("Start Finding Client")
 	h.alertClient = newAlertClient()
-	logger.Info("Start Alert Client")
+	appLogger.Info("Start Alert Client")
 	h.diagnosisClient = newDiagnosisClient()
-	logger.Info("Start Diagnosis Client")
+	appLogger.Info("Start Diagnosis Client")
 	return h
 }
 
 func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) error {
 	msgBody := aws.StringValue(sqsMsg.Body)
-	logger.Info("got message", zap.String("message", msgBody))
+	appLogger.Infof("got message: %s", msgBody)
 	// Parse message
 	msg, err := parseMessage(msgBody)
 	if err != nil {
-		logger.Error("Invalid message", zap.String("sqs_message", "message"), zap.Error(err))
-		return err
+		appLogger.Errorf("Invalid message. message: %v, error: %v", msgBody, err)
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
-		logger.Warn(fmt.Sprintf("Failed to generate requestID: err=%+v", requestID), zap.Uint32("project", msg.ProjectID))
+		appLogger.Warnf("Failed to generate requestID: error: %v", err)
 		requestID = fmt.Sprint(msg.ProjectID)
 	}
-	logger.Info("start Scan", zap.String("request_id", requestID), zap.Uint32("project", msg.ProjectID))
+	appLogger.Infof("start Scan, request_id: %v, jiraSettingID: %v", requestID, msg.JiraSettingID)
 
 	// Get jira Project
 	project, errMap := s.jira.getJiraProject(ctx, msg.JiraKey, msg.JiraID, msg.IdentityField, msg.IdentityValue)
 	if zero.IsZeroVal(project) {
-		logger.Warn("Faild to get jira project", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.String("Project", project))
+		appLogger.Warnf("Faild to get jira project, jiraSettingID: %v", msg.JiraSettingID)
 		if err := s.putJiraSetting(ctx, msg.JiraSettingID, msg.ProjectID, false, errMap); err != nil {
-			logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Error(err))
-			return nil
+			appLogger.Errorf("Faild to put jira_setting,jiraSettingID: %v, error: %v", msg.JiraSettingID, err)
+			return mimosasqs.WrapNonRetryable(err)
 		}
-		return nil
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	if zero.IsZeroVal(project) {
 		if err := s.putJiraSetting(ctx, msg.JiraSettingID, msg.ProjectID, false, errMap); err != nil {
-			logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Error(err))
+			appLogger.Errorf("Faild to put jira_setting, error: %v", err)
 			return err
 		}
 	}
@@ -76,29 +76,28 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	// Get jira
 	findings, err := s.getJira(ctx, project, msg)
 	if err != nil {
-		logger.Error("Faild to get findngs to Diagnosis Jira", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Uint32("ProjectID", msg.ProjectID), zap.Error(err))
-		return nil
+		appLogger.Errorf("Faild to get findngs to Diagnosis Jira, error: %v", err)
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	// Put finding to core
 	if err := s.putFindings(ctx, findings); err != nil {
-		logger.Error("Faild to put findngs", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Uint32("ProjectID", msg.ProjectID), zap.Error(err))
+		appLogger.Errorf("Faild to put findngs, error: %v", err)
 		return err
 	}
 
 	// Put JiraSetting
 	if err := s.putJiraSetting(ctx, msg.JiraSettingID, msg.ProjectID, true, nil); err != nil {
-		logger.Error("Faild to put jira_setting", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Error(err))
+		appLogger.Errorf("Faild to put jira_setting, error: %v", err)
 		return err
 	}
-	logger.Info("end Scan", zap.String("request_id", requestID), zap.Uint32("project", msg.ProjectID))
-
+	appLogger.Infof("end Scan, request_id: %v, JiraSettingID: %v", requestID, msg.JiraSettingID)
 	if msg.ScanOnly {
 		return nil
 	}
 	// Call AnalyzeAlert
 	if err := s.CallAnalyzeAlert(ctx, msg.ProjectID); err != nil {
-		logger.Error("Faild to analyze alert.", zap.Uint32("JiraSettingID", msg.JiraSettingID), zap.Error(err))
+		appLogger.Errorf("Faild to analyze alert, error: %v", err)
 		return err
 	}
 	return nil
@@ -109,14 +108,14 @@ func (s *sqsHandler) getJira(ctx context.Context, project string, message *messa
 	putData := []*finding.FindingForUpsert{}
 	issueList, err := s.jira.listIssues(ctx, project)
 	if err != nil {
-		logger.Error("Jira.listIssues", zap.Error(err))
+		appLogger.Errorf("Failed to list Issues, error: %v", err)
 		return nil, err
 	}
 	issues := issueList.Issues
 	for _, issue := range issues {
 		buf, err := json.Marshal(issue)
 		if err != nil {
-			logger.Error("Failed to json encoding error", zap.Error(err))
+			appLogger.Errorf("Failed to json encoding, error: %v", err)
 			return nil, err
 		}
 		var score float32
@@ -173,7 +172,7 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 			Tag:       tag,
 		}})
 	if err != nil {
-		logger.Error("Failed to TagFinding.", zap.Error(err))
+		appLogger.Errorf("Failed to TagFinding, error: %v", err)
 		return err
 	}
 	return nil
@@ -218,7 +217,7 @@ func (s *sqsHandler) CallAnalyzeAlert(ctx context.Context, projectID uint32) err
 	if err != nil {
 		return err
 	}
-	logger.Info("Success to analyze alert.")
+	appLogger.Info("Success to analyze alert.")
 	return nil
 }
 
