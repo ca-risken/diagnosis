@@ -8,7 +8,6 @@ import (
 	mimosaxray "github.com/ca-risken/common/pkg/xray"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -20,16 +19,10 @@ func main() {
 	}
 	mimosaxray.InitXRay(xray.Config{})
 
-	if err := initLogger(conf.LogLevel); err != nil {
-		panic(err)
-	}
-
 	l, err := net.Listen("tcp", fmt.Sprintf(":%s", conf.Port))
 	if err != nil {
-		logger.Error("Failed to Opening Port", zap.Error(err))
+		appLogger.Errorf("Failed to Opening Port, error: %v", err)
 	}
-
-	defer syncLogger()
 
 	server := grpc.NewServer(
 		grpc.UnaryInterceptor(
@@ -40,8 +33,8 @@ func main() {
 	diagnosis.RegisterDiagnosisServiceServer(server, diagnosisServer)
 
 	reflection.Register(server) // enable reflection API
-	logger.Info("Starting gRPC server", zap.String("port", conf.Port))
+	appLogger.Infof("Starting gRPC server, port: %v", conf.Port)
 	if err := server.Serve(l); err != nil {
-		logger.Error("Failed to gRPC serve", zap.Error(err))
+		appLogger.Errorf("Failed to gRPC serve, error: %v", err)
 	}
 }

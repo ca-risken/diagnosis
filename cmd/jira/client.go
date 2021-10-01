@@ -8,7 +8,6 @@ import (
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/kelseyhightower/envconfig"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -20,13 +19,13 @@ func newFindingClient() finding.FindingServiceClient {
 	var conf findingConfig
 	err := envconfig.Process("", &conf)
 	if err != nil {
-		logger.Error("Faild to load finding config error", zap.Error(err))
+		appLogger.Errorf("Faild to load finding config error, error: %v", err)
 	}
 
 	ctx := context.Background()
 	conn, err := getGRPCConn(ctx, conf.FindingSvcAddr)
 	if err != nil {
-		logger.Error("Faild to get GRPC connection", zap.Error(err))
+		appLogger.Errorf("Faild to get GRPC connection, error: %v", err)
 	}
 	return finding.NewFindingServiceClient(conn)
 }
@@ -39,13 +38,13 @@ func newAlertClient() alert.AlertServiceClient {
 	var conf alertConfig
 	err := envconfig.Process("", &conf)
 	if err != nil {
-		logger.Error("Faild to load alert config error", zap.Error(err))
+		appLogger.Errorf("Faild to load alert config error, error: %v", err)
 	}
 
 	ctx := context.Background()
 	conn, err := getGRPCConn(ctx, conf.AlertSvcAddr)
 	if err != nil {
-		logger.Error("Faild to get GRPC connection", zap.Error(err))
+		appLogger.Errorf("Faild to get GRPC connection, error: %v", err)
 	}
 	return alert.NewAlertServiceClient(conn)
 }
@@ -58,13 +57,13 @@ func newDiagnosisClient() diagnosis.DiagnosisServiceClient {
 	var conf diagnosisConfig
 	err := envconfig.Process("", &conf)
 	if err != nil {
-		logger.Error("Faild to load diagnosis config error: err=%+v", zap.Error(err))
+		appLogger.Errorf("Faild to load diagnosis config error, error: %v", err)
 	}
 
 	ctx := context.Background()
 	conn, err := getGRPCConn(ctx, conf.DiagnosisSvcAddr)
 	if err != nil {
-		logger.Error("Faild to get GRPC connection: err=%+v", zap.Error(err))
+		appLogger.Errorf("Faild to get GRPC connection, error: %v", err)
 	}
 	return diagnosis.NewDiagnosisServiceClient(conn)
 }

@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/vikyd/zero"
-	"go.uber.org/zap"
 	"golang.org/x/net/context/ctxhttp"
 )
 
@@ -84,7 +83,7 @@ func (j *jiraClient) searchProjectByJiraKeyID(ctx context.Context, search string
 	client := new(http.Client)
 	res, err := ctxhttp.Do(ctx, xray.Client(client), req)
 	if err != nil {
-		logger.Error("Failed to list projects. sk the System Administrator", zap.Error(err))
+		appLogger.Errorf("Failed to list projects. sk the System Administrator, error: %v", err)
 		return false, err
 	}
 
@@ -93,21 +92,21 @@ func (j *jiraClient) searchProjectByJiraKeyID(ctx context.Context, search string
 		return false, fmt.Errorf(`%v projects found. Please check your value`, issues.Total)
 	}
 	if res.StatusCode != 200 {
-		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
+		appLogger.Errorf("Returned error code when get list issues, error: %v", err)
 		return false, fmt.Errorf("Cannot get project by jiraID or jiraKey. Ask the System Administrator")
 	}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logger.Error("Failed to read list projects response", zap.Error(err))
+		appLogger.Errorf("Failed to read list projects response, error: %v", err)
 		return false, err
 	}
 	if err := json.Unmarshal(body, &issues); err != nil {
-		logger.Error("Failed to parse issues. Ask the System Administrator", zap.Error(err))
+		appLogger.Errorf("Failed to parse issues. Ask the System Administrator, error: %v", err)
 		return false, err
 	}
 
 	if issues.Total != 1 {
-		logger.Warn("Unexpect number issues found. ", zap.Int("issues.Total", issues.Total))
+		appLogger.Warnf("Unexpect number issues found. issues Total: %v", issues.Total)
 		return false, fmt.Errorf(`%v issues found. Please check your recordID,recordKey`, issues.Total)
 	}
 
@@ -121,7 +120,6 @@ func (j *jiraClient) getProjectByIdentityKey(ctx context.Context, identityField,
 	req.SetBasicAuth(j.config.JiraUserId, j.config.JiraUserPassword)
 	jql := fmt.Sprintf(`cf[%s]="%s"`, identityField, identityValue)
 	jql += ` AND issuetype = 10021`
-	logger.Info("", zap.String("jql", jql))
 	params := req.URL.Query()
 	params.Add("jql", jql)
 	params.Add("maxResults", "2")
@@ -131,35 +129,35 @@ func (j *jiraClient) getProjectByIdentityKey(ctx context.Context, identityField,
 	res, err := ctxhttp.Do(ctx, xray.Client(client), req)
 
 	if err != nil {
-		logger.Error("Failed to list projects", zap.Error(err))
+		appLogger.Errorf("Failed to list projects, error: %v", err)
 		return "", err
 	}
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		logger.Error("Returned error code when get list issues", zap.Int("resCode", res.StatusCode))
+		appLogger.Errorf("Returned error code when get list issues, responseCode: %v", res.StatusCode)
 		return "", fmt.Errorf("Cannot get project by IdentityKey,Field")
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logger.Error("Failed to read list issues response", zap.Error(err))
+		appLogger.Errorf("Failed to read list issues response, error: %v", err)
 		return "", err
 	}
 
 	if err := json.Unmarshal(body, &issues); err != nil {
-		logger.Error("Failed to parse issues", zap.Error(err))
+		appLogger.Errorf("Failed to parse issues, error: %v", err)
 		return "", err
 	}
 
 	if issues.Total != 1 {
-		logger.Warn("Unexpect number issues found. ", zap.Int("issues.Total", issues.Total))
+		appLogger.Warnf("Unexpect number issues found. issues.Total: %v", issues.Total)
 		return "", fmt.Errorf(`%v issues found. Please check your recordID,recordKey`, issues.Total)
 	}
 
 	issueList := issues.Issues
 	if zero.IsZeroVal(issueList) {
-		logger.Error("Cannot find project by IdentityKey,Field.")
+		appLogger.Error("Cannot find project by IdentityKey,Field.")
 		return "", errors.New("project: Cannot find project by IdentityKey,Field.IdentityKey,Field")
 	}
 
@@ -181,24 +179,24 @@ func (j *jiraClient) listIssues(ctx context.Context, project string) (*jiraIssue
 	client := new(http.Client)
 	res, err := ctxhttp.Do(ctx, xray.Client(client), req)
 	if err != nil {
-		logger.Error("Failed to list Issues", zap.Error(err))
+		appLogger.Errorf("Failed to list Issues, error: %v", err)
 		return nil, err
 	}
 
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		logger.Error("Returned error code when get list Issues", zap.Int("resCode", res.StatusCode))
+		appLogger.Errorf("Returned error code when get list Issues, resCode: %v", res.StatusCode)
 		return &issues, nil
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logger.Error("Failed to read list issues response", zap.Error(err))
+		appLogger.Errorf("Failed to read list issues response, error: %v", err)
 		return nil, err
 	}
 
 	if err := json.Unmarshal(body, &issues); err != nil {
-		logger.Error("Failed to parse issues", zap.Error(err))
+		appLogger.Errorf("Failed to parse issues, error: %v", err)
 		return nil, err
 	}
 

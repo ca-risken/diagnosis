@@ -11,7 +11,6 @@ import (
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/vikyd/zero"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -32,7 +31,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		}
 		msg, err := makeJiraMessage(req.ProjectId, req.SettingId, data)
 		msg.ScanOnly = req.ScanOnly
-		resp, err = d.sqs.send(ctx, msg)
+		resp, err = d.sqs.sendJiraMessage(ctx, msg)
 		if err != nil {
 			return nil, err
 		}
@@ -79,24 +78,24 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	case "diagnosis:portscan":
 		data, err := d.repository.GetPortscanSetting(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
-			logger.Error("Error occured when getting PortscanSetting", zap.Error(err))
+			appLogger.Errorf("Error occured when getting PortscanSetting, error: %v", err)
 			return nil, err
 		}
 		portscanTargets, err := d.repository.ListPortscanTarget(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
-			logger.Error("Error occured when getting PortscanTargets", zap.Error(err))
+			appLogger.Errorf("Error occured when getting PortscanTargets, error: %v", err)
 			return nil, err
 		}
 		for _, target := range *portscanTargets {
 			msg, err := makePortscanMessage(data.ProjectID, data.PortscanSettingID, target.PortscanTargetID, target.Target)
 			if err != nil {
-				logger.Error("Error occured when making Portscan message", zap.Error(err))
+				appLogger.Errorf("Error occured when making Portscan message, error: %v", err)
 				continue
 			}
 			msg.ScanOnly = req.ScanOnly
 			resp, err = d.sqs.sendPortscanMessage(ctx, msg)
 			if err != nil {
-				logger.Error("Error occured when sending Portscan message", zap.Error(err))
+				appLogger.Errorf("Error occured when sending Portscan message, error: %v", err)
 				continue
 			}
 			var scanAt time.Time
@@ -112,7 +111,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 				StatusDetail:      fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
 				ScanAt:            scanAt,
 			}); err != nil {
-				logger.Error("Error occured when upsert Portscan target", zap.Error(err))
+				appLogger.Errorf("Error occured when upsert Portscan target, error: %v", err)
 				return nil, err
 			}
 		}
@@ -127,7 +126,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	case "diagnosis:application-scan":
 		data, err := d.repository.GetApplicationScan(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
-			logger.Error("Error occured when getting PortscanSetting", zap.Error(err))
+			appLogger.Errorf("Error occured when getting PortscanSetting, error: %v", err)
 			return nil, err
 		}
 		msg, err := makeApplicationScanMessage(req.ProjectId, req.SettingId, data.Name, data.ScanType)
@@ -153,14 +152,14 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
 			ScanAt:                scanAt,
 		}); err != nil {
-			logger.Error("Error occured when upsert Application scan", zap.Error(err))
+			appLogger.Errorf("Error occured when upsert Application scan, error: %v", err)
 			return nil, err
 		}
 	default:
 		return nil, nil
 	}
 
-	logger.Info("Invoke scanned.", zap.String("MessageId", *resp.MessageId))
+	appLogger.Infof("Invoke scanned, MessageID: %v", *resp.MessageId)
 	return &diagnosis.InvokeScanResponse{Message: "Start Diagnosis."}, nil
 }
 
@@ -171,7 +170,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &empty.Empty{}, nil
 		}
-		logger.Error("Failed to List All JiraSetting.", zap.Error(err))
+		appLogger.Errorf("Failed to List All JiraSetting., error: %v", err)
 		return nil, err
 	}
 
@@ -183,7 +182,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 			ScanOnly:              true,
 		}); err != nil {
 			// errorが出ても続行
-			logger.Error("InvokeScanAll error", zap.Error(err))
+			appLogger.Errorf("InvokeScanAll error, error: %v", err)
 		}
 	}
 
@@ -192,7 +191,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &empty.Empty{}, nil
 		}
-		logger.Error("Failed to List All WPScanSetting.", zap.Error(err))
+		appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
 		return nil, err
 	}
 
@@ -204,7 +203,7 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) 
 			ScanOnly:              true,
 		}); err != nil {
 			// errorが出ても続行
-			logger.Error("InvokeScanAll error", zap.Error(err))
+			appLogger.Errorf("InvokeScanAll error, error: %v", err)
 		}
 	}
 

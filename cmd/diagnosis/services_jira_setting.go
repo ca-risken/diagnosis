@@ -10,7 +10,6 @@ import (
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +22,7 @@ func (s *diagnosisService) ListJiraSetting(ctx context.Context, req *diagnosis.L
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListJiraSettingResponse{}, nil
 		}
-		logger.Error("Failed to List JiraSettinng", zap.Error(err))
+		appLogger.Errorf("Failed to List JiraSettinng, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListJiraSettingResponse{}
@@ -40,7 +39,7 @@ func (s *diagnosisService) GetJiraSetting(ctx context.Context, req *diagnosis.Ge
 	getData, err := s.repository.GetJiraSetting(ctx, req.ProjectId, req.JiraSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get JiraSettinng", zap.Error(err))
+		appLogger.Errorf("Failed to Get JiraSettinng, error: %v", err)
 		return nil, err
 	}
 
@@ -54,7 +53,7 @@ func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.Pu
 	savedData, err := s.repository.GetJiraSetting(ctx, req.ProjectId, req.JiraSetting.JiraSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		logger.Error("Failed to Get JiraSetting", zap.Error(err))
+		appLogger.Errorf("Failed to Get JiraSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -78,7 +77,7 @@ func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.Pu
 
 	registerdData, err := s.repository.UpsertJiraSetting(ctx, data)
 	if err != nil {
-		logger.Error("Failed to Put JiraSettinng", zap.Error(err))
+		appLogger.Errorf("Failed to Put JiraSettinng, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutJiraSettingResponse{JiraSetting: convertJiraSetting(registerdData)}, nil
@@ -89,7 +88,7 @@ func (s *diagnosisService) DeleteJiraSetting(ctx context.Context, req *diagnosis
 		return nil, err
 	}
 	if err := s.repository.DeleteJiraSetting(ctx, req.ProjectId, req.JiraSettingId); err != nil {
-		logger.Error("Failed to Delete JiraSettinng", zap.Error(err))
+		appLogger.Errorf("Failed to Delete JiraSettinng, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil
