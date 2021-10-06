@@ -81,7 +81,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	}
 
 	// Put finding to core
-	if err := s.putFindings(ctx, findings); err != nil {
+	if err := s.putFindings(ctx, findings, project); err != nil {
 		appLogger.Errorf("Faild to put findngs, error: %v", err)
 		return err
 	}
@@ -149,7 +149,7 @@ func parseMessage(msg string) (*message.JiraQueueMessage, error) {
 	return message, nil
 }
 
-func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert) error {
+func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert, jiraProject string) error {
 	for _, f := range findings {
 		res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: f})
 		if err != nil {
@@ -158,6 +158,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis)
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagJira)
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
+		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, jiraProject)
 	}
 	return nil
 }
