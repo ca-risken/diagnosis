@@ -109,8 +109,19 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		return mimosasqs.WrapNonRetryable(err)
 	}
 
+	// Clear finding score
+	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
+		DataSource: msg.DataSource,
+		ProjectId:  msg.ProjectID,
+		Tag:        []string{cli.targetURL},
+	}); err != nil {
+		appLogger.Errorf("Failed to clear finding score. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
+		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed to clear finding score. ApplicationScanID")
+		return mimosasqs.WrapNonRetryable(err)
+	}
+
 	// Put Finding and Tag Finding
-	if err := s.putFindings(ctx, findings); err != nil {
+	if err := s.putFindings(ctx, findings, cli.targetURL); err != nil {
 		appLogger.Errorf("Faild to put findings. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}

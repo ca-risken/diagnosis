@@ -37,7 +37,7 @@ func makeFindings(zapResult *zapResult, message *message.ApplicationScanQueueMes
 	return findings, nil
 }
 
-func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert) error {
+func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert, target string) error {
 	for _, f := range findings {
 		res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: f})
 		if err != nil {
@@ -46,6 +46,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis)
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagApplicationScan)
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
+		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target)
 	}
 
 	return nil

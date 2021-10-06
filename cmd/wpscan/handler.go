@@ -70,8 +70,18 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		return mimosasqs.WrapNonRetryable(err)
 	}
 
+	// Clear finding score
+	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
+		DataSource: msg.DataSource,
+		ProjectId:  msg.ProjectID,
+		Tag:        []string{msg.TargetURL},
+	}); err != nil {
+		appLogger.Errorf("Failed to clear finding score. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
+		return mimosasqs.WrapNonRetryable(err)
+	}
+
 	// Put Finding and Tag Finding
-	if err := s.putFindings(ctx, findings); err != nil {
+	if err := s.putFindings(ctx, findings, msg.TargetURL); err != nil {
 		appLogger.Errorf("Faild to put findings. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return err
 	}

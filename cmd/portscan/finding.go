@@ -26,7 +26,7 @@ func makeFindings(results []*portscan.NmapResult, message *message.PortscanQueue
 	return findings, nil
 }
 
-func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert) error {
+func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert, target string) error {
 	for _, f := range findings {
 
 		res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: f})
@@ -34,7 +34,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 			return err
 		}
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagPortscan)
-		//appLogger.Infof("Success to PutFinding. finding: %v", f)
+		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target)
 
 	}
 
