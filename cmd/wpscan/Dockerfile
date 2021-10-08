@@ -18,7 +18,7 @@ RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_
   && go build \
   && cp env-injector /go/bin/
 
-FROM public.ecr.aws/w4a9j2y8/risken-diagnosis/wpscan-base:v3.8.18
+FROM public.ecr.aws/risken/risken-diagnosis/wpscan-base:v3.8.18
 USER root 
 RUN apk add --no-cache ca-certificates tzdata \
   && mkdir /results
