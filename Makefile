@@ -48,6 +48,10 @@ proto: fmt
 		--go_out=plugins=grpc,paths=source_relative:proto proto/**/*.proto \
 		proto/**/*.proto;
 
+.PHONY: ecr-login
+ecr-login:
+	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+
 .PHONY: build
 build: $(BUILD_TARGETS)
 %.build: %.go-test
