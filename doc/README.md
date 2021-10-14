@@ -365,6 +365,7 @@
 | scan_at | [int64](#int64) |  |  |
 | created_at | [int64](#int64) |  |  |
 | updated_at | [int64](#int64) |  |  |
+| options | [string](#string) |  |  |
 
 
 
