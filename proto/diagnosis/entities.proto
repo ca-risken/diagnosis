@@ -59,6 +59,7 @@ message WpscanSetting {
   int64 scan_at = 7;
   int64 created_at = 8;
   int64 updated_at = 9;
+  string options = 10;
 }
 
 message WpscanSettingForUpsert {
