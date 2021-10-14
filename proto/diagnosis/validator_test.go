@@ -1183,6 +1183,11 @@ func TestValidate_WpscanSettingForUpsert(t *testing.T) {
 			input:   &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "hoge_url", ScanAt: 253402268400},
 			wantErr: true,
 		},
+		{
+			name:    "NG not json options",
+			input:   &WpscanSettingForUpsert{ProjectId: 1001, DiagnosisDataSourceId: 1, TargetUrl: "hoge_url", ScanAt: 253402268400, Options: "hogehoge"},
+			wantErr: true,
+		},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

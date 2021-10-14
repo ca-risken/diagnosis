@@ -37,6 +37,7 @@ type WpscanSetting struct {
 	DiagnosisDataSourceID uint32
 	ProjectID             uint32
 	TargetURL             string
+	Options               string
 	Status                string
 	StatusDetail          string
 	ScanAt                time.Time

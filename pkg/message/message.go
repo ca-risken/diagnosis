@@ -18,6 +18,7 @@ type WpscanQueueMessage struct {
 	WpscanSettingID uint32 `json:"jira_setting_id"`
 	ProjectID       uint32 `json:"project_id"`
 	TargetURL       string `json:"target_url"`
+	Options         string `json:"options"`
 	ScanOnly        bool   `json:"scan_only,string"`
 }
 

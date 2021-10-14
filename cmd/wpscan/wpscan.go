@@ -47,7 +47,7 @@ func (w *wpscanConfig) run(target string, wpscanSettingID uint32) (*wpscanResult
 		}
 
 	} else {
-		cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
+		cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--force", "--random-user-agent", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
 
 		err := execWPScan(cmd)
 		if err != nil {

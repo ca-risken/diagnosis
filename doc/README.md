@@ -386,6 +386,7 @@
 | status | [Status](#diagnosis.Status) |  |  |
 | status_detail | [string](#string) |  |  |
 | scan_at | [int64](#int64) |  |  |
+| options | [string](#string) |  |  |
 
 
 
