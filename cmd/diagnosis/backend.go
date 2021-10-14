@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/kelseyhightower/envconfig"
+	"github.com/gassara-kys/envconfig"
 )
 
 type diagnosisConfig struct {
 	Port     string `default:"19001"`
-	EnvName  string `default:"default" split_words:"true"`
-	LogLevel string `split_words:"true" default:"debug"`
+	EnvName  string `default:"local" split_words:"true"`
+	LogLevel string `default:"debug" split_words:"true"`
 
 	DB  diagnosisRepoInterface
 	SQS *sqsClient

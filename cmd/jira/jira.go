@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-xray-sdk-go/xray"
-	"github.com/kelseyhightower/envconfig"
+	"github.com/gassara-kys/envconfig"
 	"github.com/vikyd/zero"
 	"golang.org/x/net/context/ctxhttp"
 )

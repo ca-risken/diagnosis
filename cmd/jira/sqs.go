@@ -4,17 +4,17 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
+	"github.com/gassara-kys/envconfig"
 	"github.com/gassara-kys/go-sqs-poller/worker/v4"
-	"github.com/kelseyhightower/envconfig"
 	"github.com/vikyd/zero"
 )
 
 type sqsConfig struct {
-	AWSRegion string `envconfig:"aws_region" default:"ap-northeast-1"`
-	Endpoint  string `envconfig:"sqs_endpoint" default:"http://localhost:9324"`
+	AWSRegion string `envconfig:"aws_region"   default:"ap-northeast-1"`
+	Endpoint  string `envconfig:"sqs_endpoint" default:"http://queue.middleware.svc.cluster.local:9324"`
 
 	DiagnosisJiraQueueName string `split_words:"true" default:"diagnosis-jira"`
-	DiagnosisJiraQueueURL  string `split_words:"true" default:"http://localhost:9324/queue/diagnosis-jira"`
+	DiagnosisJiraQueueURL  string `split_words:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-jira"`
 	MaxNumberOfMessage     int64  `split_words:"true" default:"10"`
 	WaitTimeSecond         int64  `split_words:"true" default:"20"`
 }

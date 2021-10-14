@@ -12,10 +12,10 @@ require (
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210922082515-066bc04b3d38
 	github.com/ca-risken/diagnosis/pkg/model v0.0.0-20210922082515-066bc04b3d38
 	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20210922082515-066bc04b3d38
+	github.com/gassara-kys/envconfig v1.4.4
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/golang/protobuf v1.5.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
-	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/valyala/fasthttp v1.30.0 // indirect

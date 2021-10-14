@@ -15,10 +15,10 @@ require (
 	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20210930115803-3a8222897168
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210930115803-3a8222897168
 	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20210930115803-3a8222897168
+	github.com/gassara-kys/envconfig v1.4.4
 	github.com/gassara-kys/go-sqs-poller/worker/v4 v4.0.0-20210215110542-0be358599a2f
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/objx v0.2.0 // indirect
