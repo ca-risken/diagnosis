@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/kelseyhightower/envconfig"
+	"github.com/gassara-kys/envconfig"
 )
 
 type backendConfig struct {

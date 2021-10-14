@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/kelseyhightower/envconfig"
+	"github.com/gassara-kys/envconfig"
 )
 
 type BackendConfig struct {
 	LogLevel string `split_words:"true" default:"debug"`
-	EnvName  string `default:"default" split_words:"true"`
+	EnvName  string `split_words:"true" default:"local"`
 }
 
 func newBackendConfig() (*BackendConfig, error) {

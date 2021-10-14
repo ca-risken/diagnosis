@@ -12,12 +12,12 @@ import (
 
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/pkg/message"
-	"github.com/kelseyhightower/envconfig"
+	"github.com/gassara-kys/envconfig"
 	"github.com/vikyd/zero"
 )
 
 type wpscanConfig struct {
-	ResultPath         string `required:"true" split_words:"true"`
+	ResultPath         string `split_words:"true" required:"true" default:"/results"`
 	WpscanVulndbApikey string `split_words:"true"`
 }
 
