@@ -215,14 +215,15 @@ func makeFinding(description, dataSourceID string, score float32, data *[]byte, 
 }
 
 func getInterestingFindingInformation(ie interestingFindings) (string, float32) {
-	switch ie.Type {
-	case "headers":
-		return "Software version found by Headers", 1.0
-	case "search_replace_db2":
-		return ie.ToS, 8.0
-	default:
+	findingInf, ok := wpscanFindingMap[ie.Type]
+	if !ok {
 		return ie.ToS, 1.0
 	}
+	desc := findingInf.Description
+	if zero.IsZeroVal(desc) {
+		desc = ie.ToS
+	}
+	return desc, findingInf.Score
 }
 
 func getVersionFindingInformation(version version) (string, float32) {
