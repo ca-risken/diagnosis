@@ -254,7 +254,7 @@ func getAccessFindingInformation(access checkAccess, isUserFound bool) (string, 
 }
 
 type wpscanOptions struct {
-	Force           bool   `json:"force,string"`
+	Force           bool   `json:"force"`
 	RandomUserAgent bool   `json:"random-user-agent"`
 	WpContentDir    string `json:"wp-content-dir"`
 }
