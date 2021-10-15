@@ -47,6 +47,11 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		appLogger.Errorf("Invalid message. message: %v, error: %v", msgBody, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
+	var options wpscanOptions
+	if err := json.Unmarshal([]byte(msg.Options), &options); err != nil {
+		appLogger.Errorf("Failed to Unmarshal options. message: %v, error: %v", msgBody, err)
+		return mimosasqs.WrapNonRetryable(err)
+	}
 	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
 		appLogger.Warnf("Failed to generate requestID: err=%+v", err)
@@ -56,7 +61,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 
 	// Run WPScan
 	_, segment := xray.BeginSubsegment(ctx, "runWPScan")
-	wpscanResult, err := s.wpscanConfig.run(msg.TargetURL, msg.WpscanSettingID)
+	wpscanResult, err := s.wpscanConfig.run(msg.TargetURL, msg.WpscanSettingID, options)
 	segment.Close(err)
 	//wpscanResult, err := tmpRun()
 	if err != nil {
@@ -69,7 +74,6 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		appLogger.Errorf("Failed making Findings, error: %v", err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
-
 	// Clear finding score
 	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
 		DataSource: msg.DataSource,
@@ -79,19 +83,16 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		appLogger.Errorf("Failed to clear finding score. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
-
 	// Put Finding and Tag Finding
 	if err := s.putFindings(ctx, findings, msg.TargetURL); err != nil {
 		appLogger.Errorf("Faild to put findings. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return err
 	}
-
 	// Put WpscanSetting
 	if err := s.putWpscanSetting(ctx, msg.WpscanSettingID, msg.ProjectID, true, ""); err != nil {
 		appLogger.Errorf("Faild to put rel_osint_data_source. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
-
 	appLogger.Infof("end Scan, RequestID=%s", requestID)
 	if msg.ScanOnly {
 		return nil
@@ -110,9 +111,6 @@ func parseMessage(msg string) (*message.WpscanQueueMessage, error) {
 	if err := json.Unmarshal([]byte(msg), message); err != nil {
 		return nil, err
 	}
-	//	if err := message.Validate(); err != nil {
-	//		return nil, err
-	//	}
 	return message, nil
 }
 
@@ -126,6 +124,7 @@ func (s *sqsHandler) putWpscanSetting(ctx context.Context, wpscanSettingID, proj
 		DiagnosisDataSourceId: resp.WpscanSetting.DiagnosisDataSourceId,
 		ProjectId:             resp.WpscanSetting.ProjectId,
 		TargetUrl:             resp.WpscanSetting.TargetUrl,
+		Options:               resp.WpscanSetting.Options,
 		ScanAt:                time.Now().Unix(),
 	}
 	wpscanSetting.Status = getStatus(isSuccess)

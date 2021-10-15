@@ -61,6 +61,7 @@ func wpscanSettingToMap(wpscanSetting *model.WpscanSetting) map[string]interface
 		"project_id":               wpscanSetting.ProjectID,
 		"target_url":               wpscanSetting.TargetURL,
 		"status":                   wpscanSetting.Status,
+		"options":                  wpscanSetting.Options,
 		"status_detail":            wpscanSetting.StatusDetail,
 	}
 	if !zero.IsZeroVal(wpscanSetting.ScanAt) {

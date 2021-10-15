@@ -65,6 +65,7 @@ func (s *diagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 		ProjectID:             req.ProjectId,
 		DiagnosisDataSourceID: req.WpscanSetting.DiagnosisDataSourceId,
 		TargetURL:             req.WpscanSetting.TargetUrl,
+		Options:               req.WpscanSetting.Options,
 		Status:                req.WpscanSetting.Status.String(),
 		StatusDetail:          req.WpscanSetting.StatusDetail,
 		ScanAt:                time.Unix(req.WpscanSetting.ScanAt, 0),
@@ -98,6 +99,7 @@ func convertWpscanSetting(data *model.WpscanSetting) *diagnosis.WpscanSetting {
 		DiagnosisDataSourceId: data.DiagnosisDataSourceID,
 		ProjectId:             data.ProjectID,
 		TargetUrl:             data.TargetURL,
+		Options:               data.Options,
 		CreatedAt:             data.CreatedAt.Unix(),
 		UpdatedAt:             data.CreatedAt.Unix(),
 		Status:                getStatus(data.Status),
@@ -106,12 +108,13 @@ func convertWpscanSetting(data *model.WpscanSetting) *diagnosis.WpscanSetting {
 	}
 }
 
-func makeWpscanMessage(ProjectID, SettingID uint32, targetURL string) (*message.WpscanQueueMessage, error) {
+func makeWpscanMessage(ProjectID, SettingID uint32, targetURL, options string) (*message.WpscanQueueMessage, error) {
 	msg := &message.WpscanQueueMessage{
 		DataSource:      "diagnosis:wpscan",
 		WpscanSettingID: SettingID,
 		ProjectID:       ProjectID,
 		TargetURL:       targetURL,
+		Options:         options,
 	}
 	return msg, nil
 }
