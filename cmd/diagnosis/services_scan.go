@@ -55,24 +55,36 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		if err != nil {
 			return nil, err
 		}
-		msg, err := makeWpscanMessage(req.ProjectId, req.SettingId, data.TargetURL)
+		options := data.Options
+		if zero.IsZeroVal(options) {
+			options = "{}"
+		}
+		msg, err := makeWpscanMessage(req.ProjectId, req.SettingId, data.TargetURL, options)
 		if err != nil {
+			appLogger.Errorf("Error occured when making WPScan message, error: %v", err)
 			return nil, err
 		}
 		msg.ScanOnly = req.ScanOnly
 		resp, err = d.sqs.sendWpscanMessage(ctx, msg)
 		if err != nil {
+			appLogger.Errorf("Error occured when sending WPScan message, error: %v", err)
 			return nil, err
+		}
+		var scanAt time.Time
+		if !zero.IsZeroVal(data.ScanAt) {
+			scanAt = data.ScanAt
 		}
 		if _, err = d.repository.UpsertWpscanSetting(ctx, &model.WpscanSetting{
 			WpscanSettingID:       data.WpscanSettingID,
 			DiagnosisDataSourceID: data.DiagnosisDataSourceID,
 			ProjectID:             data.ProjectID,
 			TargetURL:             data.TargetURL,
+			Options:               options,
 			Status:                diagnosis.Status_IN_PROGRESS.String(),
 			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
-			ScanAt:                data.ScanAt,
+			ScanAt:                scanAt,
 		}); err != nil {
+			appLogger.Errorf("Error occured when upsert WPScanSetting, error: %v", err)
 			return nil, err
 		}
 	case "diagnosis:portscan":

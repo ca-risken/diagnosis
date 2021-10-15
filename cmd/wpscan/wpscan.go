@@ -30,25 +30,35 @@ func newWpscanConfig() wpscanConfig {
 	return conf
 }
 
-func (w *wpscanConfig) run(target string, wpscanSettingID uint32) (*wpscanResult, error) {
+func (w *wpscanConfig) run(target string, wpscanSettingID uint32, options wpscanOptions) (*wpscanResult, error) {
 	now := time.Now().UnixNano()
 	filePath := fmt.Sprintf("%s/%v_%v.json", w.ResultPath, wpscanSettingID, now)
+	args := []string{"--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath}
+	if options.Force {
+		args = append(args, "--force")
+	}
+	if options.RandomUserAgent {
+		args = append(args, "--random-user-agent")
+	}
+	if !zero.IsZeroVal(options.WpContentDir) {
+		args = append(args, "–wp-content-dir", options.WpContentDir)
+	}
 	if !zero.IsZeroVal(w.WpscanVulndbApikey) {
-		cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath, "--api-token", w.WpscanVulndbApikey)
+		argsWithApiKey := append(args, "--api-token", w.WpscanVulndbApikey)
+		cmd := exec.Command("wpscan", argsWithApiKey...)
 		err := execWPScan(cmd)
 		if err != nil {
+			// ReScan for Invalid APIKey or reaching APIKey Limit
 			appLogger.Warn("APIKey doesn't work. Try scanning without apikey.")
-			cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
+			cmd := exec.Command("wpscan", args...)
 			err = execWPScan(cmd)
 			if err != nil {
 				appLogger.Error("Scan also failed without apikey.")
 				return nil, err
 			}
 		}
-
 	} else {
-		cmd := exec.Command("wpscan", "--clear-cache", "--disable-tls-checks", "--force", "--random-user-agent", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath)
-
+		cmd := exec.Command("wpscan", args...)
 		err := execWPScan(cmd)
 		if err != nil {
 			appLogger.Error("Scan failed without apikey.")
@@ -240,6 +250,12 @@ func getAccessFindingInformation(access checkAccess, isUserFound bool) (string, 
 		return "", 0.0
 	}
 
+}
+
+type wpscanOptions struct {
+	Force           bool   `json:"force,string"`
+	RandomUserAgent bool   `json:"random-user-agent"`
+	WpContentDir    string `json:"wp-content-dir"`
 }
 
 type wpscanResult struct {

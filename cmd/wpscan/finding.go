@@ -19,8 +19,6 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagWordPress)
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
 		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target)
-
-		appLogger.Infof("Success to PutFinding. finding: %v", f)
 	}
 
 	return nil
