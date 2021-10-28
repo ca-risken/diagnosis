@@ -5,6 +5,7 @@ IMAGE_PUSH_TARGETS = $(TARGETS:=.push-image)
 MANIFEST_CREATE_TARGETS = $(TARGETS:=.create-manifest)
 MANIFEST_PUSH_TARGETS = $(TARGETS:=.push-manifest)
 TEST_TARGETS = $(TARGETS:=.go-test)
+LINT_TARGETS = $(TARGETS:=.lint)
 BUILD_OPT=""
 IMAGE_TAG=latest
 MANIFEST_TAG=latest
@@ -120,5 +121,16 @@ go-mod-tidy: proto
 	cd cmd/wpscan            && go mod tidy
 	cd cmd/portscan          && go mod tidy
 	cd cmd/applicationscan  && go mod tidy
+
+.PHONY: lint proto-lint pkg-lint
+lint: $(LINT_TARGETS) proto-lint pkg-lint
+%.lint: FAKE
+	sh hack/golinter.sh cmd/$(*)
+proto-lint:
+	sh hack/golinter.sh proto/diagnosis
+pkg-lint:
+	sh hack/golinter.sh pkg/common
+	sh hack/golinter.sh pkg/message
+	sh hack/golinter.sh pkg/model
 
 FAKE:
