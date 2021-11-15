@@ -43,10 +43,18 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 		if err != nil {
 			return err
 		}
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis)
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagApplicationScan)
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target)
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
+		}
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagApplicationScan); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagApplicationScan, err)
+		}
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
+		}
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", target, err)
+		}
 	}
 
 	return nil

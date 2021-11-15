@@ -30,6 +30,10 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			return nil, err
 		}
 		msg, err := makeJiraMessage(req.ProjectId, req.SettingId, data)
+		if err != nil {
+			appLogger.Errorf("Error occured when making Jira message, error: %v", err)
+			return nil, err
+		}
 		msg.ScanOnly = req.ScanOnly
 		resp, err = d.sqs.sendJiraMessage(ctx, msg)
 		if err != nil {

@@ -9,7 +9,8 @@ import (
 )
 
 type portscanAPI interface {
-	getResult(*message.PortscanQueueMessage, bool) ([]*finding.FindingForUpsert, error)
+	makeTargets(string)
+	getResult(context.Context, *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error)
 	scan() ([]*portscan.NmapResult, error)
 }
 
@@ -17,7 +18,7 @@ type portscanClient struct {
 	target []target
 }
 
-func newPortscanClient() (*portscanClient, error) {
+func newPortscanClient() (portscanAPI, error) {
 	//	var conf portscanConfig
 	//	err := envconfig.Process("", &conf)
 	//	if err != nil {
@@ -62,8 +63,8 @@ func (p *portscanClient) scan() ([]*portscan.NmapResult, error) {
 	return nmapResults, nil
 }
 
-func makeTargets(targetIPFQDN string) []target {
-	return []target{
+func (p *portscanClient) makeTargets(targetIPFQDN string) {
+	p.target = []target{
 		target{
 			Target:   targetIPFQDN,
 			FromPort: 0,
