@@ -155,10 +155,18 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 		if err != nil {
 			return err
 		}
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis)
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagJira)
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, jiraProject)
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
+		}
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagJira); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagJira, err)
+		}
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
+		}
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, jiraProject); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", jiraProject, err)
+		}
 	}
 	return nil
 }
@@ -224,7 +232,6 @@ func (s *sqsHandler) CallAnalyzeAlert(ctx context.Context, projectID uint32) err
 
 const (
 	// PriorityScore
-	MaxScore             = 10.0
 	ScoreHigh            = 10.0
 	ScoreMiddle          = 6.0
 	ScoreLow             = 3.0
@@ -238,10 +245,7 @@ const (
 )
 
 func isOpen(status string) bool {
-	if strings.Index(status, StatusClosed) > -1 {
-		return false
-	}
-	return true
+	return !strings.Contains(status, StatusClosed)
 }
 
 func getStatus(isSuccess bool) diagnosis.Status {

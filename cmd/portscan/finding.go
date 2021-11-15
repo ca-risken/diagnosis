@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 
@@ -33,9 +31,15 @@ func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.Findin
 		if err != nil {
 			return err
 		}
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagPortscan)
-		s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target)
-
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
+		}
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagPortscan); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagPortscan, err)
+		}
+		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
+			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", target, err)
+		}
 	}
 
 	return nil
@@ -55,11 +59,6 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 		return err
 	}
 	return nil
-}
-
-func generateDataSourceID(input string) string {
-	hash := sha256.Sum256([]byte(input))
-	return hex.EncodeToString(hash[:])
 }
 
 func makeURL(target string, port int) string {

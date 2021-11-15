@@ -56,7 +56,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	}
 	statusDetail := ""
 
-	portscan.target = makeTargets(msg.Target)
+	portscan.makeTargets(msg.Target)
 
 	xctx, segment := xray.BeginSubsegment(ctx, "getResult")
 	findings, err := portscan.getResult(xctx, msg)

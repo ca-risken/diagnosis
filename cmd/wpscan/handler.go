@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -152,44 +151,12 @@ func (s *sqsHandler) CallAnalyzeAlert(ctx context.Context, projectID uint32) err
 
 const (
 	// PriorityScore
-	MaxScore             = 10.0
-	ScoreHigh            = 10.0
-	ScoreMiddle          = 6.0
-	ScoreLow             = 3.0
-	ScoreInformation     = 1.0
-	ScoreOther           = 0.1
-	TypeScoreHigh        = "HIGH"
-	TypeScoreMiddle      = "MIDDLE"
-	TypeScoreLow         = "LOW"
-	TypeScoreInformation = "INFORMATION"
-	StatusClosed         = "クローズ"
+	MaxScore = 10.0
 )
-
-func isOpen(status string) bool {
-	if strings.Index(status, StatusClosed) > -1 {
-		return false
-	}
-	return true
-}
 
 func getStatus(isSuccess bool) diagnosis.Status {
 	if isSuccess {
 		return diagnosis.Status_OK
 	}
 	return diagnosis.Status_ERROR
-}
-
-func getScore(name string) float32 {
-	switch strings.ToUpper(name) {
-	case TypeScoreHigh:
-		return ScoreHigh
-	case TypeScoreMiddle:
-		return ScoreMiddle
-	case TypeScoreLow:
-		return ScoreLow
-	case TypeScoreInformation:
-		return ScoreInformation
-	default:
-		return ScoreOther
-	}
 }

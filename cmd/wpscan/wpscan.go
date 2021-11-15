@@ -113,7 +113,7 @@ func checkOpen(wpURL string) ([]checkAccess, error) {
 			continue
 		}
 		defer resp.Body.Close()
-		if resp.StatusCode == 200 && strings.Index(resp.Request.URL.String(), goal) > -1 {
+		if resp.StatusCode == 200 && strings.Contains(resp.Request.URL.String(), goal) {
 			target.IsAccess = true
 			retList = append(retList, target)
 		} else {
@@ -124,19 +124,6 @@ func checkOpen(wpURL string) ([]checkAccess, error) {
 	return retList, nil
 }
 
-func tmpRun() (*wpscanResult, error) {
-	bytes, err := tmpReadFile("./tmp/wpscan.json")
-	if err != nil {
-		return nil, err
-	}
-	var wpscanResult wpscanResult
-	if err := json.Unmarshal(bytes, &wpscanResult); err != nil {
-		appLogger.Errorf("Failed to parse scan results. error: %v", err)
-		return nil, err
-	}
-	return &wpscanResult, nil
-}
-
 func readAndDeleteFile(fileName string) ([]byte, error) {
 	bytes, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -145,15 +132,6 @@ func readAndDeleteFile(fileName string) ([]byte, error) {
 	if err := os.Remove(fileName); err != nil {
 		return nil, err
 	}
-	return bytes, nil
-}
-
-func tmpReadFile(fileName string) ([]byte, error) {
-	bytes, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		return nil, err
-	}
-
 	return bytes, nil
 }
 
@@ -303,9 +281,7 @@ type checkAccess struct {
 }
 
 func getAccessList(wpURL string) []checkAccess {
-	if strings.HasSuffix(wpURL, "/") {
-		wpURL = wpURL[:len(wpURL)-1]
-	}
+	wpURL = strings.TrimSuffix(wpURL, "/")
 	checkList := []checkAccess{
 		checkAccess{Target: wpURL + "/wp-admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
 		checkAccess{Target: wpURL + "/admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
