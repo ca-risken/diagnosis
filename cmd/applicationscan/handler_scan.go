@@ -5,9 +5,35 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
+
+	"github.com/ca-risken/diagnosis/proto/diagnosis"
 )
 
-func (c *zapClient) HandleBasicSetting(name string, maxDepth, maxChildren uint32) error {
+func (z *applicationScanClient) handleBasicScan(setting *diagnosis.ApplicationScanBasicSetting, applicationScanID, projectID uint32, name string) (*zapResult, error) {
+	contextName := fmt.Sprintf("%v_%v_%v", projectID, applicationScanID, time.Now().Unix())
+	z.targetURL = setting.Target
+	err := z.HandleBasicSetting(contextName, setting.MaxDepth, setting.MaxChildren)
+	if err != nil {
+		return nil, err
+	}
+	time.Sleep(1 * time.Second)
+	err = z.HandleSpiderScan(contextName, setting.MaxChildren)
+	if err != nil {
+		return nil, err
+	}
+	err = z.HandleActiveScan()
+	if err != nil {
+		return nil, err
+	}
+	report, err := z.getJsonReport()
+	if err != nil {
+		return nil, err
+	}
+	return report, nil
+}
+
+func (c *applicationScanClient) HandleBasicSetting(name string, maxDepth, maxChildren uint32) error {
 
 	// Create Session and Context
 	_, err := c.NewSession(name)
@@ -47,7 +73,7 @@ func (c *zapClient) HandleBasicSetting(name string, maxDepth, maxChildren uint32
 	return nil
 }
 
-func (c *zapClient) HandleSpiderScan(contextName string, maxChildren uint32) error {
+func (c *applicationScanClient) HandleSpiderScan(contextName string, maxChildren uint32) error {
 	// Exec Spider
 	retSpiderScan, err := c.SpiderScan(c.targetURL, fmt.Sprint(maxChildren), "True", contextName, "True")
 	if err != nil {
@@ -84,9 +110,7 @@ func (c *zapClient) HandleSpiderScan(contextName string, maxChildren uint32) err
 
 }
 
-func (c *zapClient) HandleActiveScan() error {
-	// Exec Scan
-
+func (c *applicationScanClient) HandleActiveScan() error {
 	retAscanScan, err := c.AscanScan("", "True", "True", "Default Policy", "", "", c.contextID)
 	if err != nil {
 		appLogger.Errorf("Failed to execute active scan, error: %v", err)
@@ -121,7 +145,7 @@ func (c *zapClient) HandleActiveScan() error {
 	return nil
 }
 
-func (c *zapClient) getJsonReport() (*zapResult, error) {
+func (c *applicationScanClient) getJsonReport() (*zapResult, error) {
 	retJsonReport, err := c.Jsonreport()
 	if err != nil {
 		appLogger.Errorf("Failed to get json report, error: %v", err)
