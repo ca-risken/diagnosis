@@ -6,10 +6,9 @@ require (
 	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/aws/aws-sdk-go v1.41.3
 	github.com/aws/aws-xray-sdk-go v1.6.0
-	github.com/ca-risken/common/pkg/database v0.0.0-20211014152033-66a726bc8b50
-	github.com/ca-risken/common/pkg/rpc v0.0.0-20211112102518-e808bff9e30e
-	github.com/ca-risken/common/pkg/sqs v0.0.0-20211014152033-66a726bc8b50 // indirect
-	github.com/ca-risken/common/pkg/xray v0.0.0-20211014152033-66a726bc8b50
+	github.com/ca-risken/common/pkg/database v0.0.0-20211118071101-9855266b50a1
+	github.com/ca-risken/common/pkg/rpc v0.0.0-20211118071101-9855266b50a1
+	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20211014145120-f1682296ef05
 	github.com/ca-risken/diagnosis/pkg/model v0.0.0-20211014145120-f1682296ef05
 	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20211014145120-f1682296ef05

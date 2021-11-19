@@ -22,7 +22,10 @@ func main() {
 	//	_ = tempHandler()
 	ctx := context.Background()
 
-	mimosaxray.InitXRay(xray.Config{})
+	err = mimosaxray.InitXRay(xray.Config{})
+	if err != nil {
+		appLogger.Fatal(err.Error())
+	}
 	consumer := newSQSConsumer()
 	appLogger.Info("Start the ApplicationScan SQS consumer server...")
 	consumer.Start(ctx,
