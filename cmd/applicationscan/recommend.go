@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/mattn/godown"
@@ -13,6 +14,8 @@ type recommend struct {
 	Recommendation string `json:"recommendation,omitempty"`
 }
 
+var multiLine = regexp.MustCompile("[\n]+")
+
 func getRecommend(alert *zapResultAlert) *recommend {
 	var r string
 	var buf bytes.Buffer
@@ -20,7 +23,7 @@ func getRecommend(alert *zapResultAlert) *recommend {
 		appLogger.Warnf("Failed to convert markdown from html, err=%+v, input=%s", err, alert.Solution)
 		r = alert.Solution
 	} else {
-		r = strings.TrimSpace(buf.String())
+		r = multiLine.ReplaceAllString(strings.TrimSpace(buf.String()), "\n")
 	}
 
 	return &recommend{
