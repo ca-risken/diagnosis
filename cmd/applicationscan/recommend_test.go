@@ -39,6 +39,26 @@ func TestGetRecommend(t *testing.T) {
 * 2`,
 			},
 		},
+		{
+			name:  "OK/multi line format1",
+			input: &zapResultAlert{Alert: "alert", RiskDesc: "desc", RiskCode: "1", Solution: "<p>1</p><p>2</p>"},
+			want: &recommend{
+				Risk: `alert
+		- Risk: desc <risk_code: 1>`,
+				Recommendation: `1
+2`,
+			},
+		},
+		{
+			name:  "OK/multi line format2",
+			input: &zapResultAlert{Alert: "alert", RiskDesc: "desc", RiskCode: "1", Solution: `1<br /><br /><br /><br />2`},
+			want: &recommend{
+				Risk: `alert
+		- Risk: desc <risk_code: 1>`,
+				Recommendation: `1
+2`,
+			},
+		},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
