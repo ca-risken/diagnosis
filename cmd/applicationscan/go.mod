@@ -10,8 +10,8 @@ require (
 	github.com/ca-risken/common/pkg/logging v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/common/pkg/sqs v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
-	github.com/ca-risken/core/proto/alert v0.0.0-20210924100500-e1499111345b
-	github.com/ca-risken/core/proto/finding v0.0.0-20210924100500-e1499111345b
+	github.com/ca-risken/core/proto/alert v0.0.0-20211208021136-f6b597adc160
+	github.com/ca-risken/core/proto/finding v0.0.0-20211208021136-f6b597adc160
 	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20210928110806-54123bffb7e9
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210928110806-54123bffb7e9
 	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20210928110806-54123bffb7e9
@@ -20,6 +20,7 @@ require (
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
+	github.com/mattn/godown v0.0.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/valyala/fasthttp v1.30.0 // indirect
 	github.com/vikyd/zero v0.0.0-20190921142904-0f738d0bc858

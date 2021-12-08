@@ -13,55 +13,37 @@ import (
 	"github.com/ca-risken/diagnosis/pkg/message"
 )
 
-func makeFindings(zapResult *zapResult, message *message.ApplicationScanQueueMessage, target string) ([]*finding.FindingForUpsert, error) {
-	var findings []*finding.FindingForUpsert
+func (s *sqsHandler) putFindings(ctx context.Context, zapResult *zapResult, msg *message.ApplicationScanQueueMessage, target string) error {
 	for _, site := range zapResult.Site {
 		for _, alert := range site.Alerts {
 			data, err := json.Marshal(map[string]zapResultAlert{"data": alert})
 			if err != nil {
 				appLogger.Errorf("Failed to marshal zapResult for makeFinding. err: %v", err)
 			}
-			findings = append(findings, &finding.FindingForUpsert{
+			res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: &finding.FindingForUpsert{
 				Description:      getDescription(&alert, target),
-				DataSource:       message.DataSource,
+				DataSource:       msg.DataSource,
 				DataSourceId:     generateDataSourceID(fmt.Sprintf("%v_%v", target, alert.Alert)),
 				ResourceName:     target,
-				ProjectId:        message.ProjectID,
+				ProjectId:        msg.ProjectID,
 				OriginalScore:    getScore(&alert),
 				OriginalMaxScore: MaxScore,
 				Data:             string(data),
-			})
+			}})
+			if err != nil {
+				return err
+			}
+			s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis)
+			s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagApplicationScan)
+			s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
+			s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target)
+			s.putRecommend(ctx, res.Finding.ProjectId, res.Finding.FindingId, msg.DataSource, &alert)
 		}
 	}
-
-	return findings, nil
-}
-
-func (s *sqsHandler) putFindings(ctx context.Context, findings []*finding.FindingForUpsert, target string) error {
-	for _, f := range findings {
-		res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: f})
-		if err != nil {
-			return err
-		}
-		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
-			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
-		}
-		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagApplicationScan); err != nil {
-			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagApplicationScan, err)
-		}
-		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability); err != nil {
-			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
-		}
-		if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
-			appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", target, err)
-		}
-	}
-
 	return nil
 }
 
-func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID uint64, tag string) error {
-
+func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID uint64, tag string) {
 	_, err := s.findingClient.TagFinding(ctx, &finding.TagFindingRequest{
 		ProjectId: projectID,
 		Tag: &finding.FindingTagForUpsert{
@@ -71,9 +53,26 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 		}})
 	if err != nil {
 		appLogger.Errorf("Failed to TagFinding. error: %v", err)
-		return err
 	}
-	return nil
+}
+
+func (s *sqsHandler) putRecommend(ctx context.Context, projectID uint32, findingID uint64, dataSource string, alert *zapResultAlert) {
+	r := getRecommend(alert)
+	if r.Risk == "" && r.Recommendation == "" {
+		appLogger.Warnf("Failed to get Recommendation, zapResultAlert=%+v", alert)
+		return
+	}
+	_, err := s.findingClient.PutRecommend(ctx, &finding.PutRecommendRequest{
+		ProjectId:      projectID,
+		FindingId:      findingID,
+		DataSource:     dataSource,
+		Type:           alert.Alert,
+		Risk:           r.Risk,
+		Recommendation: r.Recommendation,
+	})
+	if err != nil {
+		appLogger.Errorf("Failed to PutRecommend. projectID: %d, findingID: %d, error: %v", projectID, findingID, err)
+	}
 }
 
 func generateDataSourceID(input string) string {

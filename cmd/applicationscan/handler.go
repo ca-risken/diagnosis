@@ -113,11 +113,6 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
 		return mimosasqs.WrapNonRetryable(err)
 	}
-	findings, err := makeFindings(scanResult, msg, setting.Target)
-	if err != nil {
-		appLogger.Errorf("Failed making Findings, error: %v", err)
-		return mimosasqs.WrapNonRetryable(err)
-	}
 
 	// Clear finding score
 	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
@@ -131,7 +126,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	}
 
 	// Put Finding and Tag Finding
-	if err := s.putFindings(ctx, findings, setting.Target); err != nil {
+	if err := s.putFindings(ctx, scanResult, msg, setting.Target); err != nil {
 		appLogger.Errorf("Faild to put findings. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
