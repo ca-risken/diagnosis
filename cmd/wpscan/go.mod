@@ -4,10 +4,10 @@ go 1.16
 
 require (
 	github.com/andybalholm/brotli v1.0.3 // indirect
-	github.com/aws/aws-sdk-go v1.41.3
+	github.com/aws/aws-sdk-go v1.42.22
 	github.com/aws/aws-xray-sdk-go v1.6.0
 	github.com/ca-risken/common/pkg/logging v0.0.0-20211118071101-9855266b50a1
-	github.com/ca-risken/common/pkg/sqs v0.0.0-20211118071101-9855266b50a1
+	github.com/ca-risken/common/pkg/sqs v0.0.0-20211210074045-79fdb4c61950
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/core/proto/alert v0.0.0-20211014091419-ba2a979c7659
 	github.com/ca-risken/core/proto/finding v0.0.0-20211014091419-ba2a979c7659
@@ -23,5 +23,6 @@ require (
 	github.com/valyala/fasthttp v1.31.0 // indirect
 	github.com/vikyd/zero v0.0.0-20190921142904-0f738d0bc858
 	golang.org/x/net v0.0.0-20211014222326-fd004c51d1d6 // indirect
+	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	google.golang.org/grpc v1.41.0
 )
