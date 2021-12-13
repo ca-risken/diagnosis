@@ -6,11 +6,11 @@ require (
 	github.com/Ullaakut/nmap/v2 v2.2.0 // indirect
 	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
-	github.com/aws/aws-sdk-go v1.40.52
+	github.com/aws/aws-sdk-go v1.42.22
 	github.com/aws/aws-xray-sdk-go v1.6.0
 	github.com/ca-risken/common/pkg/logging v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/common/pkg/portscan v0.0.0-20211118071101-9855266b50a1
-	github.com/ca-risken/common/pkg/sqs v0.0.0-20211118071101-9855266b50a1
+	github.com/ca-risken/common/pkg/sqs v0.0.0-20211210074045-79fdb4c61950
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/core/proto/alert v0.0.0-20210924100500-e1499111345b
 	github.com/ca-risken/core/proto/finding v0.0.0-20210924100500-e1499111345b
@@ -27,7 +27,7 @@ require (
 	github.com/valyala/fasthttp v1.30.0 // indirect
 	github.com/vikyd/zero v0.0.0-20190921142904-0f738d0bc858
 	golang.org/x/net v0.0.0-20210929193557-e81a3d93ecf6 // indirect
-	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6 // indirect
+	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20210929214142-896c89f843d2 // indirect
 	google.golang.org/grpc v1.41.0
