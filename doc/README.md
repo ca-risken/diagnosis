@@ -44,6 +44,7 @@
     - [GetPortscanTargetResponse](#diagnosis.GetPortscanTargetResponse)
     - [GetWpscanSettingRequest](#diagnosis.GetWpscanSettingRequest)
     - [GetWpscanSettingResponse](#diagnosis.GetWpscanSettingResponse)
+    - [InvokeScanAllRequest](#diagnosis.InvokeScanAllRequest)
     - [InvokeScanRequest](#diagnosis.InvokeScanRequest)
     - [InvokeScanResponse](#diagnosis.InvokeScanResponse)
     - [ListApplicationScanBasicSettingRequest](#diagnosis.ListApplicationScanBasicSettingRequest)
@@ -766,6 +767,21 @@ Status
 
 
 
+<a name="diagnosis.InvokeScanAllRequest"></a>
+
+### InvokeScanAllRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| diagnosis_data_source_id | [uint32](#uint32) |  |  |
+
+
+
+
+
+
 <a name="diagnosis.InvokeScanRequest"></a>
 
 ### InvokeScanRequest
@@ -1277,7 +1293,7 @@ WpscanSettingService
 | PutApplicationScanBasicSetting | [PutApplicationScanBasicSettingRequest](#diagnosis.PutApplicationScanBasicSettingRequest) | [PutApplicationScanBasicSettingResponse](#diagnosis.PutApplicationScanBasicSettingResponse) |  |
 | DeleteApplicationScanBasicSetting | [DeleteApplicationScanBasicSettingRequest](#diagnosis.DeleteApplicationScanBasicSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 | InvokeScan | [InvokeScanRequest](#diagnosis.InvokeScanRequest) | [InvokeScanResponse](#diagnosis.InvokeScanResponse) | KICK |
-| InvokeScanAll | [.google.protobuf.Empty](#google.protobuf.Empty) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
+| InvokeScanAll | [InvokeScanAllRequest](#diagnosis.InvokeScanAllRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 
  
 
