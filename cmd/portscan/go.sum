@@ -35,6 +35,12 @@ github.com/ca-risken/common/pkg/logging v0.0.0-20211118071101-9855266b50a1 h1:uG
 github.com/ca-risken/common/pkg/logging v0.0.0-20211118071101-9855266b50a1/go.mod h1:h0Rj4W2YM6pAPyTT60bVdfpCDALOV8SMpZZCx8GhkYI=
 github.com/ca-risken/common/pkg/portscan v0.0.0-20211118071101-9855266b50a1 h1:Z7xy+bCkdb4HKXRdtb9YDkkUJ3ZJTNdOAL0E9pKPR3k=
 github.com/ca-risken/common/pkg/portscan v0.0.0-20211118071101-9855266b50a1/go.mod h1:4JgzkE62Dv8uTvhAqTRE8KQWIZ6oQX2CcgfS6nf/I4Q=
+github.com/ca-risken/common/pkg/portscan v0.0.0-20211223025030-6bfdc45e906c h1:B030jjn9jbEkCt1daslOPRhE0L1H6z4K2VMKuYmB9eU=
+github.com/ca-risken/common/pkg/portscan v0.0.0-20211223025030-6bfdc45e906c/go.mod h1:4JgzkE62Dv8uTvhAqTRE8KQWIZ6oQX2CcgfS6nf/I4Q=
+github.com/ca-risken/common/pkg/portscan v0.0.0-20211223165830-a39fb3505a9c h1:8X9WZTSRNeC67regmUzel1ek0/UouyhgjBdlprIL7to=
+github.com/ca-risken/common/pkg/portscan v0.0.0-20211223165830-a39fb3505a9c/go.mod h1:4JgzkE62Dv8uTvhAqTRE8KQWIZ6oQX2CcgfS6nf/I4Q=
+github.com/ca-risken/common/pkg/portscan v0.0.0-20211224014353-4e5485f7db26 h1:c+pAgpHQR1/rRuSx+wh3Lzw11yNecCiIHHMyUToLk0k=
+github.com/ca-risken/common/pkg/portscan v0.0.0-20211224014353-4e5485f7db26/go.mod h1:4JgzkE62Dv8uTvhAqTRE8KQWIZ6oQX2CcgfS6nf/I4Q=
 github.com/ca-risken/common/pkg/sqs v0.0.0-20210924080827-df6e4ac73f01/go.mod h1:IxYbziqfohwo7y7Zn15W2emT4ubB5duUzdvj5fYhHJ4=
 github.com/ca-risken/common/pkg/sqs v0.0.0-20211210074045-79fdb4c61950 h1:O7SSgjqZCP6YpqNyErZsJ71epIrHE9oKqlNF8U8LfcM=
 github.com/ca-risken/common/pkg/sqs v0.0.0-20211210074045-79fdb4c61950/go.mod h1:PnGxivikVgnsel3YoM1W8a6ZlrlXL7pXb7UdKDFW96Q=
@@ -45,6 +51,8 @@ github.com/ca-risken/core/proto/alert v0.0.0-20210924100500-e1499111345b/go.mod 
 github.com/ca-risken/core/proto/finding v0.0.0-20210906115102-3cabd5f9511a/go.mod h1:TZ3SqTbxvOpl6GF4FEY4XEiIGkss4FCNyYp2M4j1j60=
 github.com/ca-risken/core/proto/finding v0.0.0-20210924100500-e1499111345b h1:nWtBpbjMoIK+cNqzKN04Nh1fiajl9nQJNtTZNKDv1C8=
 github.com/ca-risken/core/proto/finding v0.0.0-20210924100500-e1499111345b/go.mod h1:TZ3SqTbxvOpl6GF4FEY4XEiIGkss4FCNyYp2M4j1j60=
+github.com/ca-risken/core/proto/finding v0.0.0-20211223040309-8ad6f4bcf635 h1:0lY0ICCcNaee2KWp8SDbC/AxV8/bLJHhx74J3YOIp0I=
+github.com/ca-risken/core/proto/finding v0.0.0-20211223040309-8ad6f4bcf635/go.mod h1:Zl2+Z3g878Tp33vh6nhiU1pqaz7ymtmiZ71+Wn+Rzts=
 github.com/ca-risken/diagnosis/pkg/common v0.0.0-20210928110806-54123bffb7e9 h1:w9ygo12PKOAMl4Xmz2/1+iFWRQA28dsyQywLryNoiMg=
 github.com/ca-risken/diagnosis/pkg/common v0.0.0-20210928110806-54123bffb7e9/go.mod h1:EkDd+i1fmTJdVNHjwjk7VbSv+q+skkmUCvC0/DSqdwU=
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210928110806-54123bffb7e9 h1:NkwDz0LVM7vxy/IkGDojSk0I7XuBI+HQSpihfpZc0QM=

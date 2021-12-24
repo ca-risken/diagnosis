@@ -4,13 +4,12 @@ import (
 	"context"
 
 	"github.com/ca-risken/common/pkg/portscan"
-	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/pkg/message"
 )
 
 type portscanAPI interface {
 	makeTargets(string)
-	getResult(context.Context, *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error)
+	getResult(context.Context, *message.PortscanQueueMessage) ([]*portscan.NmapResult, error)
 	scan() ([]*portscan.NmapResult, error)
 }
 
@@ -29,21 +28,14 @@ func newPortscanClient() (portscanAPI, error) {
 	return &p, nil
 }
 
-func (p *portscanClient) getResult(ctx context.Context, message *message.PortscanQueueMessage) ([]*finding.FindingForUpsert, error) {
-	putData := []*finding.FindingForUpsert{}
-
+func (p *portscanClient) getResult(ctx context.Context, message *message.PortscanQueueMessage) ([]*portscan.NmapResult, error) {
 	nmapResults, err := p.scan()
 	if err != nil {
 		appLogger.Errorf("Faild to Portscan: err=%+v", err)
-		return putData, err
-	}
-	putData, err = makeFindings(nmapResults, message)
-	if err != nil {
-		appLogger.Errorf("Faild to make findings: err=%+v", err)
-		return putData, err
+		return []*portscan.NmapResult{}, err
 	}
 
-	return putData, nil
+	return nmapResults, nil
 }
 
 func (p *portscanClient) scan() ([]*portscan.NmapResult, error) {

@@ -59,7 +59,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	portscan.makeTargets(msg.Target)
 
 	xctx, segment := xray.BeginSubsegment(ctx, "getResult")
-	findings, err := portscan.getResult(xctx, msg)
+	nmapResults, err := portscan.getResult(xctx, msg)
 	segment.Close(err)
 	if err != nil {
 		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
@@ -77,7 +77,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	}
 
 	// Put finding to core
-	if err := s.putFindings(ctx, findings, msg.Target); err != nil {
+	if err := s.putFindings(ctx, nmapResults, msg); err != nil {
 		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
 		_ = s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
