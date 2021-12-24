@@ -78,7 +78,7 @@ service DiagnosisService {
 
   // KICK
   rpc InvokeScan(InvokeScanRequest) returns (InvokeScanResponse) {}
-  rpc InvokeScanAll(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  rpc InvokeScanAll(InvokeScanAllRequest) returns (google.protobuf.Empty) {}
 }
 
 // DiagnosisDataSourceService
@@ -297,3 +297,5 @@ message InvokeScanRequest {
 }
 
 message InvokeScanResponse { string message = 1; }
+
+message InvokeScanAllRequest { uint32 diagnosis_data_source_id = 1; }
