@@ -14,6 +14,18 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	InvokeScanAllDataSource       = "all"
+	InvokeScanJira                = "jira"
+	InvokeScanWPScan              = "wpscan"
+	InvokeScanPortScan            = "portscan"
+	InvokeScanApplicationScan     = "applicationscan"
+	DataSourceNameJira            = "diagnosis:jira"
+	DataSourceNameWPScan          = "diagnosis:wpscan"
+	DataSourceNamePortScan        = "diagnosis:portscan"
+	DataSourceNameApplicationScan = "diagnosis:application-scan"
+)
+
 func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
@@ -24,7 +36,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	}
 	var resp *sqs.SendMessageOutput
 	switch dataSource.Name {
-	case "diagnosis:jira":
+	case DataSourceNameJira:
 		data, err := d.repository.GetJiraSetting(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
 			return nil, err
@@ -54,7 +66,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		}); err != nil {
 			return nil, err
 		}
-	case "diagnosis:wpscan":
+	case DataSourceNameWPScan:
 		data, err := d.repository.GetWpscanSetting(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
 			return nil, err
@@ -91,7 +103,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			appLogger.Errorf("Error occured when upsert WPScanSetting, error: %v", err)
 			return nil, err
 		}
-	case "diagnosis:portscan":
+	case DataSourceNamePortScan:
 		data, err := d.repository.GetPortscanSetting(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
 			appLogger.Errorf("Error occured when getting PortscanSetting, error: %v", err)
@@ -139,7 +151,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		}); err != nil {
 			return nil, err
 		}
-	case "diagnosis:application-scan":
+	case DataSourceNameApplicationScan:
 		data, err := d.repository.GetApplicationScan(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
 			appLogger.Errorf("Error occured when getting PortscanSetting, error: %v", err)
@@ -179,49 +191,76 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	return &diagnosis.InvokeScanResponse{Message: "Start Diagnosis."}, nil
 }
 
-func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *empty.Empty) (*empty.Empty, error) {
+func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.InvokeScanAllRequest) (*empty.Empty, error) {
 
-	listjiraSetting, err := s.repository.ListAllJiraSetting(ctx)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return &empty.Empty{}, nil
+	scanDataSource := InvokeScanAllDataSource
+	if !zero.IsZeroVal(req.DiagnosisDataSourceId) {
+		dataSource, err := s.repository.GetDiagnosisDataSource(ctx, 0, req.DiagnosisDataSourceId)
+		if err != nil {
+			return nil, err
 		}
-		appLogger.Errorf("Failed to List All JiraSetting., error: %v", err)
-		return nil, err
-	}
-
-	for _, jiraSetting := range *listjiraSetting {
-		if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
-			ProjectId:             jiraSetting.ProjectID,
-			SettingId:             jiraSetting.JiraSettingID,
-			DiagnosisDataSourceId: jiraSetting.DiagnosisDataSourceID,
-			ScanOnly:              true,
-		}); err != nil {
-			// errorが出ても続行
-			appLogger.Errorf("InvokeScanAll error, error: %v", err)
+		switch dataSource.Name {
+		case DataSourceNameJira:
+			scanDataSource = InvokeScanJira
+		case DataSourceNameWPScan:
+			scanDataSource = InvokeScanWPScan
+		case DataSourceNamePortScan:
+			scanDataSource = InvokeScanPortScan
+		case DataSourceNameApplicationScan:
+			scanDataSource = InvokeScanApplicationScan
 		}
 	}
-
-	listWpscanSetting, err := s.repository.ListAllWpscanSetting(ctx)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return &empty.Empty{}, nil
+	if isInvokeScan(scanDataSource, InvokeScanJira) {
+		listjiraSetting, err := s.repository.ListAllJiraSetting(ctx)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return &empty.Empty{}, nil
+			}
+			appLogger.Errorf("Failed to List All JiraSetting., error: %v", err)
+			return nil, err
 		}
-		appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
-		return nil, err
-	}
 
-	for _, WpscanSetting := range *listWpscanSetting {
-		if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
-			ProjectId:             WpscanSetting.ProjectID,
-			SettingId:             WpscanSetting.WpscanSettingID,
-			DiagnosisDataSourceId: WpscanSetting.DiagnosisDataSourceID,
-			ScanOnly:              true,
-		}); err != nil {
-			// errorが出ても続行
-			appLogger.Errorf("InvokeScanAll error, error: %v", err)
+		for _, jiraSetting := range *listjiraSetting {
+			if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
+				ProjectId:             jiraSetting.ProjectID,
+				SettingId:             jiraSetting.JiraSettingID,
+				DiagnosisDataSourceId: jiraSetting.DiagnosisDataSourceID,
+				ScanOnly:              true,
+			}); err != nil {
+				// errorが出ても続行
+				appLogger.Errorf("InvokeScanAll error, error: %v", err)
+			}
+		}
+	}
+	if isInvokeScan(scanDataSource, InvokeScanWPScan) {
+		listWpscanSetting, err := s.repository.ListAllWpscanSetting(ctx)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return &empty.Empty{}, nil
+			}
+			appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
+			return nil, err
+		}
+
+		for _, WpscanSetting := range *listWpscanSetting {
+			if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
+				ProjectId:             WpscanSetting.ProjectID,
+				SettingId:             WpscanSetting.WpscanSettingID,
+				DiagnosisDataSourceId: WpscanSetting.DiagnosisDataSourceID,
+				ScanOnly:              true,
+			}); err != nil {
+				// errorが出ても続行
+				appLogger.Errorf("InvokeScanAll error, error: %v", err)
+			}
 		}
 	}
 
 	return &empty.Empty{}, nil
+}
+
+func isInvokeScan(scanDataSource, targetDataSource string) bool {
+	if scanDataSource == InvokeScanAllDataSource {
+		return true
+	}
+	return scanDataSource == targetDataSource
 }

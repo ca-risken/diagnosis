@@ -68,11 +68,6 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		_ = s.putWpscanSetting(ctx, msg.WpscanSettingID, msg.ProjectID, false, "Failed exec WPScan Ask the system administrator. ")
 		return mimosasqs.WrapNonRetryable(err)
 	}
-	findings, err := makeFindings(wpscanResult, msg)
-	if err != nil {
-		appLogger.Errorf("Failed making Findings, error: %v", err)
-		return mimosasqs.WrapNonRetryable(err)
-	}
 	// Clear finding score
 	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
 		DataSource: msg.DataSource,
@@ -82,11 +77,12 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		appLogger.Errorf("Failed to clear finding score. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
-	// Put Finding and Tag Finding
-	if err := s.putFindings(ctx, findings, msg.TargetURL); err != nil {
-		appLogger.Errorf("Faild to put findings. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
-		return err
+	err = s.putFindings(ctx, wpscanResult, msg)
+	if err != nil {
+		appLogger.Errorf("Failed put Findings, error: %v", err)
+		return mimosasqs.WrapNonRetryable(err)
 	}
+
 	// Put WpscanSetting
 	if err := s.putWpscanSetting(ctx, msg.WpscanSettingID, msg.ProjectID, true, ""); err != nil {
 		appLogger.Errorf("Faild to put rel_osint_data_source. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
