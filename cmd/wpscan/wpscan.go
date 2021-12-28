@@ -10,8 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ca-risken/core/proto/finding"
-	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/gassara-kys/envconfig"
 	"github.com/vikyd/zero"
 )
@@ -133,102 +131,6 @@ func readAndDeleteFile(fileName string) ([]byte, error) {
 		return nil, err
 	}
 	return bytes, nil
-}
-
-func makeFindings(wpscanResult *wpscanResult, message *message.WpscanQueueMessage) ([]*finding.FindingForUpsert, error) {
-	var findings []*finding.FindingForUpsert
-	for _, interstingFinding := range wpscanResult.InterestingFindings {
-		data, err := json.Marshal(map[string]interestingFindings{"data": interstingFinding})
-		if err != nil {
-			return nil, err
-		}
-		desc, score := getInterestingFindingInformation(interstingFinding)
-		findings = append(findings, makeFinding(desc, fmt.Sprintf("interesting_findings_%v", interstingFinding.ToS), score, &data, message))
-	}
-	desc, score := getVersionFindingInformation(wpscanResult.Version)
-	if !zero.IsZeroVal(desc) {
-		data, err := json.Marshal(map[string]version{"data": wpscanResult.Version})
-		if err != nil {
-			return nil, err
-		}
-		findings = append(findings, makeFinding(desc, fmt.Sprintf("version_%v", message.TargetURL), score, &data, message))
-	}
-	isUserFound := false
-	for key, val := range wpscanResult.Users {
-		isUserFound = true
-		data, err := json.Marshal(map[string]interface{}{"data": val})
-		if err != nil {
-			return nil, err
-		}
-		desc := fmt.Sprintf("User %v was found.", key)
-		score := float32(3.0)
-		findings = append(findings, makeFinding(desc, fmt.Sprintf("username_%v", key), score, &data, message))
-	}
-	for _, access := range wpscanResult.AccessList {
-		desc, score := getAccessFindingInformation(access, isUserFound)
-		if !zero.IsZeroVal(desc) {
-			data, err := json.Marshal(map[string]interface{}{"data": map[string]string{
-				"url": access.Target,
-			}})
-			if err != nil {
-				return nil, err
-			}
-			findings = append(findings, makeFinding(desc, fmt.Sprintf("Accesible_%v", access.Target), score, &data, message))
-		}
-	}
-	return findings, nil
-}
-
-func makeFinding(description, dataSourceID string, score float32, data *[]byte, message *message.WpscanQueueMessage) *finding.FindingForUpsert {
-	return &finding.FindingForUpsert{
-		Description:      description,
-		DataSource:       message.DataSource,
-		DataSourceId:     generateDataSourceID(dataSourceID),
-		ResourceName:     message.TargetURL,
-		ProjectId:        message.ProjectID,
-		OriginalScore:    score,
-		OriginalMaxScore: MaxScore,
-		Data:             string(*data),
-	}
-}
-
-func getInterestingFindingInformation(ie interestingFindings) (string, float32) {
-	findingInf, ok := wpscanFindingMap[ie.Type]
-	if !ok {
-		return ie.ToS, 1.0
-	}
-	desc := findingInf.Description
-	if zero.IsZeroVal(desc) {
-		desc = ie.ToS
-	}
-	return desc, findingInf.Score
-}
-
-func getVersionFindingInformation(version version) (string, float32) {
-	if zero.IsZeroVal(version.Number) {
-		return "", 0.0
-	}
-	if version.Status == "insecure" {
-		return fmt.Sprintf("WordPress version %v identified (Insecure)", version.Number), 6.0
-	}
-	return fmt.Sprintf("WordPress version %v identified", version.Number), 1.0
-}
-
-func getAccessFindingInformation(access checkAccess, isUserFound bool) (string, float32) {
-	switch access.Type {
-	case "Login":
-		if !access.IsAccess {
-			return "WordPress login page is closed.", 1.0
-		}
-		if isUserFound {
-			return "WordPress login page is open. And username was found.", 9.0
-		}
-		return "WordPress login page is open.", 8.0
-
-	default:
-		return "", 0.0
-	}
-
 }
 
 type wpscanOptions struct {

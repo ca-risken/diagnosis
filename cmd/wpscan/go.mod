@@ -10,7 +10,7 @@ require (
 	github.com/ca-risken/common/pkg/sqs v0.0.0-20211210074045-79fdb4c61950
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/core/proto/alert v0.0.0-20211014091419-ba2a979c7659
-	github.com/ca-risken/core/proto/finding v0.0.0-20211014091419-ba2a979c7659
+	github.com/ca-risken/core/proto/finding v0.0.0-20211227095930-ef25be878432
 	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20211014145120-f1682296ef05
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20211014145120-f1682296ef05
 	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20211014145120-f1682296ef05

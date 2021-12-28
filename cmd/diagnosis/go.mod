@@ -11,7 +11,7 @@ require (
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20211014145120-f1682296ef05
 	github.com/ca-risken/diagnosis/pkg/model v0.0.0-20211014145120-f1682296ef05
-	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20211014145120-f1682296ef05
+	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20211224114208-28900968b46b
 	github.com/gassara-kys/envconfig v1.4.4
 	github.com/golang/protobuf v1.5.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
