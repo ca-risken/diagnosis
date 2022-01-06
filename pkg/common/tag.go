@@ -14,6 +14,10 @@ const (
 
 	// Diagnosis Resource Type
 
+	// TagURL url tag
+	TagURL = "url"
+	// TagFQDN FQDN tag
+	TagFQDN = "fqdn"
 	// TagUnknown unknown service tag
 	TagUnknown = "unknown-resource-type"
 	// TagVulnerability domain tag
