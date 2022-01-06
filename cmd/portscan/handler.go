@@ -38,7 +38,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	msg, err := parseMessage(msgBody)
 	if err != nil {
 		appLogger.Errorf("Invalid message: SQS_msg=%+v, err=%+v", msgBody, err)
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
@@ -51,10 +51,8 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	portscan, err := newPortscanClient()
 	if err != nil {
 		appLogger.Errorf("Failed to create Portscan session: err=%+v", err)
-		_ = s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, err.Error())
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
-	statusDetail := ""
 
 	portscan.makeTargets(msg.Target)
 
@@ -63,6 +61,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	segment.Close(err)
 	if err != nil {
 		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
 	// Clear finding score
@@ -72,16 +71,13 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		Tag:        []string{msg.Target},
 	}); err != nil {
 		appLogger.Errorf("Failed to clear finding score. PortscanSettingID: %v, error: %v", msg.PortscanSettingID, err)
-		_ = s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
 	// Put finding to core
 	if err := s.putFindings(ctx, nmapResults, msg); err != nil {
 		appLogger.Errorf("Failed to put findings: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
-		statusDetail = fmt.Sprintf("%v%v", statusDetail, err.Error())
-		_ = s.putPortscanTarget(ctx, msg.PortscanSettingID, msg.ProjectID, false, statusDetail)
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
 	if err := s.putPortscanTarget(ctx, msg.PortscanTargetID, msg.ProjectID, true, ""); err != nil {
@@ -99,6 +95,13 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		return mimosasqs.WrapNonRetryable(err)
 	}
 	return nil
+}
+
+func (s *sqsHandler) handleErrorWithUpdateStatus(ctx context.Context, msg *message.PortscanQueueMessage, err error) error {
+	if updateErr := s.putPortscanTarget(ctx, msg.PortscanTargetID, msg.ProjectID, false, err.Error()); updateErr != nil {
+		appLogger.Warnf("Failed to update scan status error: err=%+v", updateErr)
+	}
+	return mimosasqs.WrapNonRetryable(err)
 }
 
 func (s *sqsHandler) putPortscanTarget(ctx context.Context, portscanTargetID, projectID uint32, isSuccess bool, errDetail string) error {

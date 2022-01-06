@@ -45,7 +45,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	msg, err := parseMessage(msgBody)
 	if err != nil {
 		appLogger.Errorf("Invalid message. message: %v, error: %v", msgBody, err)
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
@@ -57,42 +57,36 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	// basic setting must be used anytime.
 	setting, err := s.GetBasicScanSetting(ctx, msg.ProjectID, msg.ApplicationScanID)
 	if err != nil {
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, err.Error())
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
 	// check scanner can access target for confirming to scan correctly
 	if err = checkAccessibleTarget(setting.Target); err != nil {
 		appLogger.Warnf("Failed to access target, target: %v error: %v", setting.Target, err)
 		errOutput := fmt.Errorf("Failed to access target. Target seems to be down or unaccessible from scanner.")
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, errOutput.Error())
-		return mimosasqs.WrapNonRetryable(errOutput)
+		return s.handleErrorWithUpdateStatus(ctx, msg, errOutput)
 	}
 
 	// Run ApplicationScan
 	apiKey, err := generateAPIKey()
 	if err != nil {
 		appLogger.Errorf("Failed to create apiKey, error: %v", err)
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 	cli, err := newApplicationScanClient(apiKey)
 	if err != nil {
 		appLogger.Errorf("Failed to create ApplicationScanClient, error: %v", err)
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 	if err != nil {
 		appLogger.Errorf("Failed to generate API Key, error: %v", err)
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 	_, segment := xray.BeginSubsegment(ctx, "runApplicationScan")
 	pID, err := cli.executeZap(apiKey)
 	if err != nil {
 		appLogger.Errorf("Failed to execute ZAP, error: %v", err)
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 	var scanResult *zapResult
 	switch strings.ToUpper(msg.ApplicationScanType) {
@@ -104,14 +98,12 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	errTerminate := cli.terminateZap(pID)
 	if errTerminate != nil {
 		appLogger.Errorf("Failed to terminate Zap, error: %v", errTerminate)
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, errTerminate)
 	}
 	segment.Close(err)
 	if err != nil {
 		appLogger.Errorf("Failed to exec basicScan, error: %v", err)
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed exec application scan Ask the system administrator. ")
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
 	// Clear finding score
@@ -121,14 +113,13 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		Tag:        []string{setting.Target},
 	}); err != nil {
 		appLogger.Errorf("Failed to clear finding score. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
-		_ = s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, "Failed to clear finding score. ApplicationScanID")
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
 	// Put Finding and Tag Finding
 	if err := s.putFindings(ctx, scanResult, msg, setting.Target); err != nil {
 		appLogger.Errorf("Faild to put findings. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
-		return mimosasqs.WrapNonRetryable(err)
+		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
 	// Put ApplicationScan
@@ -173,6 +164,13 @@ func checkAccessibleTarget(target string) error {
 	}
 	defer resp.Body.Close()
 	return nil
+}
+
+func (s *sqsHandler) handleErrorWithUpdateStatus(ctx context.Context, msg *message.ApplicationScanQueueMessage, err error) error {
+	if updateErr := s.putApplicationScan(ctx, msg.ApplicationScanID, msg.ProjectID, false, err.Error()); updateErr != nil {
+		appLogger.Warnf("Failed to update scan status error: err=%+v", updateErr)
+	}
+	return mimosasqs.WrapNonRetryable(err)
 }
 
 func (s *sqsHandler) putApplicationScan(ctx context.Context, applicationScanID, projectID uint32, isSuccess bool, errDetail string) error {
