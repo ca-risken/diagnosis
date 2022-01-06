@@ -178,10 +178,22 @@ func (s *sqsHandler) putFinding(ctx context.Context, f *finding.FindingForUpsert
 	if err != nil {
 		return err
 	}
-	s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis)
-	s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagWordPress)
-	s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability)
-	s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target)
+	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
+		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
+		return err
+	}
+	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagWordPress); err != nil {
+		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagWordPress, err)
+		return err
+	}
+	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability); err != nil {
+		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
+		return err
+	}
+	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
+		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", target, err)
+		return err
+	}
 
 	if r == nil {
 		return nil
@@ -197,8 +209,7 @@ func (s *sqsHandler) putRecommend(ctx context.Context, r *finding.PutRecommendRe
 	return nil
 }
 
-func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID uint64, tag string) {
-
+func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID uint64, tag string) error {
 	_, err := s.findingClient.TagFinding(ctx, &finding.TagFindingRequest{
 		ProjectId: projectID,
 		Tag: &finding.FindingTagForUpsert{
@@ -208,7 +219,9 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 		}})
 	if err != nil {
 		appLogger.Errorf("Failed to TagFinding. error: %v", err)
+		return err
 	}
+	return nil
 }
 
 func generateDataSourceID(input string) string {

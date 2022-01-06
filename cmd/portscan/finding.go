@@ -22,12 +22,10 @@ func (s *sqsHandler) putNmapFinding(ctx context.Context, nmapResult *portscan.Nm
 		OriginalMaxScore: 10.0,
 		Data:             data,
 	}
-	appLogger.Infof("putFinding: %v", putFinding)
 	resFinding, err := s.putFinding(ctx, putFinding, target)
 	if err != nil {
 		return err
 	}
-	appLogger.Infof("resFinding: %v", resFinding)
 	recommend := getRecommend(recommendTypeNmap)
 	putRecommend := &finding.PutRecommendRequest{
 		ProjectId:      projectID,
@@ -47,7 +45,6 @@ func (s *sqsHandler) putNmapFinding(ctx context.Context, nmapResult *portscan.Nm
 func (s *sqsHandler) putAdditionalFinding(ctx context.Context, nmapResult *portscan.NmapResult, projectID uint32, dataSource, data, target string) error {
 	for key, detail := range nmapResult.ScanDetail {
 		additionalCheckResult, ok := portscan.GetAdditionalCheckResult(key)
-		appLogger.Infof("ok,detail:%v,%v", ok, detail)
 		if !ok || detail == false {
 			continue
 		}
@@ -61,7 +58,6 @@ func (s *sqsHandler) putAdditionalFinding(ctx context.Context, nmapResult *ports
 			OriginalMaxScore: 1.0,
 			Data:             data,
 		}
-		appLogger.Infof("addFinding: %v", addFinding)
 		resFinding, err := s.putFinding(ctx, addFinding, target)
 		if err != nil {
 			return err
@@ -89,7 +85,6 @@ func (s *sqsHandler) putFindings(ctx context.Context, results []*portscan.NmapRe
 		if err != nil {
 			return err
 		}
-		appLogger.Infof("nmapResult: %v", r)
 		err = s.putNmapFinding(ctx, r, message.ProjectID, message.DataSource, string(data), message.Target)
 		if err != nil {
 			return err
@@ -109,12 +104,15 @@ func (s *sqsHandler) putFinding(ctx context.Context, f *finding.FindingForUpsert
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
 		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
+		return nil, err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagPortscan); err != nil {
 		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagPortscan, err)
+		return nil, err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
 		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", target, err)
+		return nil, err
 	}
 
 	return res.Finding, nil
