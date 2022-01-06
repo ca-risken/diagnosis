@@ -39,6 +39,8 @@ github.com/ca-risken/core/proto/finding v0.0.0-20211208021136-f6b597adc160 h1:/1
 github.com/ca-risken/core/proto/finding v0.0.0-20211208021136-f6b597adc160/go.mod h1:Zl2+Z3g878Tp33vh6nhiU1pqaz7ymtmiZ71+Wn+Rzts=
 github.com/ca-risken/diagnosis/pkg/common v0.0.0-20210928110806-54123bffb7e9 h1:w9ygo12PKOAMl4Xmz2/1+iFWRQA28dsyQywLryNoiMg=
 github.com/ca-risken/diagnosis/pkg/common v0.0.0-20210928110806-54123bffb7e9/go.mod h1:EkDd+i1fmTJdVNHjwjk7VbSv+q+skkmUCvC0/DSqdwU=
+github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220106110952-bf1d72fce415 h1:ngaaKkjsJ1XiSs0jpJ59UB75YhuLyxux8FzpocjgrnM=
+github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220106110952-bf1d72fce415/go.mod h1:EkDd+i1fmTJdVNHjwjk7VbSv+q+skkmUCvC0/DSqdwU=
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210928110806-54123bffb7e9 h1:NkwDz0LVM7vxy/IkGDojSk0I7XuBI+HQSpihfpZc0QM=
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210928110806-54123bffb7e9/go.mod h1:KyAGPtQd/O+mUMxl0gOlwnL9i3umrUuP/owoVcZB+nQ=
 github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20210928110806-54123bffb7e9 h1:wmJpdIw9GWvAcEHLp9SciqUt+V9JdaO2ldp/zoydz8U=

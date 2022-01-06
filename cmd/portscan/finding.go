@@ -106,6 +106,9 @@ func (s *sqsHandler) putFinding(ctx context.Context, f *finding.FindingForUpsert
 		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
 		return nil, err
 	}
+	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagFQDN); err != nil {
+		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagFQDN, err)
+	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagPortscan); err != nil {
 		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagPortscan, err)
 		return nil, err
