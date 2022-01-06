@@ -12,7 +12,7 @@ require (
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/core/proto/alert v0.0.0-20210924100500-e1499111345b
 	github.com/ca-risken/core/proto/finding v0.0.0-20210924100500-e1499111345b
-	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20210930115803-3a8222897168
+	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220106110952-bf1d72fce415
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210930115803-3a8222897168
 	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20210930115803-3a8222897168
 	github.com/gassara-kys/envconfig v1.4.4

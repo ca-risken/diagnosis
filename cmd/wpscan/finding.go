@@ -182,6 +182,10 @@ func (s *sqsHandler) putFinding(ctx context.Context, f *finding.FindingForUpsert
 		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
 		return err
 	}
+	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagURL); err != nil {
+		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagURL, err)
+		return err
+	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagWordPress); err != nil {
 		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagWordPress, err)
 		return err

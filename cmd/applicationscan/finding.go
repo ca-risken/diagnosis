@@ -37,6 +37,10 @@ func (s *sqsHandler) putFindings(ctx context.Context, zapResult *zapResult, msg 
 				appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
 				return err
 			}
+			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagURL); err != nil {
+				appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagURL, err)
+				return err
+			}
 			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagApplicationScan); err != nil {
 				appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagApplicationScan, err)
 				return err
