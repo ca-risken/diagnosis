@@ -173,7 +173,9 @@ func getAccessFinding(access checkAccess, isUserFound bool, message *message.Wps
 }
 
 func (s *sqsHandler) putFinding(ctx context.Context, f *finding.FindingForUpsert, r *finding.PutRecommendRequest, target string) error {
-
+	if f == nil {
+		return nil
+	}
 	res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: f})
 	if err != nil {
 		return err
