@@ -7,8 +7,8 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/aws/aws-sdk-go v1.42.22
 	github.com/aws/aws-xray-sdk-go v1.6.0
-	github.com/ca-risken/common/pkg/logging v0.0.0-20211118071101-9855266b50a1
-	github.com/ca-risken/common/pkg/sqs v0.0.0-20211210074045-79fdb4c61950
+	github.com/ca-risken/common/pkg/logging v0.0.0-20220113015330-0e8462d52b5b
+	github.com/ca-risken/common/pkg/sqs v0.0.0-20220113015330-0e8462d52b5b
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/core/proto/alert v0.0.0-20211208021136-f6b597adc160
 	github.com/ca-risken/core/proto/finding v0.0.0-20211208021136-f6b597adc160
@@ -21,13 +21,12 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/mattn/godown v0.0.1
-	github.com/sirupsen/logrus v1.8.1
 	github.com/valyala/fasthttp v1.30.0 // indirect
 	github.com/vikyd/zero v0.0.0-20190921142904-0f738d0bc858
 	golang.org/x/net v0.0.0-20210929193557-e81a3d93ecf6 // indirect
-	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
+	golang.org/x/sys v0.0.0-20220111092808-5a964db01320 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20210929214142-896c89f843d2 // indirect
-	google.golang.org/grpc v1.41.0
+	google.golang.org/grpc v1.42.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

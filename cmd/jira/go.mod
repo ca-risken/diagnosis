@@ -7,8 +7,9 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/aws/aws-sdk-go v1.42.22
 	github.com/aws/aws-xray-sdk-go v1.6.0
-	github.com/ca-risken/common/pkg/logging v0.0.0-20211118071101-9855266b50a1
-	github.com/ca-risken/common/pkg/sqs v0.0.0-20211210074045-79fdb4c61950
+	github.com/ca-risken/common/pkg/logging v0.0.0-20220113015330-0e8462d52b5b
+	github.com/ca-risken/common/pkg/rpc v0.0.0-20220113015330-0e8462d52b5b // indirect
+	github.com/ca-risken/common/pkg/sqs v0.0.0-20220113015330-0e8462d52b5b
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/core/proto/alert v0.0.0-20210924100500-e1499111345b
 	github.com/ca-risken/core/proto/finding v0.0.0-20210924100500-e1499111345b
@@ -25,9 +26,8 @@ require (
 	github.com/valyala/fasthttp v1.30.0 // indirect
 	github.com/vikyd/zero v0.0.0-20190921142904-0f738d0bc858
 	golang.org/x/net v0.0.0-20210929193557-e81a3d93ecf6
-	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20210930144712-2e2e1008e8a3 // indirect
-	google.golang.org/grpc v1.41.0
+	google.golang.org/grpc v1.42.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
