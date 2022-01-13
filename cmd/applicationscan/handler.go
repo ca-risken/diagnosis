@@ -47,7 +47,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		appLogger.Errorf("Invalid message. message: %v, error: %v", msgBody, err)
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
-	requestID, err := logging.GenerateRequestID(fmt.Sprint(msg.ProjectID))
+	requestID, err := appLogger.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
 		appLogger.Warnf("Failed to generate requestID: err=%+v", err)
 		requestID = fmt.Sprint(msg.ProjectID)
@@ -134,7 +134,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	}
 	// Call AnalyzeAlert
 	if err := s.CallAnalyzeAlert(ctx, msg.ProjectID); err != nil {
-		appLogger.Errorf("Faild to analyze alert. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
+		appLogger.Notifyf(logging.ErrorLevel, "Failed to analyzeAlert, project_id=%d, err=%+v", msg.ProjectID, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
 	return nil

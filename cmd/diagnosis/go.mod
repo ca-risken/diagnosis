@@ -7,7 +7,9 @@ require (
 	github.com/aws/aws-sdk-go v1.41.3
 	github.com/aws/aws-xray-sdk-go v1.6.0
 	github.com/ca-risken/common/pkg/database v0.0.0-20211223025030-6bfdc45e906c
-	github.com/ca-risken/common/pkg/rpc v0.0.0-20211118071101-9855266b50a1
+	github.com/ca-risken/common/pkg/logging v0.0.0-20220113015330-0e8462d52b5b // indirect
+	github.com/ca-risken/common/pkg/rpc v0.0.0-20220113015330-0e8462d52b5b
+	github.com/ca-risken/common/pkg/sqs v0.0.0-20220113015330-0e8462d52b5b // indirect
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20211014145120-f1682296ef05
 	github.com/ca-risken/diagnosis/pkg/model v0.0.0-20211014145120-f1682296ef05
