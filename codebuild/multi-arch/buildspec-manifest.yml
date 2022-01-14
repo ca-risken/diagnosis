@@ -2,6 +2,7 @@ version: 0.2
 
 env:
   variables:
+    DOCKER_BUILDKIT: "1"
     IMAGE_PREFIX: "risken-diagnosis"
   parameter-store:
     GITHUB_USER: "/build/GITHUB_USER"
