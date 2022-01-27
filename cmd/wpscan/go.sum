@@ -42,6 +42,8 @@ github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220106110952-bf1d72fce415 h1:
 github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220106110952-bf1d72fce415/go.mod h1:EkDd+i1fmTJdVNHjwjk7VbSv+q+skkmUCvC0/DSqdwU=
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20211014145120-f1682296ef05 h1:WUTHTxibM79VSJloIjsQqDf0E3joR7nK2AQpW+yRcaI=
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20211014145120-f1682296ef05/go.mod h1:KyAGPtQd/O+mUMxl0gOlwnL9i3umrUuP/owoVcZB+nQ=
+github.com/ca-risken/diagnosis/pkg/message v0.0.0-20220127124312-efe248d19f5f h1:IBvFDCey3rRioZtmFg++R443bV4ThBJa41QlEQPPkFA=
+github.com/ca-risken/diagnosis/pkg/message v0.0.0-20220127124312-efe248d19f5f/go.mod h1:L+t717MZilPHRE8b5BW5u5Yj5VRtWGuxl/Q7wlzboho=
 github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20211014145120-f1682296ef05 h1:HysFpqaj7tv1Vg8oYRn9te86sC1G/IEREmKElcQ+5NI=
 github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20211014145120-f1682296ef05/go.mod h1:m7KABDQK3Xk81BwJO4tG4xPl4FzC9umB2jC2SVIcZFY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
