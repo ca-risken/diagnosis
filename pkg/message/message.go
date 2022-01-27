@@ -15,7 +15,7 @@ type JiraQueueMessage struct {
 // WpscanQueueMessage is the message for SQS queue for Wpscan
 type WpscanQueueMessage struct {
 	DataSource      string `json:"data_source"`
-	WpscanSettingID uint32 `json:"jira_setting_id"`
+	WpscanSettingID uint32 `json:"wpscan_setting_id"`
 	ProjectID       uint32 `json:"project_id"`
 	TargetURL       string `json:"target_url"`
 	Options         string `json:"options"`
