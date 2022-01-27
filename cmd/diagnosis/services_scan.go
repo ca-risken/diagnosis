@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/sqs"
+	"github.com/ca-risken/core/proto/project"
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -221,6 +222,9 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 		}
 
 		for _, jiraSetting := range *listjiraSetting {
+			if s.skipProject(ctx, jiraSetting.ProjectID) {
+				continue
+			}
 			if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
 				ProjectId:             jiraSetting.ProjectID,
 				SettingId:             jiraSetting.JiraSettingID,
@@ -243,6 +247,9 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 		}
 
 		for _, WpscanSetting := range *listWpscanSetting {
+			if s.skipProject(ctx, WpscanSetting.ProjectID) {
+				continue
+			}
 			if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
 				ProjectId:             WpscanSetting.ProjectID,
 				SettingId:             WpscanSetting.WpscanSettingID,
@@ -263,4 +270,15 @@ func isInvokeScan(scanDataSource, targetDataSource string) bool {
 		return true
 	}
 	return scanDataSource == targetDataSource
+}
+
+func (s *diagnosisService) skipProject(ctx context.Context, projectID uint32) bool {
+	if resp, err := s.projectClient.IsActive(ctx, &project.IsActiveRequest{ProjectId: projectID}); err != nil {
+		appLogger.Errorf("Failed to project.IsActive API, err=%+v", err)
+		return true
+	} else if !resp.Active {
+		appLogger.Infof("Skip deactive project, project_id=%d", projectID)
+		return true
+	}
+	return false
 }

@@ -1,16 +1,20 @@
 package main
 
 import (
+	"github.com/ca-risken/core/proto/project"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 )
 
 type diagnosisService struct {
-	repository diagnosisRepoInterface
-	sqs        sqsAPI
+	repository    diagnosisRepoInterface
+	sqs           sqsAPI
+	projectClient project.ProjectServiceClient
 }
 
-func newDiagnosisService(db diagnosisRepoInterface, s sqsAPI) diagnosis.DiagnosisServiceServer {
+func newDiagnosisService(conf *diagnosisConfig) diagnosis.DiagnosisServiceServer {
 	return &diagnosisService{
-		repository: db,
-		sqs:        s}
+		repository:    conf.DB,
+		sqs:           conf.SQS,
+		projectClient: conf.projectClient,
+	}
 }
