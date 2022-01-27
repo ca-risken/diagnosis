@@ -34,7 +34,7 @@ func main() {
 				mimosarpc.LoggingUnaryServerInterceptor(appLogger),
 				xray.UnaryServerInterceptor(),
 				mimosaxray.AnnotateEnvTracingUnaryServerInterceptor(conf.EnvName))))
-	diagnosisServer := newDiagnosisService(conf.DB, conf.SQS)
+	diagnosisServer := newDiagnosisService(conf)
 	diagnosis.RegisterDiagnosisServiceServer(server, diagnosisServer)
 
 	reflection.Register(server) // enable reflection API

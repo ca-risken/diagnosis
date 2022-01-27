@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/ca-risken/core/proto/project"
 	"github.com/gassara-kys/envconfig"
 )
 
@@ -9,8 +10,9 @@ type diagnosisConfig struct {
 	EnvName  string `default:"local" split_words:"true"`
 	LogLevel string `default:"debug" split_words:"true"`
 
-	DB  diagnosisRepoInterface
-	SQS *sqsClient
+	DB            diagnosisRepoInterface
+	SQS           *sqsClient
+	projectClient project.ProjectServiceClient
 }
 
 func newDiagnosisConfig() (*diagnosisConfig, error) {
@@ -20,5 +22,6 @@ func newDiagnosisConfig() (*diagnosisConfig, error) {
 	}
 	config.DB = newDiagnosisRepository()
 	config.SQS = newSQSClient()
+	config.projectClient = newProjectClient()
 	return config, nil
 }
