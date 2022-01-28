@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -12,7 +11,6 @@ import (
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/vikyd/zero"
-	"gorm.io/gorm"
 )
 
 const (
@@ -214,9 +212,6 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 	if isInvokeScan(scanDataSource, InvokeScanJira) {
 		listjiraSetting, err := s.repository.ListAllJiraSetting(ctx)
 		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return &empty.Empty{}, nil
-			}
 			appLogger.Errorf("Failed to List All JiraSetting., error: %v", err)
 			return nil, err
 		}
@@ -239,9 +234,6 @@ func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 	if isInvokeScan(scanDataSource, InvokeScanWPScan) {
 		listWpscanSetting, err := s.repository.ListAllWpscanSetting(ctx)
 		if err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				return &empty.Empty{}, nil
-			}
 			appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
 			return nil, err
 		}
