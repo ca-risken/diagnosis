@@ -9,14 +9,14 @@ import (
 )
 
 type zapConfig struct {
-	ZapPort         string `split_words:"true" default:"8080"`
+	ZapPort         string
 	ZapProxy        string
 	BaseUrlJson     string
 	BaseUrlOther    string
-	ZapPath         string `split_words:"true" default:"/zap/zap.sh"`
-	ZapApiKeyName   string `split_words:"true" default:"apikey"`
+	ZapPath         string
+	ZapApiKeyName   string
 	ZapApiKeyValue  string
-	ZapApiKeyHeader string `split_words:"true" default:"X-ZAP-API-Key"`
+	ZapApiKeyHeader string
 }
 
 type zapResult struct {

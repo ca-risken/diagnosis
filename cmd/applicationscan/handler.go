@@ -25,17 +25,11 @@ type sqsHandler struct {
 	findingClient   finding.FindingServiceClient
 	alertClient     alert.AlertServiceClient
 	diagnosisClient diagnosis.DiagnosisServiceClient
-}
 
-func newHandler() *sqsHandler {
-	h := &sqsHandler{}
-	h.findingClient = newFindingClient()
-	appLogger.Info("Start Finding Client")
-	h.alertClient = newAlertClient()
-	appLogger.Info("Start Alert Client")
-	h.diagnosisClient = newDiagnosisClient()
-	appLogger.Info("Start Diagnosis Client")
-	return h
+	zapPort         string
+	zapPath         string
+	zapApiKeyName   string
+	zapApiKeyHeader string
 }
 
 func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) error {
@@ -73,7 +67,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		appLogger.Errorf("Failed to create apiKey, error: %v", err)
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
-	cli, err := newApplicationScanClient(apiKey)
+	cli, err := newApplicationScanClient(s.zapPort, s.zapPath, s.zapApiKeyName, apiKey, s.zapApiKeyHeader)
 	if err != nil {
 		appLogger.Errorf("Failed to create ApplicationScanClient, error: %v", err)
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)
