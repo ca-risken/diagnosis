@@ -57,18 +57,18 @@ func (p *portscanClient) scan() ([]*portscan.NmapResult, error) {
 
 func (p *portscanClient) makeTargets(targetIPFQDN string) {
 	p.target = []target{
-		target{
+		{
 			Target:   targetIPFQDN,
 			FromPort: 0,
 			ToPort:   0,
 			Protocol: "udp",
-		},
-		target{
+				},
+		{
 			Target:   targetIPFQDN,
 			FromPort: 1,
 			ToPort:   65535,
 			Protocol: "tcp",
-		},
+				},
 	}
 }
 

@@ -7,62 +7,31 @@ import (
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
-	"github.com/gassara-kys/envconfig"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type findingConfig struct {
-	FindingSvcAddr string `required:"true" split_words:"true" default:"finding.core.svc.cluster.local:8001"`
-}
-
-func newFindingClient() finding.FindingServiceClient {
-	var conf findingConfig
-	err := envconfig.Process("", &conf)
-	if err != nil {
-		appLogger.Fatalf("Faild to load finding config error: err=%+v", err)
-	}
-
+func newFindingClient(svcAddr string) finding.FindingServiceClient {
 	ctx := context.Background()
-	conn, err := getGRPCConn(ctx, conf.FindingSvcAddr)
+	conn, err := getGRPCConn(ctx, svcAddr)
 	if err != nil {
 		appLogger.Fatalf("Faild to get GRPC connection: err=%+v", err)
 	}
 	return finding.NewFindingServiceClient(conn)
 }
 
-type alertConfig struct {
-	AlertSvcAddr string `required:"true" split_words:"true" default:"alert.core.svc.cluster.local:8004"`
-}
-
-func newAlertClient() alert.AlertServiceClient {
-	var conf alertConfig
-	err := envconfig.Process("", &conf)
-	if err != nil {
-		appLogger.Fatalf("Faild to load alert config error: err=%+v", err)
-	}
-
+func newAlertClient(svcAddr string) alert.AlertServiceClient {
 	ctx := context.Background()
-	conn, err := getGRPCConn(ctx, conf.AlertSvcAddr)
+	conn, err := getGRPCConn(ctx, svcAddr)
 	if err != nil {
 		appLogger.Fatalf("Faild to get GRPC connection: err=%+v", err)
 	}
 	return alert.NewAlertServiceClient(conn)
 }
 
-type diagnosisConfig struct {
-	DiagnosisSvcAddr string `required:"true" split_words:"true" default:"diagnosis.diagnosis.svc.cluster.local:19001"`
-}
-
-func newDiagnosisClient() diagnosis.DiagnosisServiceClient {
-	var conf diagnosisConfig
-	err := envconfig.Process("", &conf)
-	if err != nil {
-		appLogger.Fatalf("Faild to load diagnosis config error: err=%+v", err)
-	}
-
+func newDiagnosisClient(svcAddr string) diagnosis.DiagnosisServiceClient {
 	ctx := context.Background()
-	conn, err := getGRPCConn(ctx, conf.DiagnosisSvcAddr)
+	conn, err := getGRPCConn(ctx, svcAddr)
 	if err != nil {
 		appLogger.Fatalf("Faild to get GRPC connection: err=%+v", err)
 	}

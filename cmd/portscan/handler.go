@@ -23,14 +23,6 @@ type sqsHandler struct {
 	diagnosisClient diagnosisClient.DiagnosisServiceClient
 }
 
-func newHandler() *sqsHandler {
-	return &sqsHandler{
-		findingClient:   newFindingClient(),
-		alertClient:     newAlertClient(),
-		diagnosisClient: newDiagnosisClient(),
-	}
-}
-
 func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) error {
 	msgBody := aws.StringValue(sqsMsg.Body)
 	appLogger.Infof("got message: %s", msgBody)
