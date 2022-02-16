@@ -10,17 +10,16 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/ca-risken/diagnosis/pkg/message"
-	"github.com/gassara-kys/envconfig"
 )
 
-type sqsConfig struct {
-	AWSRegion string `envconfig:"aws_region"   default:"ap-northeast-1"`
-	Endpoint  string `envconfig:"sqs_endpoint" default:"http://queue.middleware.svc.cluster.local:9324"`
+type SQSConfig struct {
+	AWSRegion string
+	Endpoint  string
 
-	DiagnosisJiraQueueURL            string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-jira"`
-	DiagnosisWpscanQueueURL          string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-wpscan"`
-	DiagnosisPortscanQueueURL        string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-portscan"`
-	DiagnosisApplicationScanQueueURL string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-applicationscan"`
+	DiagnosisJiraQueueURL            string
+	DiagnosisWpscanQueueURL          string
+	DiagnosisPortscanQueueURL        string
+	DiagnosisApplicationScanQueueURL string
 }
 
 type sqsAPI interface {
@@ -35,12 +34,7 @@ type sqsClient struct {
 	queueURLMap map[string]string
 }
 
-func newSQSClient() *sqsClient {
-	var conf sqsConfig
-	err := envconfig.Process("", &conf)
-	if err != nil {
-		panic(err)
-	}
+func newSQSClient(conf *SQSConfig) *sqsClient {
 	sess, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	})

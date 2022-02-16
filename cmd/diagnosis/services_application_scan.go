@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *diagnosisService) ListApplicationScan(ctx context.Context, req *diagnosis.ListApplicationScanRequest) (*diagnosis.ListApplicationScanResponse, error) {
+func (s *DiagnosisService) ListApplicationScan(ctx context.Context, req *diagnosis.ListApplicationScanRequest) (*diagnosis.ListApplicationScanResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (s *diagnosisService) ListApplicationScan(ctx context.Context, req *diagnos
 	return &data, nil
 }
 
-func (s *diagnosisService) GetApplicationScan(ctx context.Context, req *diagnosis.GetApplicationScanRequest) (*diagnosis.GetApplicationScanResponse, error) {
+func (s *DiagnosisService) GetApplicationScan(ctx context.Context, req *diagnosis.GetApplicationScanRequest) (*diagnosis.GetApplicationScanResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s *diagnosisService) GetApplicationScan(ctx context.Context, req *diagnosi
 	return &diagnosis.GetApplicationScanResponse{ApplicationScan: convertApplicationScan(getData)}, nil
 }
 
-func (s *diagnosisService) PutApplicationScan(ctx context.Context, req *diagnosis.PutApplicationScanRequest) (*diagnosis.PutApplicationScanResponse, error) {
+func (s *DiagnosisService) PutApplicationScan(ctx context.Context, req *diagnosis.PutApplicationScanRequest) (*diagnosis.PutApplicationScanResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (s *diagnosisService) PutApplicationScan(ctx context.Context, req *diagnosi
 	return &diagnosis.PutApplicationScanResponse{ApplicationScan: convertApplicationScan(registerdData)}, nil
 }
 
-func (s *diagnosisService) DeleteApplicationScan(ctx context.Context, req *diagnosis.DeleteApplicationScanRequest) (*empty.Empty, error) {
+func (s *DiagnosisService) DeleteApplicationScan(ctx context.Context, req *diagnosis.DeleteApplicationScanRequest) (*empty.Empty, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (s *diagnosisService) DeleteApplicationScan(ctx context.Context, req *diagn
 	return &empty.Empty{}, nil
 }
 
-func (s *diagnosisService) ListApplicationScanBasicSetting(ctx context.Context, req *diagnosis.ListApplicationScanBasicSettingRequest) (*diagnosis.ListApplicationScanBasicSettingResponse, error) {
+func (s *DiagnosisService) ListApplicationScanBasicSetting(ctx context.Context, req *diagnosis.ListApplicationScanBasicSettingRequest) (*diagnosis.ListApplicationScanBasicSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (s *diagnosisService) ListApplicationScanBasicSetting(ctx context.Context, 
 	return &data, nil
 }
 
-func (s *diagnosisService) GetApplicationScanBasicSetting(ctx context.Context, req *diagnosis.GetApplicationScanBasicSettingRequest) (*diagnosis.GetApplicationScanBasicSettingResponse, error) {
+func (s *DiagnosisService) GetApplicationScanBasicSetting(ctx context.Context, req *diagnosis.GetApplicationScanBasicSettingRequest) (*diagnosis.GetApplicationScanBasicSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func (s *diagnosisService) GetApplicationScanBasicSetting(ctx context.Context, r
 	return &diagnosis.GetApplicationScanBasicSettingResponse{ApplicationScanBasicSetting: convertApplicationScanBasicSetting(getData)}, nil
 }
 
-func (s *diagnosisService) PutApplicationScanBasicSetting(ctx context.Context, req *diagnosis.PutApplicationScanBasicSettingRequest) (*diagnosis.PutApplicationScanBasicSettingResponse, error) {
+func (s *DiagnosisService) PutApplicationScanBasicSetting(ctx context.Context, req *diagnosis.PutApplicationScanBasicSettingRequest) (*diagnosis.PutApplicationScanBasicSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -151,7 +151,7 @@ func (s *diagnosisService) PutApplicationScanBasicSetting(ctx context.Context, r
 	return &diagnosis.PutApplicationScanBasicSettingResponse{ApplicationScanBasicSetting: convertApplicationScanBasicSetting(registerdData)}, nil
 }
 
-func (s *diagnosisService) DeleteApplicationScanBasicSetting(ctx context.Context, req *diagnosis.DeleteApplicationScanBasicSettingRequest) (*empty.Empty, error) {
+func (s *DiagnosisService) DeleteApplicationScanBasicSetting(ctx context.Context, req *diagnosis.DeleteApplicationScanBasicSettingRequest) (*empty.Empty, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}

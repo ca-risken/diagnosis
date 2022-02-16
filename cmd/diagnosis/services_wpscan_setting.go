@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *diagnosisService) ListWpscanSetting(ctx context.Context, req *diagnosis.ListWpscanSettingRequest) (*diagnosis.ListWpscanSettingResponse, error) {
+func (s *DiagnosisService) ListWpscanSetting(ctx context.Context, req *diagnosis.ListWpscanSettingRequest) (*diagnosis.ListWpscanSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func (s *diagnosisService) ListWpscanSetting(ctx context.Context, req *diagnosis
 	return &data, nil
 }
 
-func (s *diagnosisService) GetWpscanSetting(ctx context.Context, req *diagnosis.GetWpscanSettingRequest) (*diagnosis.GetWpscanSettingResponse, error) {
+func (s *DiagnosisService) GetWpscanSetting(ctx context.Context, req *diagnosis.GetWpscanSettingRequest) (*diagnosis.GetWpscanSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s *diagnosisService) GetWpscanSetting(ctx context.Context, req *diagnosis.
 	return &diagnosis.GetWpscanSettingResponse{WpscanSetting: convertWpscanSetting(getData)}, nil
 }
 
-func (s *diagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.PutWpscanSettingRequest) (*diagnosis.PutWpscanSettingResponse, error) {
+func (s *DiagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.PutWpscanSettingRequest) (*diagnosis.PutWpscanSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (s *diagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 	return &diagnosis.PutWpscanSettingResponse{WpscanSetting: convertWpscanSetting(registerdData)}, nil
 }
 
-func (s *diagnosisService) DeleteWpscanSetting(ctx context.Context, req *diagnosis.DeleteWpscanSettingRequest) (*empty.Empty, error) {
+func (s *DiagnosisService) DeleteWpscanSetting(ctx context.Context, req *diagnosis.DeleteWpscanSettingRequest) (*empty.Empty, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
