@@ -18,23 +18,10 @@ import (
 )
 
 type sqsHandler struct {
-	wpscanConfig    wpscanConfig
+	wpscanConfig    WpscanConfig
 	findingClient   finding.FindingServiceClient
 	alertClient     alert.AlertServiceClient
 	diagnosisClient diagnosis.DiagnosisServiceClient
-}
-
-func newHandler() *sqsHandler {
-	h := &sqsHandler{}
-	h.wpscanConfig = newWpscanConfig()
-	appLogger.Info("Start Wpscan Client")
-	h.findingClient = newFindingClient()
-	appLogger.Info("Start Finding Client")
-	h.alertClient = newAlertClient()
-	appLogger.Info("Start Alert Client")
-	h.diagnosisClient = newDiagnosisClient()
-	appLogger.Info("Start Diagnosis Client")
-	return h
 }
 
 func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) error {
