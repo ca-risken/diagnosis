@@ -9,7 +9,6 @@ import (
 	"os/exec"
 
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
-	"github.com/gassara-kys/envconfig"
 )
 
 type applicationScanAPI interface {
@@ -25,21 +24,21 @@ type applicationScanClient struct {
 	contextID  string
 }
 
-func newApplicationScanClient(apiKeyValue string) (applicationScanAPI, error) {
-	var conf zapConfig
-	err := envconfig.Process("", &conf)
-	if err != nil {
-		return nil, err
+func newApplicationScanClient(port, path, apiKeyName, apiKeyValue, apiKeyHeader string) (applicationScanAPI, error) {
+	conf := &zapConfig{
+		ZapPort:         port,
+		ZapPath:         path,
+		ZapApiKeyName:   apiKeyName,
+		ZapApiKeyValue:  apiKeyValue,
+		ZapApiKeyHeader: apiKeyHeader,
 	}
 	conf.ZapProxy = fmt.Sprintf("http://localhost:%v", conf.ZapPort)
 	conf.BaseUrlJson = conf.ZapProxy + "/json/"
 	conf.BaseUrlOther = conf.ZapProxy + "/other/"
 
-	conf.ZapApiKeyValue = apiKeyValue
-
 	httpClient := &http.Client{}
 	cli := applicationScanClient{
-		config:     &conf,
+		config:     conf,
 		httpClient: httpClient,
 	}
 	return &cli, nil

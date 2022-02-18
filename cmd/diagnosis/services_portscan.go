@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *diagnosisService) ListPortscanSetting(ctx context.Context, req *diagnosis.ListPortscanSettingRequest) (*diagnosis.ListPortscanSettingResponse, error) {
+func (s *DiagnosisService) ListPortscanSetting(ctx context.Context, req *diagnosis.ListPortscanSettingRequest) (*diagnosis.ListPortscanSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func (s *diagnosisService) ListPortscanSetting(ctx context.Context, req *diagnos
 	return &data, nil
 }
 
-func (s *diagnosisService) GetPortscanSetting(ctx context.Context, req *diagnosis.GetPortscanSettingRequest) (*diagnosis.GetPortscanSettingResponse, error) {
+func (s *DiagnosisService) GetPortscanSetting(ctx context.Context, req *diagnosis.GetPortscanSettingRequest) (*diagnosis.GetPortscanSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s *diagnosisService) GetPortscanSetting(ctx context.Context, req *diagnosi
 	return &diagnosis.GetPortscanSettingResponse{PortscanSetting: convertPortscanSetting(getData)}, nil
 }
 
-func (s *diagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosis.PutPortscanSettingRequest) (*diagnosis.PutPortscanSettingResponse, error) {
+func (s *DiagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosis.PutPortscanSettingRequest) (*diagnosis.PutPortscanSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (s *diagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosi
 	return &diagnosis.PutPortscanSettingResponse{PortscanSetting: convertPortscanSetting(registerdData)}, nil
 }
 
-func (s *diagnosisService) DeletePortscanSetting(ctx context.Context, req *diagnosis.DeletePortscanSettingRequest) (*empty.Empty, error) {
+func (s *DiagnosisService) DeletePortscanSetting(ctx context.Context, req *diagnosis.DeletePortscanSettingRequest) (*empty.Empty, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (s *diagnosisService) DeletePortscanSetting(ctx context.Context, req *diagn
 	return &empty.Empty{}, nil
 }
 
-func (s *diagnosisService) ListPortscanTarget(ctx context.Context, req *diagnosis.ListPortscanTargetRequest) (*diagnosis.ListPortscanTargetResponse, error) {
+func (s *DiagnosisService) ListPortscanTarget(ctx context.Context, req *diagnosis.ListPortscanTargetRequest) (*diagnosis.ListPortscanTargetResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -110,7 +110,7 @@ func (s *diagnosisService) ListPortscanTarget(ctx context.Context, req *diagnosi
 	return &data, nil
 }
 
-func (s *diagnosisService) GetPortscanTarget(ctx context.Context, req *diagnosis.GetPortscanTargetRequest) (*diagnosis.GetPortscanTargetResponse, error) {
+func (s *DiagnosisService) GetPortscanTarget(ctx context.Context, req *diagnosis.GetPortscanTargetRequest) (*diagnosis.GetPortscanTargetResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func (s *diagnosisService) GetPortscanTarget(ctx context.Context, req *diagnosis
 	return &diagnosis.GetPortscanTargetResponse{PortscanTarget: convertPortscanTarget(getData)}, nil
 }
 
-func (s *diagnosisService) PutPortscanTarget(ctx context.Context, req *diagnosis.PutPortscanTargetRequest) (*diagnosis.PutPortscanTargetResponse, error) {
+func (s *DiagnosisService) PutPortscanTarget(ctx context.Context, req *diagnosis.PutPortscanTargetRequest) (*diagnosis.PutPortscanTargetResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func (s *diagnosisService) PutPortscanTarget(ctx context.Context, req *diagnosis
 	return &diagnosis.PutPortscanTargetResponse{PortscanTarget: convertPortscanTarget(registerdData)}, nil
 }
 
-func (s *diagnosisService) DeletePortscanTarget(ctx context.Context, req *diagnosis.DeletePortscanTargetRequest) (*empty.Empty, error) {
+func (s *DiagnosisService) DeletePortscanTarget(ctx context.Context, req *diagnosis.DeletePortscanTargetRequest) (*empty.Empty, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}

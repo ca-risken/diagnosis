@@ -202,7 +202,7 @@ func TestGetVersionFinding(t *testing.T) {
 				Number:            "num",
 				Status:            "status",
 				InterstingEntries: []string{"ie"},
-				Vulnerabilities:   []vulnerability{vulnerability{}},
+				Vulnerabilities:   []vulnerability{{}},
 			},
 			message: &message.WpscanQueueMessage{
 				DataSource:      "diagnosis:wpscan",
@@ -231,7 +231,7 @@ func TestGetVersionFinding(t *testing.T) {
 				Number:            "num",
 				Status:            "insecure",
 				InterstingEntries: []string{"ie"},
-				Vulnerabilities:   []vulnerability{vulnerability{}},
+				Vulnerabilities:   []vulnerability{{}},
 			},
 			message: &message.WpscanQueueMessage{
 				DataSource:      "diagnosis:wpscan",

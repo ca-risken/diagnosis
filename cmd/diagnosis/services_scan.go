@@ -25,7 +25,7 @@ const (
 	DataSourceNameApplicationScan = "diagnosis:application-scan"
 )
 
-func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
+func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -190,7 +190,7 @@ func (d *diagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	return &diagnosis.InvokeScanResponse{Message: "Start Diagnosis."}, nil
 }
 
-func (s *diagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.InvokeScanAllRequest) (*empty.Empty, error) {
+func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.InvokeScanAllRequest) (*empty.Empty, error) {
 
 	scanDataSource := InvokeScanAllDataSource
 	if !zero.IsZeroVal(req.DiagnosisDataSourceId) {
@@ -264,7 +264,7 @@ func isInvokeScan(scanDataSource, targetDataSource string) bool {
 	return scanDataSource == targetDataSource
 }
 
-func (s *diagnosisService) skipProject(ctx context.Context, projectID uint32) bool {
+func (s *DiagnosisService) skipProject(ctx context.Context, projectID uint32) bool {
 	if resp, err := s.projectClient.IsActive(ctx, &project.IsActiveRequest{ProjectId: projectID}); err != nil {
 		appLogger.Errorf("Failed to project.IsActive API, err=%+v", err)
 		return true

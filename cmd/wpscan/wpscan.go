@@ -10,25 +10,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gassara-kys/envconfig"
 	"github.com/vikyd/zero"
 )
 
-type wpscanConfig struct {
-	ResultPath         string `split_words:"true" required:"true" default:"/results"`
-	WpscanVulndbApikey string `split_words:"true"`
+type WpscanConfig struct {
+	ResultPath         string
+	WpscanVulndbApikey string
 }
 
-func newWpscanConfig() wpscanConfig {
-	var conf wpscanConfig
-	err := envconfig.Process("", &conf)
-	if err != nil {
-		panic(err)
-	}
-	return conf
-}
-
-func (w *wpscanConfig) run(target string, wpscanSettingID uint32, options wpscanOptions) (*wpscanResult, error) {
+func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscanOptions) (*wpscanResult, error) {
 	now := time.Now().UnixNano()
 	filePath := fmt.Sprintf("%s/%v_%v.json", w.ResultPath, wpscanSettingID, now)
 	args := []string{"--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath}
@@ -185,9 +175,9 @@ type checkAccess struct {
 func getAccessList(wpURL string) []checkAccess {
 	wpURL = strings.TrimSuffix(wpURL, "/")
 	checkList := []checkAccess{
-		checkAccess{Target: wpURL + "/wp-admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
-		checkAccess{Target: wpURL + "/admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
-		checkAccess{Target: wpURL + "/wp-login.php", Goal: "", Method: "GET", Type: "Login"},
+		{Target: wpURL + "/wp-admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
+		{Target: wpURL + "/admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
+		{Target: wpURL + "/wp-login.php", Goal: "", Method: "GET", Type: "Login"},
 	}
 	return checkList
 }

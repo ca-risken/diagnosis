@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *diagnosis.ListDiagnosisDataSourceRequest) (*diagnosis.ListDiagnosisDataSourceResponse, error) {
+func (s *DiagnosisService) ListDiagnosisDataSource(ctx context.Context, req *diagnosis.ListDiagnosisDataSourceRequest) (*diagnosis.ListDiagnosisDataSourceResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (s *diagnosisService) ListDiagnosisDataSource(ctx context.Context, req *dia
 	return &data, nil
 }
 
-func (s *diagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diagnosis.GetDiagnosisDataSourceRequest) (*diagnosis.GetDiagnosisDataSourceResponse, error) {
+func (s *DiagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diagnosis.GetDiagnosisDataSourceRequest) (*diagnosis.GetDiagnosisDataSourceResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (s *diagnosisService) GetDiagnosisDataSource(ctx context.Context, req *diag
 	return &diagnosis.GetDiagnosisDataSourceResponse{DiagnosisDataSource: convertDiagnosisDataSource(getData)}, nil
 }
 
-func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diagnosis.PutDiagnosisDataSourceRequest) (*diagnosis.PutDiagnosisDataSourceResponse, error) {
+func (s *DiagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diagnosis.PutDiagnosisDataSourceRequest) (*diagnosis.PutDiagnosisDataSourceResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (s *diagnosisService) PutDiagnosisDataSource(ctx context.Context, req *diag
 	return &diagnosis.PutDiagnosisDataSourceResponse{DiagnosisDataSource: convertDiagnosisDataSource(registerdData)}, nil
 }
 
-func (s *diagnosisService) DeleteDiagnosisDataSource(ctx context.Context, req *diagnosis.DeleteDiagnosisDataSourceRequest) (*empty.Empty, error) {
+func (s *DiagnosisService) DeleteDiagnosisDataSource(ctx context.Context, req *diagnosis.DeleteDiagnosisDataSourceRequest) (*empty.Empty, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}

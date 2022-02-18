@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (s *diagnosisService) ListJiraSetting(ctx context.Context, req *diagnosis.ListJiraSettingRequest) (*diagnosis.ListJiraSettingResponse, error) {
+func (s *DiagnosisService) ListJiraSetting(ctx context.Context, req *diagnosis.ListJiraSettingRequest) (*diagnosis.ListJiraSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (s *diagnosisService) ListJiraSetting(ctx context.Context, req *diagnosis.L
 	return &data, nil
 }
 
-func (s *diagnosisService) GetJiraSetting(ctx context.Context, req *diagnosis.GetJiraSettingRequest) (*diagnosis.GetJiraSettingResponse, error) {
+func (s *DiagnosisService) GetJiraSetting(ctx context.Context, req *diagnosis.GetJiraSettingRequest) (*diagnosis.GetJiraSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s *diagnosisService) GetJiraSetting(ctx context.Context, req *diagnosis.Ge
 	return &diagnosis.GetJiraSettingResponse{JiraSetting: convertJiraSetting(getData)}, nil
 }
 
-func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.PutJiraSettingRequest) (*diagnosis.PutJiraSettingResponse, error) {
+func (s *DiagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.PutJiraSettingRequest) (*diagnosis.PutJiraSettingResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (s *diagnosisService) PutJiraSetting(ctx context.Context, req *diagnosis.Pu
 	return &diagnosis.PutJiraSettingResponse{JiraSetting: convertJiraSetting(registerdData)}, nil
 }
 
-func (s *diagnosisService) DeleteJiraSetting(ctx context.Context, req *diagnosis.DeleteJiraSettingRequest) (*empty.Empty, error) {
+func (s *DiagnosisService) DeleteJiraSetting(ctx context.Context, req *diagnosis.DeleteJiraSettingRequest) (*empty.Empty, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
