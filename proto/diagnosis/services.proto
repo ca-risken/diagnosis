@@ -17,14 +17,6 @@ service DiagnosisService {
   rpc DeleteDiagnosisDataSource(DeleteDiagnosisDataSourceRequest)
       returns (google.protobuf.Empty) {}
 
-  // JiraSetting
-  rpc ListJiraSetting(ListJiraSettingRequest)
-      returns (ListJiraSettingResponse) {}
-  rpc GetJiraSetting(GetJiraSettingRequest) returns (GetJiraSettingResponse) {}
-  rpc PutJiraSetting(PutJiraSettingRequest) returns (PutJiraSettingResponse) {}
-  rpc DeleteJiraSetting(DeleteJiraSettingRequest)
-      returns (google.protobuf.Empty) {}
-
   // WpscanSetting
   rpc ListWpscanSetting(ListWpscanSettingRequest)
       returns (ListWpscanSettingResponse) {}
@@ -113,33 +105,6 @@ message PutDiagnosisDataSourceResponse {
 message DeleteDiagnosisDataSourceRequest {
   uint32 project_id = 1;
   uint32 diagnosis_data_source_id = 2;
-}
-
-// JiraSettingService
-message ListJiraSettingRequest {
-  uint32 project_id = 1;
-  uint32 diagnosis_data_source_id = 2;
-}
-
-message ListJiraSettingResponse { repeated JiraSetting jira_setting = 1; }
-
-message GetJiraSettingRequest {
-  uint32 project_id = 1;
-  uint32 jira_setting_id = 2;
-}
-
-message GetJiraSettingResponse { JiraSetting jira_setting = 1; }
-
-message PutJiraSettingRequest {
-  uint32 project_id = 1;
-  JiraSettingForUpsert jira_setting = 2;
-}
-
-message PutJiraSettingResponse { JiraSetting jira_setting = 1; }
-
-message DeleteJiraSettingRequest {
-  uint32 project_id = 1;
-  uint32 jira_setting_id = 2;
 }
 
 // WpscanSettingService
