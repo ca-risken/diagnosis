@@ -48,7 +48,7 @@ type AppConfig struct {
 
 func main() {
 	var appConf AppConfig
-	err := envconfig.Process("", appConf)
+	err := envconfig.Process("", &appConf)
 	if err != nil {
 		appLogger.Fatal(err.Error())
 	}
