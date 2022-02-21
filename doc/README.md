@@ -10,8 +10,6 @@
     - [ApplicationScanForUpsert](#diagnosis.ApplicationScanForUpsert)
     - [DiagnosisDataSource](#diagnosis.DiagnosisDataSource)
     - [DiagnosisDataSourceForUpsert](#diagnosis.DiagnosisDataSourceForUpsert)
-    - [JiraSetting](#diagnosis.JiraSetting)
-    - [JiraSettingForUpsert](#diagnosis.JiraSettingForUpsert)
     - [PortscanSetting](#diagnosis.PortscanSetting)
     - [PortscanSettingForUpsert](#diagnosis.PortscanSettingForUpsert)
     - [PortscanTarget](#diagnosis.PortscanTarget)
@@ -26,7 +24,6 @@
     - [DeleteApplicationScanBasicSettingRequest](#diagnosis.DeleteApplicationScanBasicSettingRequest)
     - [DeleteApplicationScanRequest](#diagnosis.DeleteApplicationScanRequest)
     - [DeleteDiagnosisDataSourceRequest](#diagnosis.DeleteDiagnosisDataSourceRequest)
-    - [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest)
     - [DeletePortscanSettingRequest](#diagnosis.DeletePortscanSettingRequest)
     - [DeletePortscanTargetRequest](#diagnosis.DeletePortscanTargetRequest)
     - [DeleteWpscanSettingRequest](#diagnosis.DeleteWpscanSettingRequest)
@@ -36,8 +33,6 @@
     - [GetApplicationScanResponse](#diagnosis.GetApplicationScanResponse)
     - [GetDiagnosisDataSourceRequest](#diagnosis.GetDiagnosisDataSourceRequest)
     - [GetDiagnosisDataSourceResponse](#diagnosis.GetDiagnosisDataSourceResponse)
-    - [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest)
-    - [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse)
     - [GetPortscanSettingRequest](#diagnosis.GetPortscanSettingRequest)
     - [GetPortscanSettingResponse](#diagnosis.GetPortscanSettingResponse)
     - [GetPortscanTargetRequest](#diagnosis.GetPortscanTargetRequest)
@@ -53,8 +48,6 @@
     - [ListApplicationScanResponse](#diagnosis.ListApplicationScanResponse)
     - [ListDiagnosisDataSourceRequest](#diagnosis.ListDiagnosisDataSourceRequest)
     - [ListDiagnosisDataSourceResponse](#diagnosis.ListDiagnosisDataSourceResponse)
-    - [ListJiraSettingRequest](#diagnosis.ListJiraSettingRequest)
-    - [ListJiraSettingResponse](#diagnosis.ListJiraSettingResponse)
     - [ListPortscanSettingRequest](#diagnosis.ListPortscanSettingRequest)
     - [ListPortscanSettingResponse](#diagnosis.ListPortscanSettingResponse)
     - [ListPortscanTargetRequest](#diagnosis.ListPortscanTargetRequest)
@@ -67,8 +60,6 @@
     - [PutApplicationScanResponse](#diagnosis.PutApplicationScanResponse)
     - [PutDiagnosisDataSourceRequest](#diagnosis.PutDiagnosisDataSourceRequest)
     - [PutDiagnosisDataSourceResponse](#diagnosis.PutDiagnosisDataSourceResponse)
-    - [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest)
-    - [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse)
     - [PutPortscanSettingRequest](#diagnosis.PutPortscanSettingRequest)
     - [PutPortscanSettingResponse](#diagnosis.PutPortscanSettingResponse)
     - [PutPortscanTargetRequest](#diagnosis.PutPortscanTargetRequest)
@@ -209,58 +200,6 @@
 | name | [string](#string) |  |  |
 | description | [string](#string) |  |  |
 | max_score | [float](#float) |  |  |
-
-
-
-
-
-
-<a name="diagnosis.JiraSetting"></a>
-
-### JiraSetting
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| jira_setting_id | [uint32](#uint32) |  |  |
-| name | [string](#string) |  |  |
-| diagnosis_data_source_id | [uint32](#uint32) |  |  |
-| project_id | [uint32](#uint32) |  |  |
-| identity_field | [string](#string) |  |  |
-| identity_value | [string](#string) |  |  |
-| jira_id | [string](#string) |  |  |
-| jira_key | [string](#string) |  |  |
-| status | [Status](#diagnosis.Status) |  |  |
-| status_detail | [string](#string) |  |  |
-| scan_at | [int64](#int64) |  |  |
-| created_at | [int64](#int64) |  |  |
-| updated_at | [int64](#int64) |  |  |
-
-
-
-
-
-
-<a name="diagnosis.JiraSettingForUpsert"></a>
-
-### JiraSettingForUpsert
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| jira_setting_id | [uint32](#uint32) |  |  |
-| name | [string](#string) |  |  |
-| diagnosis_data_source_id | [uint32](#uint32) |  |  |
-| project_id | [uint32](#uint32) |  |  |
-| identity_field | [string](#string) |  |  |
-| identity_value | [string](#string) |  |  |
-| jira_id | [string](#string) |  |  |
-| jira_key | [string](#string) |  |  |
-| status | [Status](#diagnosis.Status) |  |  |
-| status_detail | [string](#string) |  |  |
-| scan_at | [int64](#int64) |  |  |
 
 
 
@@ -486,22 +425,6 @@ Status
 
 
 
-<a name="diagnosis.DeleteJiraSettingRequest"></a>
-
-### DeleteJiraSettingRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
-
-
-
-
-
-
 <a name="diagnosis.DeletePortscanSettingRequest"></a>
 
 ### DeletePortscanSettingRequest
@@ -637,37 +560,6 @@ Status
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | diagnosis_data_source | [DiagnosisDataSource](#diagnosis.DiagnosisDataSource) |  |  |
-
-
-
-
-
-
-<a name="diagnosis.GetJiraSettingRequest"></a>
-
-### GetJiraSettingRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| project_id | [uint32](#uint32) |  |  |
-| jira_setting_id | [uint32](#uint32) |  |  |
-
-
-
-
-
-
-<a name="diagnosis.GetJiraSettingResponse"></a>
-
-### GetJiraSettingResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| jira_setting | [JiraSetting](#diagnosis.JiraSetting) |  |  |
 
 
 
@@ -908,37 +800,6 @@ DiagnosisDataSourceService
 
 
 
-<a name="diagnosis.ListJiraSettingRequest"></a>
-
-### ListJiraSettingRequest
-JiraSettingService
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| project_id | [uint32](#uint32) |  |  |
-| diagnosis_data_source_id | [uint32](#uint32) |  |  |
-
-
-
-
-
-
-<a name="diagnosis.ListJiraSettingResponse"></a>
-
-### ListJiraSettingResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| jira_setting | [JiraSetting](#diagnosis.JiraSetting) | repeated |  |
-
-
-
-
-
-
 <a name="diagnosis.ListPortscanSettingRequest"></a>
 
 ### ListPortscanSettingRequest
@@ -1127,37 +988,6 @@ WpscanSettingService
 
 
 
-<a name="diagnosis.PutJiraSettingRequest"></a>
-
-### PutJiraSettingRequest
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| project_id | [uint32](#uint32) |  |  |
-| jira_setting | [JiraSettingForUpsert](#diagnosis.JiraSettingForUpsert) |  |  |
-
-
-
-
-
-
-<a name="diagnosis.PutJiraSettingResponse"></a>
-
-### PutJiraSettingResponse
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| jira_setting | [JiraSetting](#diagnosis.JiraSetting) |  |  |
-
-
-
-
-
-
 <a name="diagnosis.PutPortscanSettingRequest"></a>
 
 ### PutPortscanSettingRequest
@@ -1268,10 +1098,6 @@ WpscanSettingService
 | GetDiagnosisDataSource | [GetDiagnosisDataSourceRequest](#diagnosis.GetDiagnosisDataSourceRequest) | [GetDiagnosisDataSourceResponse](#diagnosis.GetDiagnosisDataSourceResponse) |  |
 | PutDiagnosisDataSource | [PutDiagnosisDataSourceRequest](#diagnosis.PutDiagnosisDataSourceRequest) | [PutDiagnosisDataSourceResponse](#diagnosis.PutDiagnosisDataSourceResponse) |  |
 | DeleteDiagnosisDataSource | [DeleteDiagnosisDataSourceRequest](#diagnosis.DeleteDiagnosisDataSourceRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
-| ListJiraSetting | [ListJiraSettingRequest](#diagnosis.ListJiraSettingRequest) | [ListJiraSettingResponse](#diagnosis.ListJiraSettingResponse) | JiraSetting |
-| GetJiraSetting | [GetJiraSettingRequest](#diagnosis.GetJiraSettingRequest) | [GetJiraSettingResponse](#diagnosis.GetJiraSettingResponse) |  |
-| PutJiraSetting | [PutJiraSettingRequest](#diagnosis.PutJiraSettingRequest) | [PutJiraSettingResponse](#diagnosis.PutJiraSettingResponse) |  |
-| DeleteJiraSetting | [DeleteJiraSettingRequest](#diagnosis.DeleteJiraSettingRequest) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
 | ListWpscanSetting | [ListWpscanSettingRequest](#diagnosis.ListWpscanSettingRequest) | [ListWpscanSettingResponse](#diagnosis.ListWpscanSettingResponse) | WpscanSetting |
 | GetWpscanSetting | [GetWpscanSettingRequest](#diagnosis.GetWpscanSettingRequest) | [GetWpscanSettingResponse](#diagnosis.GetWpscanSettingResponse) |  |
 | PutWpscanSetting | [PutWpscanSettingRequest](#diagnosis.PutWpscanSettingRequest) | [PutWpscanSettingResponse](#diagnosis.PutWpscanSettingResponse) |  |

@@ -19,36 +19,6 @@ message DiagnosisDataSourceForUpsert {
   float max_score = 4;
 }
 
-message JiraSetting {
-  uint32 jira_setting_id = 1;
-  string name = 2;
-  uint32 diagnosis_data_source_id = 3;
-  uint32 project_id = 4;
-  string identity_field = 5;
-  string identity_value = 6;
-  string jira_id = 7;
-  string jira_key = 8;
-  Status status = 9;
-  string status_detail = 10;
-  int64 scan_at = 11;
-  int64 created_at = 12;
-  int64 updated_at = 13;
-}
-
-message JiraSettingForUpsert {
-  uint32 jira_setting_id = 1;
-  string name = 2;
-  uint32 diagnosis_data_source_id = 3;
-  uint32 project_id = 4;
-  string identity_field = 5;
-  string identity_value = 6;
-  string jira_id = 7;
-  string jira_key = 8;
-  Status status = 9;
-  string status_detail = 10;
-  int64 scan_at = 11;
-}
-
 message WpscanSetting {
   uint32 wpscan_setting_id = 1;
   uint32 project_id = 2;
