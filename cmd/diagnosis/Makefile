@@ -39,34 +39,6 @@ delete-diagnosis_datasource:
 		-d '{"project_id":1001, "diagnosis_data_source_id":1002}' \
 		localhost:19001 diagnosis.DiagnosisService.DeleteDiagnosisDataSource
 
-.PHONY: list-jira_setting
-list-jira_setting:
-	grpcurl \
-		-plaintext \
-		-d '{"project_id":1001}' \
-		localhost:19001 diagnosis.DiagnosisService.ListJiraSetting
-
-.PHONY: get-jira_setting
-get-jira_setting:
-	grpcurl \
-		-plaintext \
-		-d '{"project_id":1001, "jira_setting_id":1001}' \
-		localhost:19001 diagnosis.DiagnosisService.GetJiraSetting
-
-.PHONY: put-jira_setting
-put-jira_setting:
-	grpcurl \
-		-plaintext \
-		-d '{"project_id":1001, "jira_setting": {"name":"hoge_name", "diagnosis_data_source_id":1001, "project_id":1001, "identity_field":"field_hoge", "identity_value":"value_hoge","jira_id":"hoge_id","jira_key":"hoge_key", "status":"CONFIGURED"}}' \
-		localhost:19001 diagnosis.DiagnosisService.PutJiraSetting
-
-.PHONY: delete-jira_setting
-delete-jira_setting:
-	grpcurl \
-		-plaintext \
-		-d '{"project_id":1001, "jira_setting_id":1001}' \
-		localhost:19001 diagnosis.DiagnosisService.DeleteJiraSetting
-
 .PHONY: list-wpscan_setting
 list-wpscan_setting:
 	grpcurl \
@@ -205,12 +177,6 @@ delete-application_scan_basic_setting:
 		-plaintext \
 		-d '{"project_id":1001, "application_scan_basic_setting_id":1001}' \
 		localhost:19001 diagnosis.DiagnosisService.DeleteApplicationScanBasicSetting
-.PHONY: invoke-scan-jira
-invoke-scan-jira:
-	grpcurl \
-		-plaintext \
-		-d '{"project_id":1001, "setting_id":1003,"diagnosis_data_source_id":1001}' \
-		localhost:19001 diagnosis.DiagnosisService.InvokeScan
 
 .PHONY: invoke-scan-wpscan
 invoke-scan-wpscan:

@@ -16,14 +16,12 @@ type SQSConfig struct {
 	AWSRegion string
 	Endpoint  string
 
-	DiagnosisJiraQueueURL            string
 	DiagnosisWpscanQueueURL          string
 	DiagnosisPortscanQueueURL        string
 	DiagnosisApplicationScanQueueURL string
 }
 
 type sqsAPI interface {
-	sendJiraMessage(ctx context.Context, msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error)
 	sendWpscanMessage(ctx context.Context, msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error)
 	sendPortscanMessage(ctx context.Context, msg *message.PortscanQueueMessage) (*sqs.SendMessageOutput, error)
 	sendApplicationScanMessage(ctx context.Context, msg *message.ApplicationScanQueueMessage) (*sqs.SendMessageOutput, error)
@@ -51,35 +49,11 @@ func newSQSClient(conf *SQSConfig) *sqsClient {
 		svc: session,
 		queueURLMap: map[string]string{
 			// queueURLMap:
-			"diagnosis:jira":             conf.DiagnosisJiraQueueURL,
 			"diagnosis:wpscan":           conf.DiagnosisWpscanQueueURL,
 			"diagnosis:portscan":         conf.DiagnosisPortscanQueueURL,
 			"diagnosis:application-scan": conf.DiagnosisApplicationScanQueueURL,
 		},
 	}
-}
-
-func (s *sqsClient) sendJiraMessage(ctx context.Context, msg *message.JiraQueueMessage) (*sqs.SendMessageOutput, error) {
-	url := s.queueURLMap[msg.DataSource]
-	if url == "" {
-		return nil, fmt.Errorf("Unknown data_source, value=%s", msg.DataSource)
-	}
-	buf, err := json.Marshal(msg)
-	if err != nil {
-		appLogger.Errorf("Failed to parse message, error: %v", err)
-		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
-	}
-	appLogger.Infof("Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
-	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
-		MessageBody:  aws.String(string(buf)),
-		QueueUrl:     &url,
-		DelaySeconds: aws.Int64(1),
-	})
-	if err != nil {
-		appLogger.Errorf("Failed to send message, error: %v", err)
-		return nil, err
-	}
-	return resp, nil
 }
 
 func (s *sqsClient) sendWpscanMessage(ctx context.Context, msg *message.WpscanQueueMessage) (*sqs.SendMessageOutput, error) {

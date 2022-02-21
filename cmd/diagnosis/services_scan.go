@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/sqs"
@@ -15,11 +16,9 @@ import (
 
 const (
 	InvokeScanAllDataSource       = "all"
-	InvokeScanJira                = "jira"
 	InvokeScanWPScan              = "wpscan"
 	InvokeScanPortScan            = "portscan"
 	InvokeScanApplicationScan     = "applicationscan"
-	DataSourceNameJira            = "diagnosis:jira"
 	DataSourceNameWPScan          = "diagnosis:wpscan"
 	DataSourceNamePortScan        = "diagnosis:portscan"
 	DataSourceNameApplicationScan = "diagnosis:application-scan"
@@ -35,36 +34,6 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	}
 	var resp *sqs.SendMessageOutput
 	switch dataSource.Name {
-	case DataSourceNameJira:
-		data, err := d.repository.GetJiraSetting(ctx, req.ProjectId, req.SettingId)
-		if err != nil {
-			return nil, err
-		}
-		msg, err := makeJiraMessage(req.ProjectId, req.SettingId, data)
-		if err != nil {
-			appLogger.Errorf("Error occured when making Jira message, error: %v", err)
-			return nil, err
-		}
-		msg.ScanOnly = req.ScanOnly
-		resp, err = d.sqs.sendJiraMessage(ctx, msg)
-		if err != nil {
-			return nil, err
-		}
-		if _, err = d.repository.UpsertJiraSetting(ctx, &model.JiraSetting{
-			JiraSettingID:         data.JiraSettingID,
-			Name:                  data.Name,
-			DiagnosisDataSourceID: data.DiagnosisDataSourceID,
-			ProjectID:             data.ProjectID,
-			IdentityField:         data.IdentityField,
-			IdentityValue:         data.IdentityValue,
-			JiraID:                data.JiraID,
-			JiraKey:               data.JiraKey,
-			Status:                diagnosis.Status_IN_PROGRESS.String(),
-			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
-			ScanAt:                data.ScanAt,
-		}); err != nil {
-			return nil, err
-		}
 	case DataSourceNameWPScan:
 		data, err := d.repository.GetWpscanSetting(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
@@ -199,36 +168,12 @@ func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 			return nil, err
 		}
 		switch dataSource.Name {
-		case DataSourceNameJira:
-			scanDataSource = InvokeScanJira
 		case DataSourceNameWPScan:
 			scanDataSource = InvokeScanWPScan
 		case DataSourceNamePortScan:
 			scanDataSource = InvokeScanPortScan
 		case DataSourceNameApplicationScan:
 			scanDataSource = InvokeScanApplicationScan
-		}
-	}
-	if isInvokeScan(scanDataSource, InvokeScanJira) {
-		listjiraSetting, err := s.repository.ListAllJiraSetting(ctx)
-		if err != nil {
-			appLogger.Errorf("Failed to List All JiraSetting., error: %v", err)
-			return nil, err
-		}
-
-		for _, jiraSetting := range *listjiraSetting {
-			if s.skipProject(ctx, jiraSetting.ProjectID) {
-				continue
-			}
-			if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
-				ProjectId:             jiraSetting.ProjectID,
-				SettingId:             jiraSetting.JiraSettingID,
-				DiagnosisDataSourceId: jiraSetting.DiagnosisDataSourceID,
-				ScanOnly:              true,
-			}); err != nil {
-				// errorが出ても続行
-				appLogger.Errorf("InvokeScanAll error, error: %v", err)
-			}
 		}
 	}
 	if isInvokeScan(scanDataSource, InvokeScanWPScan) {
@@ -273,4 +218,23 @@ func (s *DiagnosisService) skipProject(ctx context.Context, projectID uint32) bo
 		return true
 	}
 	return false
+}
+
+func getStatus(s string) diagnosis.Status {
+	statusKey := strings.ToUpper(s)
+	if _, ok := diagnosis.Status_value[statusKey]; !ok {
+		return diagnosis.Status_UNKNOWN
+	}
+	switch statusKey {
+	case diagnosis.Status_OK.String():
+		return diagnosis.Status_OK
+	case diagnosis.Status_CONFIGURED.String():
+		return diagnosis.Status_CONFIGURED
+	case diagnosis.Status_IN_PROGRESS.String():
+		return diagnosis.Status_IN_PROGRESS
+	case diagnosis.Status_ERROR.String():
+		return diagnosis.Status_ERROR
+	default:
+		return diagnosis.Status_UNKNOWN
+	}
 }

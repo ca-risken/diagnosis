@@ -56,12 +56,12 @@ func (s *DiagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 		return nil, err
 	}
 
-	var jiraSettingID uint32
+	var wpscanSettingID uint32
 	if !noRecord {
-		jiraSettingID = savedData.WpscanSettingID
+		wpscanSettingID = savedData.WpscanSettingID
 	}
 	data := &model.WpscanSetting{
-		WpscanSettingID:       jiraSettingID,
+		WpscanSettingID:       wpscanSettingID,
 		ProjectID:             req.ProjectId,
 		DiagnosisDataSourceID: req.WpscanSetting.DiagnosisDataSourceId,
 		TargetURL:             req.WpscanSetting.TargetUrl,
