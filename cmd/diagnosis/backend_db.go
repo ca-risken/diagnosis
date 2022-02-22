@@ -14,10 +14,6 @@ type diagnosisRepoInterface interface {
 	GetDiagnosisDataSource(context.Context, uint32, uint32) (*model.DiagnosisDataSource, error)
 	UpsertDiagnosisDataSource(context.Context, *model.DiagnosisDataSource) (*model.DiagnosisDataSource, error)
 	DeleteDiagnosisDataSource(context.Context, uint32, uint32) error
-	ListJiraSetting(context.Context, uint32, uint32) (*[]model.JiraSetting, error)
-	GetJiraSetting(context.Context, uint32, uint32) (*model.JiraSetting, error)
-	UpsertJiraSetting(context.Context, *model.JiraSetting) (*model.JiraSetting, error)
-	DeleteJiraSetting(context.Context, uint32, uint32) error
 	ListWpscanSetting(context.Context, uint32, uint32) (*[]model.WpscanSetting, error)
 	GetWpscanSetting(context.Context, uint32, uint32) (*model.WpscanSetting, error)
 	UpsertWpscanSetting(context.Context, *model.WpscanSetting) (*model.WpscanSetting, error)
@@ -41,7 +37,6 @@ type diagnosisRepoInterface interface {
 	DeleteApplicationScanBasicSetting(context.Context, uint32, uint32) error
 
 	//for InvokeScan
-	ListAllJiraSetting(context.Context) (*[]model.JiraSetting, error)
 	ListAllWpscanSetting(context.Context) (*[]model.WpscanSetting, error)
 }
 

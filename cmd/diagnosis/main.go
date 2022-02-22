@@ -37,7 +37,6 @@ type AppConfig struct {
 	AWSRegion string `envconfig:"aws_region"   default:"ap-northeast-1"`
 	Endpoint  string `envconfig:"sqs_endpoint" default:"http://queue.middleware.svc.cluster.local:9324"`
 
-	DiagnosisJiraQueueURL            string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-jira"`
 	DiagnosisWpscanQueueURL          string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-wpscan"`
 	DiagnosisPortscanQueueURL        string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-portscan"`
 	DiagnosisApplicationScanQueueURL string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-applicationscan"`
@@ -74,7 +73,6 @@ func main() {
 	sqsConf := &SQSConfig{
 		AWSRegion:                        appConf.AWSRegion,
 		Endpoint:                         appConf.Endpoint,
-		DiagnosisJiraQueueURL:            appConf.DiagnosisJiraQueueURL,
 		DiagnosisWpscanQueueURL:          appConf.DiagnosisWpscanQueueURL,
 		DiagnosisPortscanQueueURL:        appConf.DiagnosisPortscanQueueURL,
 		DiagnosisApplicationScanQueueURL: appConf.DiagnosisApplicationScanQueueURL,
