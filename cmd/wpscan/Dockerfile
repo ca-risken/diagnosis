@@ -25,6 +25,8 @@ RUN apk add --no-cache ca-certificates tzdata \
 COPY --from=builder /go/bin/env-injector /usr/local/bin/
 COPY --from=builder /go/bin/wpscan /usr/local/wpscan/bin/
 ENV PORT=19003 \
+  PROFILE_EXPORTER= \
+  PROFILE_TYPES= \
   AWS_REGION= \
   AWS_ACCESS_KEY_ID= \
   AWS_SECRET_ACCESS_KEY= \

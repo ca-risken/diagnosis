@@ -62,13 +62,13 @@ func (p *portscanClient) makeTargets(targetIPFQDN string) {
 			FromPort: 0,
 			ToPort:   0,
 			Protocol: "udp",
-				},
+		},
 		{
 			Target:   targetIPFQDN,
 			FromPort: 1,
 			ToPort:   65535,
 			Protocol: "tcp",
-				},
+		},
 	}
 }
 

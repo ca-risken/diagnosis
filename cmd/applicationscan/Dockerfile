@@ -22,6 +22,8 @@ FROM public.ecr.aws/w4a9j2y8/diagnosis/applicationscan-base:v2.10.0
 COPY --from=builder /go/bin/env-injector /usr/local/bin/
 COPY --from=builder /go/bin/applicationscan /usr/local/applicationscan/bin/
 ENV DEBUG= \
+  PROFILE_EXPORTER= \
+  PROFILE_TYPES= \
   AWS_REGION= \
   AWS_ACCESS_KEY_ID= \
   AWS_SECRET_ACCESS_KEY= \
