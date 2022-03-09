@@ -14,6 +14,8 @@ RUN go build && cp diagnosis /go/bin/
 FROM public.ecr.aws/risken/base/risken-base:v0.0.1
 COPY --from=builder /go/bin/diagnosis /usr/local/diagnosis/bin/
 ENV PORT=19001 \
+  PROFILE_EXPORTER= \
+  PROFILE_TYPES= \
   DB_MASTER_HOST= \
   DB_MASTER_USER= \
   DB_MASTER_PASSWORD= \
