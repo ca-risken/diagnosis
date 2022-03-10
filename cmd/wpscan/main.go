@@ -38,7 +38,7 @@ type AppConfig struct {
 	AlertSvcAddr     string `required:"true" split_words:"true" default:"alert.core.svc.cluster.local:8004"`
 	DiagnosisSvcAddr string `required:"true" split_words:"true" default:"diagnosis.diagnosis.svc.cluster.local:19001"`
 	// wpscan
-	ResultPath         string `split_words:"true" required:"true" default:"/results"`
+	ResultPath         string `split_words:"true" required:"true" default:"/tmp"`
 	WpscanVulndbApikey string `split_words:"true"`
 }
 
