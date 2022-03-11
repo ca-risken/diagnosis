@@ -44,7 +44,7 @@ func (p *portscanClient) scan() ([]*portscan.NmapResult, error) {
 		results, err := portscan.Scan(target.Target, target.Protocol, target.FromPort, target.ToPort)
 		if err != nil {
 			appLogger.Warnf("Error occured when scanning. err: %v", err)
-			return nmapResults, nil
+			return nmapResults, err
 		}
 		for _, result := range results {
 			result.ResourceName = target.Target
