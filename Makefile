@@ -58,7 +58,7 @@ ecr-login:
 .PHONY: build
 build: $(BUILD_TARGETS)
 %.build: %.go-test
-	. env.sh && TARGET=$(*) IMAGE_TAG=$(IMAGE_TAG) IMAGE_PREFIX=$(IMAGE_PREFIX) BUILD_OPT="$(BUILD_OPT)" . hack/docker-build.sh
+	TARGET=$(*) IMAGE_TAG=$(IMAGE_TAG) IMAGE_PREFIX=$(IMAGE_PREFIX) BUILD_OPT="$(BUILD_OPT)" . hack/docker-build.sh
 
 .PHONY: build-ci
 build-ci: $(BUILD_CI_TARGETS)
