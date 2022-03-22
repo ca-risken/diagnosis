@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -29,7 +30,7 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 		args = append(args, "--random-user-agent")
 	}
 	if !zero.IsZeroVal(options.WpContentDir) {
-		args = append(args, "–wp-content-dir", options.WpContentDir)
+		args = append(args, "-wp-content-dir", options.WpContentDir)
 	}
 	if !zero.IsZeroVal(w.WpscanVulndbApikey) {
 		argsWithApiKey := append(args, "--api-token", w.WpscanVulndbApikey)
@@ -37,11 +38,11 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 		err := execWPScan(cmd)
 		if err != nil {
 			// ReScan for Invalid APIKey or reaching APIKey Limit
-			appLogger.Warn("APIKey doesn't work. Try scanning without apikey.")
+			appLogger.Warnf("APIKey doesn't work. Try scanning without apikey, err=%v", err)
 			cmd := exec.Command("wpscan", args...)
 			err = execWPScan(cmd)
 			if err != nil {
-				appLogger.Error("Scan also failed without apikey.")
+				appLogger.Errorf("Scan also failed without apikey, err=%v", err)
 				return nil, err
 			}
 		}
@@ -49,7 +50,7 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 		cmd := exec.Command("wpscan", args...)
 		err := execWPScan(cmd)
 		if err != nil {
-			appLogger.Error("Scan failed without apikey.")
+			appLogger.Errorf("Scan failed without apikey, err=%v", err)
 			return nil, err
 		}
 	}
@@ -67,12 +68,25 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 	return &wpscanResult, nil
 }
 
+type wpscanError struct {
+	Code   int
+	StdOut *bytes.Buffer
+	StdErr *bytes.Buffer
+}
+
+func (w *wpscanError) Error() string {
+	return fmt.Sprintf("Failed to wpscan, code=%d, stdout=%s, stderr=%s", w.Code, w.StdOut.String(), w.StdErr.String())
+}
+
 func execWPScan(cmd *exec.Cmd) error {
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
 	_ = cmd.Run()
 	exitCode := cmd.ProcessState.ExitCode()
 	if exitCode != 0 && exitCode != 5 {
 		appLogger.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
-		return fmt.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
+		return &wpscanError{Code: exitCode, StdOut: &stdout, StdErr: &stderr}
 	}
 	return nil
 }

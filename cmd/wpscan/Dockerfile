@@ -20,8 +20,7 @@ RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_
 
 FROM public.ecr.aws/risken/risken-diagnosis/wpscan-base:v3.8.18
 USER root 
-RUN apk add --no-cache ca-certificates tzdata \
-  && mkdir /results
+RUN apk add --no-cache ca-certificates tzdata
 COPY --from=builder /go/bin/env-injector /usr/local/bin/
 COPY --from=builder /go/bin/wpscan /usr/local/wpscan/bin/
 ENV PORT=19003 \
@@ -41,7 +40,7 @@ ENV PORT=19003 \
   FINDING_SVC_ADDR= \
   ALERT_SVC_ADDR= \
   DIAGNOSIS_SVC_ADDR= \
-  RESULT_PATH=/results \
+  RESULT_PATH= \
   WPSCAN_VULNDB_APIKEY= \
   TZ=Asia/Tokyo
 
