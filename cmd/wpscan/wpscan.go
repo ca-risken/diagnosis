@@ -30,7 +30,7 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 		args = append(args, "--random-user-agent")
 	}
 	if !zero.IsZeroVal(options.WpContentDir) {
-		args = append(args, "-wp-content-dir", options.WpContentDir)
+		args = append(args, "--wp-content-dir", options.WpContentDir)
 	}
 	if !zero.IsZeroVal(w.WpscanVulndbApikey) {
 		argsWithApiKey := append(args, "--api-token", w.WpscanVulndbApikey)
