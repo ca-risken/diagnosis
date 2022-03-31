@@ -58,6 +58,17 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 		}
 
 	}
+
+	for _, p := range wpscanResult.Plugins {
+		findingPlugin, recommendPlugin, err := getPluginFinding(p, message)
+		if err != nil {
+			return err
+		}
+		err = s.putFinding(ctx, findingPlugin, recommendPlugin, message.TargetURL)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -169,6 +180,32 @@ func getAccessFinding(access checkAccess, isUserFound bool, message *message.Wps
 	}
 	r := makeRecommend(message.ProjectID, 0, findingInf.RecommendType, findingInf.Risk, findingInf.Recommendation)
 
+	return f, r, nil
+}
+
+func getPluginFinding(plugin plugin, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
+	data, err := json.Marshal(plugin)
+	if err != nil {
+		return nil, nil, err
+	}
+	var findingInf wpscanFindingInformation
+	var ok bool
+	if len(plugin.Vulnerabilities) == 0 {
+		findingInf, ok = wpscanFindingMap[typePlugin]
+	} else if zero.IsZeroVal(plugin.Version.Number) {
+		findingInf, ok = wpscanFindingMap[typePluginUnknownVersion]
+	} else {
+		findingInf, ok = wpscanFindingMap[typePluginVulnerable]
+	}
+	if !ok {
+		appLogger.Warnf("Failed to get plugin information, plugin=%v", plugin)
+		return nil, nil, nil
+	}
+	f := makeFinding(fmt.Sprintf(findingInf.Description, plugin.Slug), fmt.Sprintf("plugin_%v", plugin.Slug), findingInf.Score, &data, message)
+	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
+		return f, nil, nil
+	}
+	r := makeRecommend(message.ProjectID, 0, findingInf.RecommendType, findingInf.Risk, findingInf.Recommendation)
 	return f, r, nil
 }
 

@@ -4,6 +4,9 @@ const (
 	typeVersion                     = "Version"
 	typeVersionInsecure             = "Version/Insecure"
 	typeHeaders                     = "headers"
+	typePlugin                      = "Plugin"
+	typePluginUnknownVersion        = "Plugin/UnknownVersion"
+	typePluginVulnerable            = "Plugin/Vulnerable"
 	typeSearchReplaceDB2            = "search_replace_db2"
 	typeLoginClosed                 = "LoginPage/Closed"
 	typeLoginOpened                 = "LoginPage/Opened"
@@ -28,6 +31,17 @@ var wpscanFindingMap = map[string]wpscanFindingInformation{
 		Recommendation: `Update wordpress.
 	- https://wordpress.org/support/article/updating-wordpress/`},
 	typeHeaders: {Score: 1.0, Description: "Software version found by Headers"},
+	typePlugin:  {Score: 1.0, Description: "Plugin was found. plugin: %v"},
+	typePluginUnknownVersion: {Score: 6.0, Description: "Plugin of unknown version was found. plugin: %v", RecommendType: typePluginUnknownVersion,
+		Risk: `Plugin of unknown version found.
+	Vulnerability exists in some versions.`,
+		Recommendation: `Please check the version and make sure it is not affected by the vulnerability.
+	If the version is affected, please update the plugin.`},
+	typePluginVulnerable: {Score: 8.0, Description: "Vulnerable plugin was found. plugin: %v", RecommendType: typePluginVulnerable,
+		Risk: `A vulnerable plugin was found.
+	See Finding for details on the vulnerability and its impact.`,
+		Recommendation: `Please update your plugins.
+	The version in which the vulnerability has been fixed is listed in Fixed_in of Finding.`},
 	typeSearchReplaceDB2: {Score: 8.0, Description: "", RecommendType: recommendTypeSearchReplaceDB2,
 		Risk: `Search Replace DB script found
 	- It may be possible to manipulate the database in the Web UI.`,
