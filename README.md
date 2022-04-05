@@ -45,6 +45,7 @@ Deploy the pre-built containers to the Kubernetes environment on your local mach
 | service         | spec                                | before (public images)                                   | after (pre-build images on your machine) |
 | --------------- | ----------------------------------- | -------------------------------------------------------- | ---------------------------------------- |
 | diagnosis       | spec.template.spec.containers.image | `public.ecr.aws/risken/diagnosis/diagnosis:latest`       | `diagnosis/diagnosis:latest`             |
+| wpscan          | spec.template.spec.containers.image | `public.ecr.aws/risken/diagnosis/wpscan:latest`          | `diagnosis/wpscan:latest`                |
 | portscan        | spec.template.spec.containers.image | `public.ecr.aws/risken/diagnosis/portscan:latest`        | `diagnosis/portscan:latest`              |
 | applicationscan | spec.template.spec.containers.image | `public.ecr.aws/risken/diagnosis/applicationscan:latest` | `diagnosis/applicationscan:latest`       |
 
