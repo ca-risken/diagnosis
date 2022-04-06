@@ -198,8 +198,8 @@ func getPluginFinding(plugin plugin, message *message.WpscanQueueMessage) (*find
 		findingInf, ok = wpscanFindingMap[typePluginVulnerable]
 	}
 	if !ok {
-		appLogger.Warnf("Failed to get plugin information, plugin=%v", plugin)
-		return nil, nil, nil
+		appLogger.Errorf("Failed to get plugin information, plugin=%v", plugin)
+		return nil, nil, err
 	}
 	f := makeFinding(fmt.Sprintf(findingInf.Description, plugin.Slug), fmt.Sprintf("plugin_%v", plugin.Slug), findingInf.Score, &data, message)
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
