@@ -199,7 +199,7 @@ func getPluginFinding(plugin plugin, message *message.WpscanQueueMessage) (*find
 	}
 	if !ok {
 		appLogger.Errorf("Failed to get plugin information, plugin=%v", plugin)
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("failed to get plugin information. plugin_name=%v", plugin.Slug)
 	}
 	f := makeFinding(fmt.Sprintf(findingInf.Description, plugin.Slug), fmt.Sprintf("plugin_%v", plugin.Slug), findingInf.Score, &data, message)
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
