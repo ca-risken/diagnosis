@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ca-risken/common/pkg/logging"
 	"github.com/vikyd/zero"
 )
 
@@ -68,7 +69,10 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 	}
 
 	if isUseAPIKey {
-		appLogger.Infof("Remaining requests of VulnAPI is %v", wpscanResult.VulnAPI.RequestRemaining)
+		remain := map[string]interface{}{
+			"api_remaining": wpscanResult.VulnAPI.RequestRemaining,
+		}
+		appLogger.WithItems(logging.InfoLevel, remain, "Executed WPScan VulnAPI")
 	}
 	wpscanResult.AccessList, _ = checkOpen(target)
 	return &wpscanResult, nil
