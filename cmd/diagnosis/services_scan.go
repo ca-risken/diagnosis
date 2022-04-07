@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/ca-risken/core/proto/project"
+	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -15,13 +16,10 @@ import (
 )
 
 const (
-	InvokeScanAllDataSource       = "all"
-	InvokeScanWPScan              = "wpscan"
-	InvokeScanPortScan            = "portscan"
-	InvokeScanApplicationScan     = "applicationscan"
-	DataSourceNameWPScan          = "diagnosis:wpscan"
-	DataSourceNamePortScan        = "diagnosis:portscan"
-	DataSourceNameApplicationScan = "diagnosis:application-scan"
+	InvokeScanAllDataSource   = "all"
+	InvokeScanWPScan          = "wpscan"
+	InvokeScanPortScan        = "portscan"
+	InvokeScanApplicationScan = "applicationscan"
 )
 
 func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
@@ -34,7 +32,7 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	}
 	var resp *sqs.SendMessageOutput
 	switch dataSource.Name {
-	case DataSourceNameWPScan:
+	case common.DataSourceNameWPScan:
 		data, err := d.repository.GetWpscanSetting(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
 			return nil, err
@@ -71,7 +69,7 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			appLogger.Errorf("Error occured when upsert WPScanSetting, error: %v", err)
 			return nil, err
 		}
-	case DataSourceNamePortScan:
+	case common.DataSourceNamePortScan:
 		data, err := d.repository.GetPortscanSetting(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
 			appLogger.Errorf("Error occured when getting PortscanSetting, error: %v", err)
@@ -119,7 +117,7 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		}); err != nil {
 			return nil, err
 		}
-	case DataSourceNameApplicationScan:
+	case common.DataSourceNameApplicationScan:
 		data, err := d.repository.GetApplicationScan(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
 			appLogger.Errorf("Error occured when getting PortscanSetting, error: %v", err)
@@ -168,11 +166,11 @@ func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 			return nil, err
 		}
 		switch dataSource.Name {
-		case DataSourceNameWPScan:
+		case common.DataSourceNameWPScan:
 			scanDataSource = InvokeScanWPScan
-		case DataSourceNamePortScan:
+		case common.DataSourceNamePortScan:
 			scanDataSource = InvokeScanPortScan
-		case DataSourceNameApplicationScan:
+		case common.DataSourceNameApplicationScan:
 			scanDataSource = InvokeScanApplicationScan
 		}
 	}

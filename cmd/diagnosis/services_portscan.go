@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
@@ -191,7 +192,7 @@ func convertPortscanTarget(data *model.PortscanTarget) *diagnosis.PortscanTarget
 
 func makePortscanMessage(projectID, settingID, portscanTargetID uint32, target string) (*message.PortscanQueueMessage, error) {
 	msg := &message.PortscanQueueMessage{
-		DataSource:        "diagnosis:portscan",
+		DataSource:        common.DataSourceNamePortScan,
 		PortscanSettingID: settingID,
 		PortscanTargetID:  portscanTargetID,
 		ProjectID:         projectID,

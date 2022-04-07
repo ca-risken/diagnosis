@@ -59,6 +59,8 @@ github.com/ca-risken/common/pkg/sqs v0.0.0-20220113015330-0e8462d52b5b h1:i3DKXw
 github.com/ca-risken/common/pkg/sqs v0.0.0-20220113015330-0e8462d52b5b/go.mod h1:TX6Wn+5I32GuOrEzO41b9VbQOxERSbI05Q0JHHdud3o=
 github.com/ca-risken/common/pkg/sqs v0.0.0-20220304031727-c94e2c463b27 h1:WdXXdEnvb4Zg2JrLs8HbNJPjeCeH7deYLL27eiMG+NI=
 github.com/ca-risken/common/pkg/sqs v0.0.0-20220304031727-c94e2c463b27/go.mod h1:JR2ah4TDqvO9s53PkGtn7RBbAKtdWmy6ZJOsa59RYJ0=
+github.com/ca-risken/common/pkg/sqs v0.0.0-20220405112424-88b993567364 h1:ZuvzMZRKOJv+zdn8O2ZgrUEWZTGcp1SWwUSWIR+NWn8=
+github.com/ca-risken/common/pkg/sqs v0.0.0-20220405112424-88b993567364/go.mod h1:bQKQC0i/Aa4NZqvyQNNrX/slAdSLxSJmvzBzn68gOvk=
 github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1 h1:SjbAAb2H9yZu4Ecs9aL2tNdgifTzYTSxY4qjXFubnYI=
 github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1/go.mod h1:1QELprYp9UidwqzB1253qA00l3umMen4njJMFRNq5Po=
 github.com/ca-risken/common/pkg/xray v0.0.0-20220304031727-c94e2c463b27 h1:kD0o8e4RHhXEa7eLiAYxE0HQr58B3O5xsfLVSQqd34M=
@@ -75,6 +77,8 @@ github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220106110952-bf1d72fce415 h1:
 github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220106110952-bf1d72fce415/go.mod h1:EkDd+i1fmTJdVNHjwjk7VbSv+q+skkmUCvC0/DSqdwU=
 github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220309052839-1394e8f2e4a1 h1:FT2LVQ4gnChmgmw2G62VfJFT+d1NIn9G1uWxEJ7ZCvo=
 github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220309052839-1394e8f2e4a1/go.mod h1:9GSOCyA1J5uxycmiGj1e+pAbxjWPNG1+Q2G0H3VVwAI=
+github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220407095309-105129776296 h1:87MqBx/YuDdWTwpOPfCDJ1rarEvvDY39mwnE+8/PhFk=
+github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220407095309-105129776296/go.mod h1:9GSOCyA1J5uxycmiGj1e+pAbxjWPNG1+Q2G0H3VVwAI=
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20220127124312-efe248d19f5f h1:IBvFDCey3rRioZtmFg++R443bV4ThBJa41QlEQPPkFA=
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20220127124312-efe248d19f5f/go.mod h1:L+t717MZilPHRE8b5BW5u5Yj5VRtWGuxl/Q7wlzboho=
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20220309052839-1394e8f2e4a1 h1:LhylZO95h/eZJooFllPNaIsWfWBgyUWbr7EB9xskjFo=

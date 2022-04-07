@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ca-risken/core/proto/finding"
+	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/ca-risken/diagnosis/pkg/message"
 )
 
@@ -26,7 +27,7 @@ func TestMakeFinding(t *testing.T) {
 			score:        1.0,
 			data:         &[]byte{},
 			message: &message.WpscanQueueMessage{
-				DataSource:      "diagnosis:wpscan",
+				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
 				ProjectID:       1,
 				TargetURL:       "http://localhost",
@@ -35,7 +36,7 @@ func TestMakeFinding(t *testing.T) {
 			},
 			want: &finding.FindingForUpsert{
 				Description:      "description",
-				DataSource:       "diagnosis:wpscan",
+				DataSource:       common.DataSourceNameWPScan,
 				DataSourceId:     generateDataSourceID("dataSourceID"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
@@ -75,7 +76,7 @@ func TestMakeRecommend(t *testing.T) {
 			want: &finding.PutRecommendRequest{
 				ProjectId:      1,
 				FindingId:      1,
-				DataSource:     "diagnosis:wpscan",
+				DataSource:     common.DataSourceNameWPScan,
 				Type:           "recommendType",
 				Risk:           "risk",
 				Recommendation: "recommend",
@@ -111,7 +112,7 @@ func TestGetInterestingFinding(t *testing.T) {
 				References:        map[string]interface{}{"key": "val"},
 			},
 			message: &message.WpscanQueueMessage{
-				DataSource:      "diagnosis:wpscan",
+				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
 				ProjectID:       1,
 				TargetURL:       "http://localhost",
@@ -120,7 +121,7 @@ func TestGetInterestingFinding(t *testing.T) {
 			},
 			finding: &finding.FindingForUpsert{
 				Description:      "to_s",
-				DataSource:       "diagnosis:wpscan",
+				DataSource:       common.DataSourceNameWPScan,
 				DataSourceId:     generateDataSourceID("interesting_findings_to_s"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
@@ -141,7 +142,7 @@ func TestGetInterestingFinding(t *testing.T) {
 				References:        map[string]interface{}{"key": "val"},
 			},
 			message: &message.WpscanQueueMessage{
-				DataSource:      "diagnosis:wpscan",
+				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
 				ProjectID:       1,
 				TargetURL:       "http://localhost",
@@ -150,7 +151,7 @@ func TestGetInterestingFinding(t *testing.T) {
 			},
 			finding: &finding.FindingForUpsert{
 				Description:      "readme",
-				DataSource:       "diagnosis:wpscan",
+				DataSource:       common.DataSourceNameWPScan,
 				DataSourceId:     generateDataSourceID("interesting_findings_readme"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
@@ -161,7 +162,7 @@ func TestGetInterestingFinding(t *testing.T) {
 			recommend: &finding.PutRecommendRequest{
 				ProjectId:  1,
 				FindingId:  0,
-				DataSource: "diagnosis:wpscan",
+				DataSource: common.DataSourceNameWPScan,
 				Type:       "readme.html",
 				Risk: `Readme.html exists
 	- Basic information such as version can be identified, which may provide useful information to the attacker.`,
@@ -205,7 +206,7 @@ func TestGetVersionFinding(t *testing.T) {
 				Vulnerabilities:   []vulnerability{{}},
 			},
 			message: &message.WpscanQueueMessage{
-				DataSource:      "diagnosis:wpscan",
+				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
 				ProjectID:       1,
 				TargetURL:       "http://localhost",
@@ -214,7 +215,7 @@ func TestGetVersionFinding(t *testing.T) {
 			},
 			finding: &finding.FindingForUpsert{
 				Description:      "WordPress version num identified",
-				DataSource:       "diagnosis:wpscan",
+				DataSource:       common.DataSourceNameWPScan,
 				DataSourceId:     generateDataSourceID("version_http://localhost"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
@@ -234,7 +235,7 @@ func TestGetVersionFinding(t *testing.T) {
 				Vulnerabilities:   []vulnerability{{}},
 			},
 			message: &message.WpscanQueueMessage{
-				DataSource:      "diagnosis:wpscan",
+				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
 				ProjectID:       1,
 				TargetURL:       "http://localhost",
@@ -243,7 +244,7 @@ func TestGetVersionFinding(t *testing.T) {
 			},
 			finding: &finding.FindingForUpsert{
 				Description:      "WordPress version num identified (Insecure)",
-				DataSource:       "diagnosis:wpscan",
+				DataSource:       common.DataSourceNameWPScan,
 				DataSourceId:     generateDataSourceID("version_http://localhost"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
@@ -254,7 +255,7 @@ func TestGetVersionFinding(t *testing.T) {
 			recommend: &finding.PutRecommendRequest{
 				ProjectId:  1,
 				FindingId:  0,
-				DataSource: "diagnosis:wpscan",
+				DataSource: common.DataSourceNameWPScan,
 				Type:       typeVersionInsecure,
 				Risk: `WordPress Insecure Version
 	- WordPress is not up to date and not secure. 
@@ -302,7 +303,7 @@ func TestGetAccessFinding(t *testing.T) {
 				IsAccess: false,
 			},
 			message: &message.WpscanQueueMessage{
-				DataSource:      "diagnosis:wpscan",
+				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
 				ProjectID:       1,
 				TargetURL:       "http://localhost",
@@ -311,7 +312,7 @@ func TestGetAccessFinding(t *testing.T) {
 			},
 			finding: &finding.FindingForUpsert{
 				Description:      "WordPress login page is closed.",
-				DataSource:       "diagnosis:wpscan",
+				DataSource:       common.DataSourceNameWPScan,
 				DataSourceId:     generateDataSourceID("Accesible_target"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
@@ -332,7 +333,7 @@ func TestGetAccessFinding(t *testing.T) {
 				IsAccess: true,
 			},
 			message: &message.WpscanQueueMessage{
-				DataSource:      "diagnosis:wpscan",
+				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
 				ProjectID:       1,
 				TargetURL:       "http://localhost",
@@ -341,7 +342,7 @@ func TestGetAccessFinding(t *testing.T) {
 			},
 			finding: &finding.FindingForUpsert{
 				Description:      "WordPress login page is opened.",
-				DataSource:       "diagnosis:wpscan",
+				DataSource:       common.DataSourceNameWPScan,
 				DataSourceId:     generateDataSourceID("Accesible_target"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
@@ -352,7 +353,7 @@ func TestGetAccessFinding(t *testing.T) {
 			recommend: &finding.PutRecommendRequest{
 				ProjectId:  1,
 				FindingId:  0,
-				DataSource: "diagnosis:wpscan",
+				DataSource: common.DataSourceNameWPScan,
 				Type:       typeLoginOpened,
 				Risk: `Login page is opened
 	- If weak passwords are used or usernames are identifiable, an attack may gain access to restricted content.`,
