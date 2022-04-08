@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ca-risken/common/pkg/logging"
 	"github.com/vikyd/zero"
 )
 
@@ -23,6 +24,7 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 	now := time.Now().UnixNano()
 	filePath := fmt.Sprintf("%s/%v_%v.json", w.ResultPath, wpscanSettingID, now)
 	args := []string{"--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath}
+	isUseAPIKey := false
 	if options.Force {
 		args = append(args, "--force")
 	}
@@ -33,6 +35,7 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 		args = append(args, "--wp-content-dir", options.WpContentDir)
 	}
 	if !zero.IsZeroVal(w.WpscanVulndbApikey) {
+		isUseAPIKey = true
 		argsWithApiKey := append(args, "--api-token", w.WpscanVulndbApikey)
 		cmd := exec.Command("wpscan", argsWithApiKey...)
 		err := execWPScan(cmd)
@@ -63,6 +66,13 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 	if err := json.Unmarshal(bytes, &wpscanResult); err != nil {
 		appLogger.Errorf("Failed to parse scan results. error: %v", err)
 		return nil, err
+	}
+
+	if isUseAPIKey {
+		remain := map[string]interface{}{
+			"api_remaining": wpscanResult.VulnAPI.RequestRemaining,
+		}
+		appLogger.WithItems(logging.InfoLevel, remain, "Executed WPScan VulnAPI")
 	}
 	wpscanResult.AccessList, _ = checkOpen(target)
 	return &wpscanResult, nil
@@ -149,6 +159,8 @@ type wpscanResult struct {
 	Maintheme           mainTheme              `json:"main_theme"`
 	Users               map[string]interface{} `json:"users"`
 	AccessList          []checkAccess
+	Plugins             map[string]plugin `json:"plugins"`
+	VulnAPI             vulnAPI           `json:"vuln_api"`
 }
 
 type interestingFindings struct {
@@ -176,6 +188,21 @@ type vulnerability struct {
 	FixedIn    string                 `json:"fixed_in"`
 	References map[string]interface{} `json:"references"`
 	URL        []string               `json:"url"`
+}
+
+type plugin struct {
+	Slug              string          `json:"slug"`
+	LatestVersion     string          `json:"latest_version"`
+	Location          string          `json:"location"`
+	InterstingEntries []string        `json:"intersting_entries"`
+	Vulnerabilities   []vulnerability `json:"vulnerabilities"`
+	Version           version         `json:"version"`
+}
+
+type vulnAPI struct {
+	Plan                   string `json:"plan"`
+	RequestsDoneDuringScan uint32 `json:"requests_done_during_scan"`
+	RequestRemaining       uint32 `json:"requests_remaining"`
 }
 
 type checkAccess struct {
