@@ -8,12 +8,14 @@ import (
 	"github.com/ca-risken/common/pkg/profiler"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	mimosaxray "github.com/ca-risken/common/pkg/xray"
+	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/gassara-kys/envconfig"
 )
 
 const (
 	nameSpace   = "diagnosis"
 	serviceName = "wpscan"
+	settingURL  = "https://docs.security-hub.jp/diagnosis/wpscan_datasource/"
 )
 
 func getFullServiceName() string {
@@ -86,6 +88,20 @@ func main() {
 	appLogger.Info("Start Alert Client")
 	handler.diagnosisClient = newDiagnosisClient(conf.DiagnosisSvcAddr)
 	appLogger.Info("Start Diagnosis Client")
+	f, err := mimosasqs.NewFinalizer(common.DataSourceNameWPScan, settingURL, conf.FindingSvcAddr, &mimosasqs.DataSourceRecommnend{
+		ScanFailureRisk: fmt.Sprintf("Failed to scan %s, So you are not gathering the latest security threat information.", common.DataSourceNameWPScan),
+		ScanFailureRecommendation: fmt.Sprintf(`Please review the following items and rescan,
+		- Ensure the error message of the DataSource.
+		- Ensure the network is reachable to the target host.
+		- Refer to the documentation to make sure you have not omitted any of the steps you have set up.
+		- %s
+		- And please also check the FAQ page.
+		- https://docs.security-hub.jp/contact/faq/#wpscan
+		- If this does not resolve the problem, or if you suspect that the problem is server-side, please contact the system administrators.`, settingURL),
+	})
+	if err != nil {
+		appLogger.Fatalf("Failed to create Finalizer, err=%+v", err)
+	}
 
 	sqsConf := &SQSConfig{
 		AWSRegion:                conf.AWSRegion,
@@ -101,5 +117,6 @@ func main() {
 		mimosasqs.InitializeHandler(
 			mimosasqs.RetryableErrorHandler(
 				mimosasqs.StatusLoggingHandler(appLogger,
-					mimosaxray.MessageTracingHandler(conf.EnvName, getFullServiceName(), handler)))))
+					mimosaxray.MessageTracingHandler(conf.EnvName, getFullServiceName(),
+						f.FinalizeHandler(handler))))))
 }

@@ -29,6 +29,7 @@ require (
 	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/ca-risken/common/pkg/sqs v0.0.0-20220113015330-0e8462d52b5b // indirect
+	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220407095309-105129776296 // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.1.0 // indirect
 	github.com/gassara-kys/go-sqs-poller/worker/v4 v4.0.0-20210215110542-0be358599a2f // indirect
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
