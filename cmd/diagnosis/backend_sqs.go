@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/aws/aws-xray-sdk-go/xray"
+	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/ca-risken/diagnosis/pkg/message"
 )
 
@@ -49,9 +50,9 @@ func newSQSClient(conf *SQSConfig) *sqsClient {
 		svc: session,
 		queueURLMap: map[string]string{
 			// queueURLMap:
-			"diagnosis:wpscan":           conf.DiagnosisWpscanQueueURL,
-			"diagnosis:portscan":         conf.DiagnosisPortscanQueueURL,
-			"diagnosis:application-scan": conf.DiagnosisApplicationScanQueueURL,
+			common.DataSourceNameWPScan:          conf.DiagnosisWpscanQueueURL,
+			common.DataSourceNamePortScan:        conf.DiagnosisPortscanQueueURL,
+			common.DataSourceNameApplicationScan: conf.DiagnosisApplicationScanQueueURL,
 		},
 	}
 }

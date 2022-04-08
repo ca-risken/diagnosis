@@ -7,18 +7,18 @@ require (
 	github.com/aws/aws-xray-sdk-go v1.6.0
 	github.com/ca-risken/common/pkg/logging v0.0.0-20220113015330-0e8462d52b5b
 	github.com/ca-risken/common/pkg/profiler v0.0.0-20220304031727-c94e2c463b27
-	github.com/ca-risken/common/pkg/sqs v0.0.0-20220113015330-0e8462d52b5b
+	github.com/ca-risken/common/pkg/sqs v0.0.0-20220405112424-88b993567364
 	github.com/ca-risken/common/pkg/xray v0.0.0-20211118071101-9855266b50a1
 	github.com/ca-risken/core/proto/alert v0.0.0-20211208021136-f6b597adc160
-	github.com/ca-risken/core/proto/finding v0.0.0-20211208021136-f6b597adc160
-	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220106110952-bf1d72fce415
+	github.com/ca-risken/core/proto/finding v0.0.0-20220309052852-c058b4e5cb84
+	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220407095309-105129776296
 	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210928110806-54123bffb7e9
 	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20210928110806-54123bffb7e9
 	github.com/gassara-kys/envconfig v1.4.4
 	github.com/gassara-kys/go-sqs-poller/worker/v4 v4.0.0-20210215110542-0be358599a2f
 	github.com/mattn/godown v0.0.1
 	github.com/vikyd/zero v0.0.0-20190921142904-0f738d0bc858
-	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc v1.45.0
 )
 
 require (

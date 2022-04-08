@@ -78,7 +78,7 @@ func makeRecommend(projectID uint32, findingID uint64, recommendType, risk, reco
 	return &finding.PutRecommendRequest{
 		ProjectId:      projectID,
 		FindingId:      findingID,
-		DataSource:     "diagnosis:wpscan",
+		DataSource:     common.DataSourceNameWPScan,
 		Type:           recommendType,
 		Risk:           risk,
 		Recommendation: recommendation,

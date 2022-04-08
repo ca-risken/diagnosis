@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
@@ -211,7 +212,7 @@ func getScanType(s string) diagnosis.ApplicationScanType {
 
 func makeApplicationScanMessage(projectID, applicationScanID uint32, name, scanType string) (*message.ApplicationScanQueueMessage, error) {
 	msg := &message.ApplicationScanQueueMessage{
-		DataSource:          "diagnosis:application-scan",
+		DataSource:          common.DataSourceNameApplicationScan,
 		ApplicationScanID:   applicationScanID,
 		ProjectID:           projectID,
 		Name:                name,

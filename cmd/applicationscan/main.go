@@ -8,12 +8,14 @@ import (
 	"github.com/ca-risken/common/pkg/profiler"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	mimosaxray "github.com/ca-risken/common/pkg/xray"
+	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/gassara-kys/envconfig"
 )
 
 const (
 	nameSpace   = "diagnosis"
 	serviceName = "applicationscan"
+	settingURL  = "https://docs.security-hub.jp/diagnosis/applicationscan_datasource/"
 )
 
 func getFullServiceName() string {
@@ -93,6 +95,10 @@ func main() {
 	appLogger.Info("Start Alert Client")
 	handler.diagnosisClient = newDiagnosisClient(conf.DiagnosisSvcAddr)
 	appLogger.Info("Start Diagnosis Client")
+	f, err := mimosasqs.NewFinalizer(common.DataSourceNameApplicationScan, settingURL, conf.FindingSvcAddr, nil)
+	if err != nil {
+		appLogger.Fatalf("Failed to create Finalizer, err=%+v", err)
+	}
 
 	sqsConf := &SQSConfig{
 		Debug:                             conf.Debug,
@@ -109,5 +115,6 @@ func main() {
 		mimosasqs.InitializeHandler(
 			mimosasqs.RetryableErrorHandler(
 				mimosasqs.StatusLoggingHandler(appLogger,
-					mimosaxray.MessageTracingHandler(conf.EnvName, getFullServiceName(), handler)))))
+					mimosaxray.MessageTracingHandler(conf.EnvName, getFullServiceName(),
+						f.FinalizeHandler(handler))))))
 }

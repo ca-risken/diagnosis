@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/ca-risken/diagnosis/pkg/common"
 	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/ca-risken/diagnosis/pkg/model"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
@@ -110,7 +111,7 @@ func convertWpscanSetting(data *model.WpscanSetting) *diagnosis.WpscanSetting {
 
 func makeWpscanMessage(ProjectID, SettingID uint32, targetURL, options string) (*message.WpscanQueueMessage, error) {
 	msg := &message.WpscanQueueMessage{
-		DataSource:      "diagnosis:wpscan",
+		DataSource:      common.DataSourceNameWPScan,
 		WpscanSettingID: SettingID,
 		ProjectID:       ProjectID,
 		TargetURL:       targetURL,
