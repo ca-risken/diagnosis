@@ -76,27 +76,12 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		appLogger.Errorf("Failed to generate API Key, error: %v", err)
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
+
 	_, segment := xray.BeginSubsegment(ctx, "runApplicationScan")
-	pID, err := cli.executeZap(apiKey)
-	if err != nil {
-		appLogger.Errorf("Failed to execute ZAP, error: %v", err)
-		return s.handleErrorWithUpdateStatus(ctx, msg, err)
-	}
-	var scanResult *zapResult
-	switch strings.ToUpper(msg.ApplicationScanType) {
-	case "BASIC":
-		scanResult, err = cli.handleBasicScan(setting, msg.ApplicationScanID, msg.ProjectID, msg.Name)
-	default:
-		err = errors.New("ScanType is not configured.")
-	}
-	errTerminate := cli.terminateZap(pID)
-	if errTerminate != nil {
-		appLogger.Errorf("Failed to terminate Zap, error: %v", errTerminate)
-		return s.handleErrorWithUpdateStatus(ctx, msg, errTerminate)
-	}
+	scanResult, err := runApplicationScan(cli, msg, setting, apiKey)
 	segment.Close(err)
 	if err != nil {
-		appLogger.Errorf("Failed to exec basicScan, error: %v", err)
+		appLogger.Errorf("Failed to run application scan, error: %v", err)
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
@@ -133,6 +118,30 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	}
 	return nil
 
+}
+
+func runApplicationScan(cli applicationScanAPI, msg *message.ApplicationScanQueueMessage, setting *diagnosis.ApplicationScanBasicSetting, apiKey string) (*zapResult, error) {
+	if strings.ToUpper(msg.ApplicationScanType) != "BASIC" {
+		return nil, errors.New("ScanType is not configured.")
+	}
+
+	pID, err := cli.executeZap(apiKey)
+	if err != nil {
+		appLogger.Errorf("Failed to execute ZAP, error: %v", err)
+		return nil, err
+	}
+	err = cli.terminateZap(pID)
+	if err != nil {
+		appLogger.Errorf("Failed to terminate Zap, error: %v", err)
+		return nil, err
+	}
+	var scanResult *zapResult
+	scanResult, err = cli.handleBasicScan(setting, msg.ApplicationScanID, msg.ProjectID, msg.Name)
+	if err != nil {
+		appLogger.Errorf("Failed to exec basicScan, error: %v", err)
+		return nil, err
+	}
+	return scanResult, nil
 }
 
 func parseMessage(msg string) (*message.ApplicationScanQueueMessage, error) {
