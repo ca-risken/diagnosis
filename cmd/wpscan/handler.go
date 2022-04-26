@@ -8,13 +8,13 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
-	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/ca-risken/common/pkg/logging"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 type sqsHandler struct {
@@ -46,9 +46,9 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 	appLogger.Infof("start Scan, RequestID=%s", requestID)
 
 	// Run WPScan
-	_, segment := xray.BeginSubsegment(ctx, "runWPScan")
+	tspan, _ := tracer.StartSpanFromContext(ctx, "runWPScan")
 	wpscanResult, err := s.wpscanConfig.run(msg.TargetURL, msg.WpscanSettingID, options)
-	segment.Close(err)
+	tspan.Finish(tracer.WithError(err))
 	if err != nil {
 		appLogger.Errorf("Failed exec WPScan, error: %v", err)
 		_ = s.putWpscanSetting(ctx, msg.WpscanSettingID, msg.ProjectID, false, "Failed exec WPScan Ask the system administrator. ")
