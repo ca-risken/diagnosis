@@ -436,8 +436,9 @@ func TestGetPluginFinding(t *testing.T) {
 func TestGetAccessFinding(t *testing.T) {
 	cases := []struct {
 		name        string
-		access      checkAccess
+		access      []*checkAccess
 		isUserFound bool
+		dataString  string
 		message     *message.WpscanQueueMessage
 		finding     *finding.FindingForUpsert
 		recommend   *finding.PutRecommendRequest
@@ -445,13 +446,13 @@ func TestGetAccessFinding(t *testing.T) {
 	}{
 		{
 			name: "Closed no recommend",
-			access: checkAccess{
+			access: []*checkAccess{{
 				Target:   "target",
 				Goal:     "goal",
 				Method:   "GET",
 				Type:     "Login",
 				IsAccess: false,
-			},
+			}},
 			message: &message.WpscanQueueMessage{
 				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
@@ -463,25 +464,25 @@ func TestGetAccessFinding(t *testing.T) {
 			finding: &finding.FindingForUpsert{
 				Description:      "WordPress login page is closed.",
 				DataSource:       common.DataSourceNameWPScan,
-				DataSourceId:     generateDataSourceID("Accesible_target"),
+				DataSourceId:     generateDataSourceID("Accesible_http://localhost"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
 				OriginalScore:    1.0,
 				OriginalMaxScore: 10.0,
-				Data:             "",
+				Data:             "[{\"is_accessible\":false,\"url\":\"target\"}]",
 			},
 			recommend: nil,
 			wantErr:   false,
 		},
 		{
 			name: "Open exists recommend",
-			access: checkAccess{
+			access: []*checkAccess{{
 				Target:   "target",
 				Goal:     "goal",
 				Method:   "GET",
 				Type:     "Login",
 				IsAccess: true,
-			},
+			}},
 			message: &message.WpscanQueueMessage{
 				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
@@ -493,12 +494,12 @@ func TestGetAccessFinding(t *testing.T) {
 			finding: &finding.FindingForUpsert{
 				Description:      "WordPress login page is opened.",
 				DataSource:       common.DataSourceNameWPScan,
-				DataSourceId:     generateDataSourceID("Accesible_target"),
+				DataSourceId:     generateDataSourceID("Accesible_http://localhost"),
 				ResourceName:     "http://localhost",
 				ProjectId:        1,
 				OriginalScore:    8.0,
 				OriginalMaxScore: 10.0,
-				Data:             "",
+				Data:             "[{\"is_accessible\":true,\"url\":\"target\"}]",
 			},
 			recommend: &finding.PutRecommendRequest{
 				ProjectId:  1,
@@ -513,10 +514,6 @@ func TestGetAccessFinding(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			data, _ := json.Marshal(map[string]interface{}{"data": map[string]string{
-				"url": c.access.Target,
-			}})
-			c.finding.Data = string(data)
 			f, r, e := getAccessFinding(c.access, c.isUserFound, c.message)
 			if !reflect.DeepEqual(c.finding, f) {
 				t.Fatalf("Unexpected finding:\n want=%v,\n got=%v", c.finding, f)
