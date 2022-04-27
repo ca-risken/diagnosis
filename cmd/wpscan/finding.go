@@ -166,12 +166,14 @@ func getAccessFinding(access []checkAccess, isUserFound bool, message *message.W
 	var findingInf wpscanFindingInformation
 	var ok bool
 
-	if !isFoundAccesibleURL {
-		findingInf, ok = wpscanFindingMap[typeLoginClosed]
-	} else if isUserFound {
-		findingInf, ok = wpscanFindingMap[typeLoginOpenedUserFound]
+	if isFoundAccesibleURL {
+		if isUserFound {
+			findingInf, ok = wpscanFindingMap[typeLoginOpenedUserFound]
+		} else {
+			findingInf, ok = wpscanFindingMap[typeLoginOpened]
+		}
 	} else {
-		findingInf, ok = wpscanFindingMap[typeLoginOpened]
+		findingInf, ok = wpscanFindingMap[typeLoginClosed]
 	}
 
 	if !ok {
