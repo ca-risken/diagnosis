@@ -122,23 +122,25 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 
 func runApplicationScan(cli applicationScanAPI, msg *message.ApplicationScanQueueMessage, setting *diagnosis.ApplicationScanBasicSetting, apiKey string) (*zapResult, error) {
 	if strings.ToUpper(msg.ApplicationScanType) != "BASIC" {
-		return nil, errors.New("ScanType is not configured.")
+		return nil, errors.New("ScanType is not configured")
 	}
 
 	pID, err := cli.executeZap(apiKey)
 	if err != nil {
-		appLogger.Errorf("Failed to execute ZAP, error: %v", err)
+		appLogger.Errorf("failed to execute ZAP, error: %v", err)
 		return nil, err
 	}
-	err = cli.terminateZap(pID)
-	if err != nil {
-		appLogger.Errorf("Failed to terminate Zap, error: %v", err)
-		return nil, err
-	}
+	defer func(int) {
+		err = cli.terminateZap(pID)
+		if err != nil {
+			appLogger.Warnf("failed to terminate Zap, error: %v", err)
+		}
+	}(pID)
+
 	var scanResult *zapResult
 	scanResult, err = cli.handleBasicScan(setting, msg.ApplicationScanID, msg.ProjectID, msg.Name)
 	if err != nil {
-		appLogger.Errorf("Failed to exec basicScan, error: %v", err)
+		appLogger.Errorf("failed to exec basicScan, error: %v", err)
 		return nil, err
 	}
 	return scanResult, nil
