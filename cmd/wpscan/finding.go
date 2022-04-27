@@ -146,7 +146,7 @@ func getVersionFinding(wpScanVersion version, message *message.WpscanQueueMessag
 	return f, r, nil
 }
 
-func getAccessFinding(access []checkAccess, isUserFound bool, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
+func getAccessFinding(access []*checkAccess, isUserFound bool, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
 	results := []map[string]interface{}{}
 	isFoundAccesibleURL := false
 	for _, a := range access {

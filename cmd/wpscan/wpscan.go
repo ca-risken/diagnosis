@@ -101,9 +101,9 @@ func execWPScan(cmd *exec.Cmd) error {
 	return nil
 }
 
-func checkOpen(wpURL string) ([]checkAccess, error) {
+func checkOpen(wpURL string) ([]*checkAccess, error) {
 	targetList := getAccessList(wpURL)
-	var retList []checkAccess
+	var retList []*checkAccess
 	for _, target := range targetList {
 		goal := target.Goal
 		if zero.IsZeroVal(target.Goal) {
@@ -158,7 +158,7 @@ type wpscanResult struct {
 	Version             version                `json:"version"`
 	Maintheme           mainTheme              `json:"main_theme"`
 	Users               map[string]interface{} `json:"users"`
-	AccessList          []checkAccess
+	AccessList          []*checkAccess
 	Plugins             map[string]plugin `json:"plugins"`
 	VulnAPI             vulnAPI           `json:"vuln_api"`
 }
@@ -213,9 +213,9 @@ type checkAccess struct {
 	IsAccess bool
 }
 
-func getAccessList(wpURL string) []checkAccess {
+func getAccessList(wpURL string) []*checkAccess {
 	wpURL = strings.TrimSuffix(wpURL, "/")
-	checkList := []checkAccess{
+	checkList := []*checkAccess{
 		{Target: wpURL + "/wp-admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
 		{Target: wpURL + "/admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
 		{Target: wpURL + "/wp-login.php", Goal: "", Method: "GET", Type: "Login"},
