@@ -47,16 +47,13 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 			return err
 		}
 	}
-	for _, access := range wpscanResult.AccessList {
-		findingAccess, recommendAccess, err := getAccessFinding(access, isUserFound, message)
-		if err != nil {
-			return err
-		}
-		err = s.putFinding(ctx, findingAccess, recommendAccess, message.TargetURL)
-		if err != nil {
-			return err
-		}
-
+	findingAccess, recommendAccess, err := getAccessFinding(wpscanResult.AccessList, isUserFound, message)
+	if err != nil {
+		return err
+	}
+	err = s.putFinding(ctx, findingAccess, recommendAccess, message.TargetURL)
+	if err != nil {
+		return err
 	}
 
 	for _, p := range wpscanResult.Plugins {
@@ -149,32 +146,39 @@ func getVersionFinding(wpScanVersion version, message *message.WpscanQueueMessag
 	return f, r, nil
 }
 
-func getAccessFinding(access checkAccess, isUserFound bool, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
-	data, err := json.Marshal(map[string]interface{}{"data": map[string]string{
-		"url": access.Target,
-	}})
+func getAccessFinding(access []checkAccess, isUserFound bool, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
+	results := []map[string]interface{}{}
+	isFoundAccesibleURL := false
+	for _, a := range access {
+		results = append(results, map[string]interface{}{
+			"url":           a.Target,
+			"is_accessible": a.IsAccess,
+		})
+		if a.IsAccess {
+			isFoundAccesibleURL = true
+		}
+	}
+
+	data, err := json.Marshal(results)
 	if err != nil {
 		return nil, nil, err
 	}
 	var findingInf wpscanFindingInformation
 	var ok bool
-	switch access.Type {
-	case "Login":
-		if !access.IsAccess {
-			findingInf, ok = wpscanFindingMap[typeLoginClosed]
-		} else if isUserFound {
-			findingInf, ok = wpscanFindingMap[typeLoginOpenedUserFound]
-		} else {
-			findingInf, ok = wpscanFindingMap[typeLoginOpened]
-		}
-	default:
-		return nil, nil, nil
+
+	if !isFoundAccesibleURL {
+		findingInf, ok = wpscanFindingMap[typeLoginClosed]
+	} else if isUserFound {
+		findingInf, ok = wpscanFindingMap[typeLoginOpenedUserFound]
+	} else {
+		findingInf, ok = wpscanFindingMap[typeLoginOpened]
 	}
+
 	if !ok {
-		appLogger.Warnf("Failed to get access information, Unknown access.Type=%v", access.Type)
+		appLogger.Warnf("Failed to get access information, Unknown isFoundAccesibleURL=%v, isUserFound=%v", isFoundAccesibleURL, isUserFound)
 		return nil, nil, nil
 	}
-	f := makeFinding(findingInf.Description, fmt.Sprintf("Accesible_%v", access.Target), findingInf.Score, &data, message)
+	f := makeFinding(findingInf.Description, fmt.Sprintf("Accesible_%v", message.TargetURL), findingInf.Score, &data, message)
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
 		return f, nil, nil
 	}
