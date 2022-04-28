@@ -12,13 +12,13 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
-	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/ca-risken/common/pkg/logging"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/ca-risken/diagnosis/proto/diagnosis"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 type sqsHandler struct {
@@ -77,9 +77,9 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)
 	}
 
-	_, segment := xray.BeginSubsegment(ctx, "runApplicationScan")
+	tspan, _ := tracer.StartSpanFromContext(ctx, "runApplicationScan")
 	scanResult, err := runApplicationScan(cli, msg, setting, apiKey)
-	segment.Close(err)
+	tspan.Finish(tracer.WithError(err))
 	if err != nil {
 		appLogger.Errorf("Failed to run application scan, error: %v", err)
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)

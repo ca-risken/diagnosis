@@ -8,13 +8,13 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
-	"github.com/aws/aws-xray-sdk-go/xray"
 	"github.com/ca-risken/common/pkg/logging"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
 	"github.com/ca-risken/diagnosis/pkg/message"
 	diagnosisClient "github.com/ca-risken/diagnosis/proto/diagnosis"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 type sqsHandler struct {
@@ -48,9 +48,9 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *sqs.Message) err
 
 	portscan.makeTargets(msg.Target)
 
-	xctx, segment := xray.BeginSubsegment(ctx, "getResult")
-	nmapResults, err := portscan.getResult(xctx, msg)
-	segment.Close(err)
+	tspan, tctx := tracer.StartSpanFromContext(ctx, "getResult")
+	nmapResults, err := portscan.getResult(tctx, msg)
+	tspan.Finish(tracer.WithError(err))
 	if err != nil {
 		appLogger.Warnf("Failed to get findings to Diagnosis Portscan: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)
