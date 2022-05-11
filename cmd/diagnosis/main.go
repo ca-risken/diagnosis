@@ -55,7 +55,7 @@ type AppConfig struct {
 	DiagnosisApplicationScanQueueURL string `split_words:"true" required:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-applicationscan"`
 
 	// grpc
-	ProjectSvcAddr string `required:"true" split_words:"true" default:"project.core.svc.cluster.local:8003"`
+	CoreAddr string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
 }
 
 func main() {
@@ -115,7 +115,7 @@ func main() {
 		DiagnosisApplicationScanQueueURL: appConf.DiagnosisApplicationScanQueueURL,
 	}
 	service.sqs = newSQSClient(sqsConf)
-	service.projectClient = newProjectClient(appConf.ProjectSvcAddr)
+	service.projectClient = newProjectClient(appConf.CoreAddr)
 
 	l, err := net.Listen("tcp", fmt.Sprintf(":%s", appConf.Port))
 	if err != nil {

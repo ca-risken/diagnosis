@@ -39,8 +39,7 @@ type AppConfig struct {
 	WaitTimeSecond                    int64  `split_words:"true" default:"20"`
 
 	// grpc
-	FindingSvcAddr   string `required:"true" split_words:"true" default:"finding.core.svc.cluster.local:8001"`
-	AlertSvcAddr     string `required:"true" split_words:"true" default:"alert.core.svc.cluster.local:8004"`
+	CoreAddr   string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
 	DiagnosisSvcAddr string `required:"true" split_words:"true" default:"diagnosis.diagnosis.svc.cluster.local:19001"`
 
 	// zap
@@ -92,13 +91,13 @@ func main() {
 		zapApiKeyName:   conf.ZapApiKeyName,
 		zapApiKeyHeader: conf.ZapApiKeyHeader,
 	}
-	handler.findingClient = newFindingClient(conf.FindingSvcAddr)
+	handler.findingClient = newFindingClient(conf.CoreAddr)
 	appLogger.Info("Start Finding Client")
-	handler.alertClient = newAlertClient(conf.AlertSvcAddr)
+	handler.alertClient = newAlertClient(conf.CoreAddr)
 	appLogger.Info("Start Alert Client")
 	handler.diagnosisClient = newDiagnosisClient(conf.DiagnosisSvcAddr)
 	appLogger.Info("Start Diagnosis Client")
-	f, err := mimosasqs.NewFinalizer(common.DataSourceNameApplicationScan, settingURL, conf.FindingSvcAddr, nil)
+	f, err := mimosasqs.NewFinalizer(common.DataSourceNameApplicationScan, settingURL, conf.CoreAddr, nil)
 	if err != nil {
 		appLogger.Fatalf("Failed to create Finalizer, err=%+v", err)
 	}

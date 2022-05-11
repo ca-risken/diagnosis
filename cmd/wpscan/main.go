@@ -36,8 +36,7 @@ type AppConfig struct {
 	MaxNumberOfMessage       int64  `split_words:"true" default:"10"`
 	WaitTimeSecond           int64  `split_words:"true" default:"20"`
 	// grpc
-	FindingSvcAddr   string `required:"true" split_words:"true" default:"finding.core.svc.cluster.local:8001"`
-	AlertSvcAddr     string `required:"true" split_words:"true" default:"alert.core.svc.cluster.local:8004"`
+	CoreAddr   string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
 	DiagnosisSvcAddr string `required:"true" split_words:"true" default:"diagnosis.diagnosis.svc.cluster.local:19001"`
 	// wpscan
 	ResultPath         string `split_words:"true" required:"true" default:"/tmp"`
@@ -86,13 +85,13 @@ func main() {
 		WpscanVulndbApikey: conf.WpscanVulndbApikey,
 	}
 	appLogger.Info("Start Wpscan Client")
-	handler.findingClient = newFindingClient(conf.FindingSvcAddr)
+	handler.findingClient = newFindingClient(conf.CoreAddr)
 	appLogger.Info("Start Finding Client")
-	handler.alertClient = newAlertClient(conf.AlertSvcAddr)
+	handler.alertClient = newAlertClient(conf.CoreAddr)
 	appLogger.Info("Start Alert Client")
 	handler.diagnosisClient = newDiagnosisClient(conf.DiagnosisSvcAddr)
 	appLogger.Info("Start Diagnosis Client")
-	f, err := mimosasqs.NewFinalizer(common.DataSourceNameWPScan, settingURL, conf.FindingSvcAddr, &mimosasqs.DataSourceRecommnend{
+	f, err := mimosasqs.NewFinalizer(common.DataSourceNameWPScan, settingURL, conf.CoreAddr, &mimosasqs.DataSourceRecommnend{
 		ScanFailureRisk: fmt.Sprintf("Failed to scan %s, So you are not gathering the latest security threat information.", common.DataSourceNameWPScan),
 		ScanFailureRecommendation: fmt.Sprintf(`Please review the following items and rescan,
 		- Ensure the error message of the DataSource.
