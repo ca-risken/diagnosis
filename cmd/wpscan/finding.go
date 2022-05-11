@@ -131,7 +131,7 @@ func getVersionFinding(wpScanVersion version, message *message.WpscanQueueMessag
 	findingInf, ok := wpscanFindingMap[findingType]
 	if !ok {
 		appLogger.Warnf("Failed to get finding information, Unknown findingType=%v", findingType)
-		return nil, nil, nil
+		return nil, nil, fmt.Errorf("failed to get access information. findingType=%v", findingType)
 	}
 	data, err := json.Marshal(map[string]version{"data": wpScanVersion})
 	if err != nil {
@@ -177,8 +177,8 @@ func getAccessFinding(access []*checkAccess, isUserFound bool, message *message.
 	}
 
 	if !ok {
-		appLogger.Warnf("Failed to get access information, Unknown isFoundAccesibleURL=%v, isUserFound=%v", isFoundAccesibleURL, isUserFound)
-		return nil, nil, nil
+		appLogger.Warnf("Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", isFoundAccesibleURL, isUserFound)
+		return nil, nil, fmt.Errorf("failed to get access information. isFoundAccesibleURL=%v, isUserFound=%v", isFoundAccesibleURL, isUserFound)
 	}
 	f := makeFinding(findingInf.Description, fmt.Sprintf("Accesible_%v", message.TargetURL), findingInf.Score, &data, message)
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
