@@ -159,52 +159,39 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 
 func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.InvokeScanAllRequest) (*empty.Empty, error) {
 
-	scanDataSource := InvokeScanAllDataSource
 	if !zero.IsZeroVal(req.DiagnosisDataSourceId) {
 		dataSource, err := s.repository.GetDiagnosisDataSource(ctx, 0, req.DiagnosisDataSourceId)
 		if err != nil {
 			return nil, err
 		}
-		switch dataSource.Name {
-		case common.DataSourceNameWPScan:
-			scanDataSource = InvokeScanWPScan
-		case common.DataSourceNamePortScan:
-			scanDataSource = InvokeScanPortScan
-		case common.DataSourceNameApplicationScan:
-			scanDataSource = InvokeScanApplicationScan
+		if dataSource.Name != common.DataSourceNameWPScan {
+			return &empty.Empty{}, nil
 		}
 	}
-	if isInvokeScan(scanDataSource, InvokeScanWPScan) {
-		listWpscanSetting, err := s.repository.ListAllWpscanSetting(ctx)
-		if err != nil {
-			appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
-			return nil, err
-		}
 
-		for _, WpscanSetting := range *listWpscanSetting {
-			if s.skipProject(ctx, WpscanSetting.ProjectID) {
-				continue
-			}
-			if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
-				ProjectId:             WpscanSetting.ProjectID,
-				SettingId:             WpscanSetting.WpscanSettingID,
-				DiagnosisDataSourceId: WpscanSetting.DiagnosisDataSourceID,
-				ScanOnly:              true,
-			}); err != nil {
-				// errorが出ても続行
-				appLogger.Errorf("InvokeScanAll error, error: %v", err)
-			}
+	listWpscanSetting, err := s.repository.ListAllWpscanSetting(ctx)
+	if err != nil {
+		appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
+		return nil, err
+	}
+
+	for _, WpscanSetting := range *listWpscanSetting {
+		// TODO skipProjectをここに展開
+		if s.skipProject(ctx, WpscanSetting.ProjectID) {
+			continue
+		}
+		if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
+			ProjectId:             WpscanSetting.ProjectID,
+			SettingId:             WpscanSetting.WpscanSettingID,
+			DiagnosisDataSourceId: WpscanSetting.DiagnosisDataSourceID,
+			ScanOnly:              true,
+		}); err != nil {
+			appLogger.Errorf("InvokeScanAll error, error: %v", err)
+			return nil, err
 		}
 	}
 
 	return &empty.Empty{}, nil
-}
-
-func isInvokeScan(scanDataSource, targetDataSource string) bool {
-	if scanDataSource == InvokeScanAllDataSource {
-		return true
-	}
-	return scanDataSource == targetDataSource
 }
 
 func (s *DiagnosisService) skipProject(ctx context.Context, projectID uint32) bool {
