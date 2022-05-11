@@ -151,7 +151,6 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 }
 
 func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.InvokeScanAllRequest) (*empty.Empty, error) {
-
 	if !zero.IsZeroVal(req.DiagnosisDataSourceId) {
 		dataSource, err := s.repository.GetDiagnosisDataSource(ctx, 0, req.DiagnosisDataSourceId)
 		if err != nil {
@@ -167,11 +166,10 @@ func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 		appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
 		return nil, err
 	}
-
 	for _, WpscanSetting := range *listWpscanSetting {
 		if resp, err := s.projectClient.IsActive(ctx, &project.IsActiveRequest{ProjectId: WpscanSetting.ProjectID}); err != nil {
 			appLogger.Errorf("Failed to project.IsActive API, err=%+v", err)
-			continue
+			return nil, err
 		} else if !resp.Active {
 			appLogger.Infof("Skip deactive project, project_id=%d", WpscanSetting.ProjectID)
 			continue
