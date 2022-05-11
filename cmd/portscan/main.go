@@ -39,8 +39,7 @@ type AppConfig struct {
 	WaitTimeSecond             int64  `split_words:"true" default:"20"`
 
 	// grpc
-	FindingSvcAddr   string `required:"true" split_words:"true" default:"finding.core.svc.cluster.local:8001"`
-	AlertSvcAddr     string `required:"true" split_words:"true" default:"alert.core.svc.cluster.local:8004"`
+	CoreAddr   string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
 	DiagnosisSvcAddr string `required:"true" split_words:"true" default:"diagnosis.diagnosis.svc.cluster.local:19001"`
 }
 
@@ -81,10 +80,10 @@ func main() {
 	defer tracer.Stop()
 
 	handler := &sqsHandler{}
-	handler.findingClient = newFindingClient(conf.FindingSvcAddr)
-	handler.alertClient = newAlertClient(conf.AlertSvcAddr)
+	handler.findingClient = newFindingClient(conf.CoreAddr)
+	handler.alertClient = newAlertClient(conf.CoreAddr)
 	handler.diagnosisClient = newDiagnosisClient(conf.DiagnosisSvcAddr)
-	f, err := mimosasqs.NewFinalizer(common.DataSourceNamePortScan, settingURL, conf.FindingSvcAddr, nil)
+	f, err := mimosasqs.NewFinalizer(common.DataSourceNamePortScan, settingURL, conf.CoreAddr, nil)
 	if err != nil {
 		appLogger.Fatalf("Failed to create Finalizer, err=%+v", err)
 	}
