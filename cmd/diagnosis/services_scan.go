@@ -15,13 +15,6 @@ import (
 	"github.com/vikyd/zero"
 )
 
-const (
-	InvokeScanAllDataSource   = "all"
-	InvokeScanWPScan          = "wpscan"
-	InvokeScanPortScan        = "portscan"
-	InvokeScanApplicationScan = "applicationscan"
-)
-
 func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
@@ -176,10 +169,14 @@ func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 	}
 
 	for _, WpscanSetting := range *listWpscanSetting {
-		// TODO skipProjectをここに展開
-		if s.skipProject(ctx, WpscanSetting.ProjectID) {
+		if resp, err := s.projectClient.IsActive(ctx, &project.IsActiveRequest{ProjectId: WpscanSetting.ProjectID}); err != nil {
+			appLogger.Errorf("Failed to project.IsActive API, err=%+v", err)
+			continue
+		} else if !resp.Active {
+			appLogger.Infof("Skip deactive project, project_id=%d", WpscanSetting.ProjectID)
 			continue
 		}
+
 		if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
 			ProjectId:             WpscanSetting.ProjectID,
 			SettingId:             WpscanSetting.WpscanSettingID,
@@ -192,17 +189,6 @@ func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 	}
 
 	return &empty.Empty{}, nil
-}
-
-func (s *DiagnosisService) skipProject(ctx context.Context, projectID uint32) bool {
-	if resp, err := s.projectClient.IsActive(ctx, &project.IsActiveRequest{ProjectId: projectID}); err != nil {
-		appLogger.Errorf("Failed to project.IsActive API, err=%+v", err)
-		return true
-	} else if !resp.Active {
-		appLogger.Infof("Skip deactive project, project_id=%d", projectID)
-		return true
-	}
-	return false
 }
 
 func getStatus(s string) diagnosis.Status {
