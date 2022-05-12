@@ -74,7 +74,10 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 		}
 		appLogger.WithItems(logging.InfoLevel, remain, "Executed WPScan VulnAPI")
 	}
-	wpscanResult.AccessList, _ = checkOpen(target)
+	wpscanResult.CheckAccess, err = checkOpen(target)
+	if err != nil {
+		return nil, err
+	}
 	return &wpscanResult, nil
 }
 
@@ -101,22 +104,21 @@ func execWPScan(cmd *exec.Cmd) error {
 	return nil
 }
 
-func checkOpen(wpURL string) ([]*checkAccess, error) {
-	targetList := getAccessList(wpURL)
-	var retList []*checkAccess
-	for _, target := range targetList {
+func checkOpen(wpURL string) (*checkAccess, error) {
+	checkAccess := getAccessList(wpURL)
+	for i, target := range checkAccess.Target {
 		goal := target.Goal
 		if zero.IsZeroVal(target.Goal) {
-			goal = target.Target
+			goal = target.URL
 		}
 		var req *http.Request
 		switch target.Method {
 		case "GET":
-			req, _ = http.NewRequest("GET", target.Target, nil)
+			req, _ = http.NewRequest("GET", target.URL, nil)
 		case "POST":
-			req, _ = http.NewRequest("POST", target.Target, nil)
+			req, _ = http.NewRequest("POST", target.URL, nil)
 		default:
-			continue
+			return nil, fmt.Errorf("invalid checkAccessTarget method: %v", target.Method)
 		}
 
 		client := new(http.Client)
@@ -126,14 +128,11 @@ func checkOpen(wpURL string) ([]*checkAccess, error) {
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode == 200 && strings.Contains(resp.Request.URL.String(), goal) {
-			target.IsAccess = true
-			retList = append(retList, target)
-		} else {
-			target.IsAccess = false
-			retList = append(retList, target)
+			checkAccess.Target[i].IsAccessible = true
+			checkAccess.isFoundAccesibleURL = true
 		}
 	}
-	return retList, nil
+	return checkAccess, nil
 }
 
 func readAndDeleteFile(fileName string) ([]byte, error) {
@@ -158,7 +157,7 @@ type wpscanResult struct {
 	Version             version                `json:"version"`
 	Maintheme           mainTheme              `json:"main_theme"`
 	Users               map[string]interface{} `json:"users"`
-	AccessList          []*checkAccess
+	CheckAccess         *checkAccess
 	Plugins             map[string]plugin `json:"plugins"`
 	VulnAPI             vulnAPI           `json:"vuln_api"`
 }
@@ -206,19 +205,24 @@ type vulnAPI struct {
 }
 
 type checkAccess struct {
-	Target   string
-	Goal     string
-	Method   string
-	Type     string
-	IsAccess bool
+	Target              []checkAccessTarget
+	isFoundAccesibleURL bool
 }
 
-func getAccessList(wpURL string) []*checkAccess {
+type checkAccessTarget struct {
+	URL          string
+	IsAccessible bool
+	Goal         string `json:"-"`
+	Method       string `json:"-"`
+}
+
+func getAccessList(wpURL string) *checkAccess {
 	wpURL = strings.TrimSuffix(wpURL, "/")
-	checkList := []*checkAccess{
-		{Target: wpURL + "/wp-admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
-		{Target: wpURL + "/admin/", Goal: "wp-login.php", Method: "GET", Type: "Login"},
-		{Target: wpURL + "/wp-login.php", Goal: "", Method: "GET", Type: "Login"},
+	checkAccess := &checkAccess{
+		Target: []checkAccessTarget{{URL: wpURL + "/wp-admin/", Goal: "wp-login.php", Method: "GET"},
+			{URL: wpURL + "/admin/", Goal: "wp-login.php", Method: "GET"},
+			{URL: wpURL + "/wp-login.php", Goal: "", Method: "GET"},
+		},
 	}
-	return checkList
+	return checkAccess
 }

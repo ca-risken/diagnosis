@@ -436,7 +436,7 @@ func TestGetPluginFinding(t *testing.T) {
 func TestGetAccessFinding(t *testing.T) {
 	cases := []struct {
 		name        string
-		access      []*checkAccess
+		access      *checkAccess
 		isUserFound bool
 		dataString  string
 		message     *message.WpscanQueueMessage
@@ -446,13 +446,15 @@ func TestGetAccessFinding(t *testing.T) {
 	}{
 		{
 			name: "Closed no recommend",
-			access: []*checkAccess{{
-				Target:   "target",
-				Goal:     "goal",
-				Method:   "GET",
-				Type:     "Login",
-				IsAccess: false,
-			}},
+			access: &checkAccess{
+				Target: []checkAccessTarget{
+					{URL: "target",
+						Goal:         "goal",
+						Method:       "GET",
+						IsAccessible: false,
+					}},
+				isFoundAccesibleURL: false,
+			},
 			message: &message.WpscanQueueMessage{
 				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
@@ -469,20 +471,22 @@ func TestGetAccessFinding(t *testing.T) {
 				ProjectId:        1,
 				OriginalScore:    1.0,
 				OriginalMaxScore: 10.0,
-				Data:             "[{\"is_accessible\":false,\"url\":\"target\"}]",
+				Data:             "{\"Target\":[{\"URL\":\"target\",\"IsAccessible\":false}]}",
 			},
 			recommend: nil,
 			wantErr:   false,
 		},
 		{
 			name: "Open exists recommend",
-			access: []*checkAccess{{
-				Target:   "target",
-				Goal:     "goal",
-				Method:   "GET",
-				Type:     "Login",
-				IsAccess: true,
-			}},
+			access: &checkAccess{
+				Target: []checkAccessTarget{
+					{URL: "target",
+						Goal:         "goal",
+						Method:       "GET",
+						IsAccessible: true,
+					}},
+				isFoundAccesibleURL: true,
+			},
 			message: &message.WpscanQueueMessage{
 				DataSource:      common.DataSourceNameWPScan,
 				WpscanSettingID: 1,
@@ -499,7 +503,7 @@ func TestGetAccessFinding(t *testing.T) {
 				ProjectId:        1,
 				OriginalScore:    8.0,
 				OriginalMaxScore: 10.0,
-				Data:             "[{\"is_accessible\":true,\"url\":\"target\"}]",
+				Data:             "{\"Target\":[{\"URL\":\"target\",\"IsAccessible\":true}]}",
 			},
 			recommend: &finding.PutRecommendRequest{
 				ProjectId:  1,

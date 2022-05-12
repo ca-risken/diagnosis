@@ -47,7 +47,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 			return err
 		}
 	}
-	findingAccess, recommendAccess, err := getAccessFinding(wpscanResult.AccessList, isUserFound, message)
+	findingAccess, recommendAccess, err := getAccessFinding(wpscanResult.CheckAccess, isUserFound, message)
 	if err != nil {
 		return err
 	}
@@ -146,27 +146,16 @@ func getVersionFinding(wpScanVersion version, message *message.WpscanQueueMessag
 	return f, r, nil
 }
 
-func getAccessFinding(access []*checkAccess, isUserFound bool, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
-	results := []map[string]interface{}{}
-	isFoundAccesibleURL := false
-	for _, a := range access {
-		results = append(results, map[string]interface{}{
-			"url":           a.Target,
-			"is_accessible": a.IsAccess,
-		})
-		if a.IsAccess {
-			isFoundAccesibleURL = true
-		}
-	}
+func getAccessFinding(checkAccess *checkAccess, isUserFound bool, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
 
-	data, err := json.Marshal(results)
+	data, err := json.Marshal(checkAccess)
 	if err != nil {
 		return nil, nil, err
 	}
 	var findingInf wpscanFindingInformation
 	var ok bool
 
-	if isFoundAccesibleURL {
+	if checkAccess.isFoundAccesibleURL {
 		if isUserFound {
 			findingInf, ok = wpscanFindingMap[typeLoginOpenedUserFound]
 		} else {
@@ -177,8 +166,8 @@ func getAccessFinding(access []*checkAccess, isUserFound bool, message *message.
 	}
 
 	if !ok {
-		appLogger.Warnf("Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", isFoundAccesibleURL, isUserFound)
-		return nil, nil, fmt.Errorf("failed to get access information. isFoundAccesibleURL=%v, isUserFound=%v", isFoundAccesibleURL, isUserFound)
+		appLogger.Warnf("Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", checkAccess.isFoundAccesibleURL, isUserFound)
+		return nil, nil, fmt.Errorf("failed to get access information. isFoundAccesibleURL=%v, isUserFound=%v", checkAccess.isFoundAccesibleURL, isUserFound)
 	}
 	f := makeFinding(findingInf.Description, fmt.Sprintf("Accesible_%v", message.TargetURL), findingInf.Score, &data, message)
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
