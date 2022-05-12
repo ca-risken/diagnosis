@@ -15,13 +15,6 @@ import (
 	"github.com/vikyd/zero"
 )
 
-const (
-	InvokeScanAllDataSource   = "all"
-	InvokeScanWPScan          = "wpscan"
-	InvokeScanPortScan        = "portscan"
-	InvokeScanApplicationScan = "applicationscan"
-)
-
 func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.InvokeScanRequest) (*diagnosis.InvokeScanResponse, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
@@ -158,64 +151,42 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 }
 
 func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.InvokeScanAllRequest) (*empty.Empty, error) {
-
-	scanDataSource := InvokeScanAllDataSource
 	if !zero.IsZeroVal(req.DiagnosisDataSourceId) {
 		dataSource, err := s.repository.GetDiagnosisDataSource(ctx, 0, req.DiagnosisDataSourceId)
 		if err != nil {
 			return nil, err
 		}
-		switch dataSource.Name {
-		case common.DataSourceNameWPScan:
-			scanDataSource = InvokeScanWPScan
-		case common.DataSourceNamePortScan:
-			scanDataSource = InvokeScanPortScan
-		case common.DataSourceNameApplicationScan:
-			scanDataSource = InvokeScanApplicationScan
+		if dataSource.Name != common.DataSourceNameWPScan {
+			return &empty.Empty{}, nil
 		}
 	}
-	if isInvokeScan(scanDataSource, InvokeScanWPScan) {
-		listWpscanSetting, err := s.repository.ListAllWpscanSetting(ctx)
-		if err != nil {
-			appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
+
+	listWpscanSetting, err := s.repository.ListAllWpscanSetting(ctx)
+	if err != nil {
+		appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
+		return nil, err
+	}
+	for _, WpscanSetting := range *listWpscanSetting {
+		if resp, err := s.projectClient.IsActive(ctx, &project.IsActiveRequest{ProjectId: WpscanSetting.ProjectID}); err != nil {
+			appLogger.Errorf("Failed to project.IsActive API, err=%+v", err)
 			return nil, err
+		} else if !resp.Active {
+			appLogger.Infof("Skip deactive project, project_id=%d", WpscanSetting.ProjectID)
+			continue
 		}
 
-		for _, WpscanSetting := range *listWpscanSetting {
-			if s.skipProject(ctx, WpscanSetting.ProjectID) {
-				continue
-			}
-			if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
-				ProjectId:             WpscanSetting.ProjectID,
-				SettingId:             WpscanSetting.WpscanSettingID,
-				DiagnosisDataSourceId: WpscanSetting.DiagnosisDataSourceID,
-				ScanOnly:              true,
-			}); err != nil {
-				// errorが出ても続行
-				appLogger.Errorf("InvokeScanAll error, error: %v", err)
-			}
+		if _, err := s.InvokeScan(ctx, &diagnosis.InvokeScanRequest{
+			ProjectId:             WpscanSetting.ProjectID,
+			SettingId:             WpscanSetting.WpscanSettingID,
+			DiagnosisDataSourceId: WpscanSetting.DiagnosisDataSourceID,
+			ScanOnly:              true,
+		}); err != nil {
+			appLogger.Errorf("InvokeScanAll error, error: %v", err)
+			return nil, err
 		}
 	}
 
 	return &empty.Empty{}, nil
-}
-
-func isInvokeScan(scanDataSource, targetDataSource string) bool {
-	if scanDataSource == InvokeScanAllDataSource {
-		return true
-	}
-	return scanDataSource == targetDataSource
-}
-
-func (s *DiagnosisService) skipProject(ctx context.Context, projectID uint32) bool {
-	if resp, err := s.projectClient.IsActive(ctx, &project.IsActiveRequest{ProjectId: projectID}); err != nil {
-		appLogger.Errorf("Failed to project.IsActive API, err=%+v", err)
-		return true
-	} else if !resp.Active {
-		appLogger.Infof("Skip deactive project, project_id=%d", projectID)
-		return true
-	}
-	return false
 }
 
 func getStatus(s string) diagnosis.Status {
