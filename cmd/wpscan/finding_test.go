@@ -99,12 +99,11 @@ func TestMakeRecommend(t *testing.T) {
 
 func TestGetInterestingFinding(t *testing.T) {
 	cases := []struct {
-		name      string
-		ie        interestingFindings
-		message   *message.WpscanQueueMessage
-		finding   *finding.FindingForUpsert
-		recommend *finding.PutRecommendRequest
-		wantErr   bool
+		name    string
+		ie      interestingFindings
+		message *message.WpscanQueueMessage
+		finding *finding.FindingForUpsert
+		wantErr bool
 	}{
 		{
 			name: "Score 1.0 no recommend",
@@ -131,10 +130,9 @@ func TestGetInterestingFinding(t *testing.T) {
 				ProjectId:        1,
 				OriginalScore:    1.0,
 				OriginalMaxScore: 10.0,
-				Data:             "",
+				Data:             "{\"data\":{\"url\":\"http://localhost\",\"to_s\":\"to_s\",\"type\":\"type\",\"intersting_entries\":[\"ie\"],\"references\":{\"key\":\"val\"}}}",
 			},
-			recommend: nil,
-			wantErr:   false,
+			wantErr: false,
 		},
 		{
 			name: "Score 6.0 exists recommend",
@@ -161,7 +159,68 @@ func TestGetInterestingFinding(t *testing.T) {
 				ProjectId:        1,
 				OriginalScore:    6.0,
 				OriginalMaxScore: 10.0,
-				Data:             "",
+				Data:             "{\"data\":{\"url\":\"http://localhost\",\"to_s\":\"readme\",\"type\":\"readme\",\"intersting_entries\":[\"readme\"],\"references\":{\"key\":\"val\"}}}",
+			},
+			wantErr: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			f, e := c.ie.getFinding(c.message)
+			if !reflect.DeepEqual(c.finding, f) {
+				t.Fatalf("Unexpected finding: want=%v, got=%v", c.finding, f)
+			}
+			if (c.wantErr && e == nil) || (!c.wantErr && e != nil) {
+				t.Fatalf("Unexpected recommend: wantErr=%v, error=%v", c.wantErr, e)
+			}
+		})
+	}
+}
+
+func TestGetInterestingRecommend(t *testing.T) {
+	cases := []struct {
+		name      string
+		ie        interestingFindings
+		message   *message.WpscanQueueMessage
+		recommend *finding.PutRecommendRequest
+		wantErr   bool
+	}{
+		{
+			name: "Score 1.0 no recommend",
+			ie: interestingFindings{
+				URL:               "http://localhost",
+				ToS:               "to_s",
+				Type:              "type",
+				InterstingEntries: []string{"ie"},
+				References:        map[string]interface{}{"key": "val"},
+			},
+			message: &message.WpscanQueueMessage{
+				DataSource:      common.DataSourceNameWPScan,
+				WpscanSettingID: 1,
+				ProjectID:       1,
+				TargetURL:       "http://localhost",
+				Options:         "",
+				ScanOnly:        true,
+			},
+			recommend: nil,
+			wantErr:   false,
+		},
+		{
+			name: "Score 6.0 exists recommend",
+			ie: interestingFindings{
+				URL:               "http://localhost",
+				ToS:               "readme",
+				Type:              "readme",
+				InterstingEntries: []string{"readme"},
+				References:        map[string]interface{}{"key": "val"},
+			},
+			message: &message.WpscanQueueMessage{
+				DataSource:      common.DataSourceNameWPScan,
+				WpscanSettingID: 1,
+				ProjectID:       1,
+				TargetURL:       "http://localhost",
+				Options:         "",
+				ScanOnly:        true,
 			},
 			recommend: &finding.PutRecommendRequest{
 				ProjectId:  1,
@@ -176,12 +235,7 @@ func TestGetInterestingFinding(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			data, _ := json.Marshal(map[string]interestingFindings{"data": c.ie})
-			c.finding.Data = string(data)
-			f, r, e := getInterestingFinding(c.ie, c.message)
-			if !reflect.DeepEqual(c.finding, f) {
-				t.Fatalf("Unexpected finding: want=%v, got=%v", c.finding, f)
-			}
+			r, e := c.ie.getRecommend(c.message)
 			if !reflect.DeepEqual(c.recommend, r) {
 				t.Fatalf("Unexpected recommend: want=%v, got=%v", c.recommend, r)
 			}
@@ -194,12 +248,11 @@ func TestGetInterestingFinding(t *testing.T) {
 
 func TestGetVersionFinding(t *testing.T) {
 	cases := []struct {
-		name      string
-		ver       version
-		message   *message.WpscanQueueMessage
-		finding   *finding.FindingForUpsert
-		recommend *finding.PutRecommendRequest
-		wantErr   bool
+		name    string
+		ver     version
+		message *message.WpscanQueueMessage
+		finding *finding.FindingForUpsert
+		wantErr bool
 	}{
 		{
 			name: "Score 1.0 no recommend",
@@ -225,10 +278,9 @@ func TestGetVersionFinding(t *testing.T) {
 				ProjectId:        1,
 				OriginalScore:    1.0,
 				OriginalMaxScore: 10.0,
-				Data:             "",
+				Data:             "{\"number\":\"num\",\"status\":\"status\",\"intersting_entries\":[\"ie\"],\"vulnerabilities\":[{\"title\":\"\",\"fixed_in\":\"\",\"references\":null,\"url\":null}]}",
 			},
-			recommend: nil,
-			wantErr:   false,
+			wantErr: false,
 		},
 		{
 			name: "Insecure version exists recommend",
@@ -254,7 +306,66 @@ func TestGetVersionFinding(t *testing.T) {
 				ProjectId:        1,
 				OriginalScore:    6.0,
 				OriginalMaxScore: 10.0,
-				Data:             "",
+				Data:             "{\"number\":\"num\",\"status\":\"insecure\",\"intersting_entries\":[\"ie\"],\"vulnerabilities\":[{\"title\":\"\",\"fixed_in\":\"\",\"references\":null,\"url\":null}]}",
+			},
+			wantErr: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			f, e := c.ver.getFinding(c.message)
+			if !reflect.DeepEqual(c.finding, f) {
+				t.Fatalf("Unexpected finding:\n want=%v,\n got=%v", c.finding, f)
+			}
+			if (c.wantErr && e == nil) || (!c.wantErr && e != nil) {
+				t.Fatalf("Unexpected error: wantErr=%v, error=%v", c.wantErr, e)
+			}
+		})
+	}
+}
+
+func TestGetVersionRecommend(t *testing.T) {
+	cases := []struct {
+		name      string
+		ver       version
+		message   *message.WpscanQueueMessage
+		recommend *finding.PutRecommendRequest
+		wantErr   bool
+	}{
+		{
+			name: "Score 1.0 no recommend",
+			ver: version{
+				Number:            "num",
+				Status:            "status",
+				InterstingEntries: []string{"ie"},
+				Vulnerabilities:   []vulnerability{{}},
+			},
+			message: &message.WpscanQueueMessage{
+				DataSource:      common.DataSourceNameWPScan,
+				WpscanSettingID: 1,
+				ProjectID:       1,
+				TargetURL:       "http://localhost",
+				Options:         "",
+				ScanOnly:        true,
+			},
+			recommend: nil,
+			wantErr:   false,
+		},
+		{
+			name: "Insecure version exists recommend",
+			ver: version{
+				Number:            "num",
+				Status:            "insecure",
+				InterstingEntries: []string{"ie"},
+				Vulnerabilities:   []vulnerability{{}},
+			},
+			message: &message.WpscanQueueMessage{
+				DataSource:      common.DataSourceNameWPScan,
+				WpscanSettingID: 1,
+				ProjectID:       1,
+				TargetURL:       "http://localhost",
+				Options:         "",
+				ScanOnly:        true,
 			},
 			recommend: &finding.PutRecommendRequest{
 				ProjectId:  1,
@@ -271,12 +382,7 @@ func TestGetVersionFinding(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			data, _ := json.Marshal(map[string]version{"data": c.ver})
-			c.finding.Data = string(data)
-			f, r, e := getVersionFinding(c.ver, c.message)
-			if !reflect.DeepEqual(c.finding, f) {
-				t.Fatalf("Unexpected finding:\n want=%v,\n got=%v", c.finding, f)
-			}
+			r, e := c.ver.getRecommend(c.message)
 			if !reflect.DeepEqual(c.recommend, r) {
 				t.Fatalf("Unexpected recommend:\n want=%v,\n got=%v", c.recommend, r)
 			}
@@ -435,14 +541,11 @@ func TestGetPluginFinding(t *testing.T) {
 
 func TestGetAccessFinding(t *testing.T) {
 	cases := []struct {
-		name        string
-		access      *checkAccess
-		isUserFound bool
-		dataString  string
-		message     *message.WpscanQueueMessage
-		finding     *finding.FindingForUpsert
-		recommend   *finding.PutRecommendRequest
-		wantErr     bool
+		name    string
+		access  *checkAccess
+		message *message.WpscanQueueMessage
+		finding *finding.FindingForUpsert
+		wantErr bool
 	}{
 		{
 			name: "Closed no recommend",
@@ -454,6 +557,7 @@ func TestGetAccessFinding(t *testing.T) {
 						IsAccessible: false,
 					}},
 				isFoundAccesibleURL: false,
+				isUserFound:         false,
 			},
 			message: &message.WpscanQueueMessage{
 				DataSource:      common.DataSourceNameWPScan,
@@ -473,8 +577,7 @@ func TestGetAccessFinding(t *testing.T) {
 				OriginalMaxScore: 10.0,
 				Data:             "{\"Target\":[{\"URL\":\"target\",\"IsAccessible\":false}]}",
 			},
-			recommend: nil,
-			wantErr:   false,
+			wantErr: false,
 		},
 		{
 			name: "Open exists recommend",
@@ -486,6 +589,7 @@ func TestGetAccessFinding(t *testing.T) {
 						IsAccessible: true,
 					}},
 				isFoundAccesibleURL: true,
+				isUserFound:         false,
 			},
 			message: &message.WpscanQueueMessage{
 				DataSource:      common.DataSourceNameWPScan,
@@ -505,6 +609,73 @@ func TestGetAccessFinding(t *testing.T) {
 				OriginalMaxScore: 10.0,
 				Data:             "{\"Target\":[{\"URL\":\"target\",\"IsAccessible\":true}]}",
 			},
+			wantErr: false,
+		},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			f, e := c.access.getFinding(c.message)
+			if !reflect.DeepEqual(c.finding, f) {
+				t.Fatalf("Unexpected finding:\n want=%v,\n got=%v", c.finding, f)
+			}
+			if (c.wantErr && e == nil) || (!c.wantErr && e != nil) {
+				t.Fatalf("Unexpected error: wantErr=%v, error=%v", c.wantErr, e)
+			}
+		})
+	}
+}
+
+func TestGetAccessRecommend(t *testing.T) {
+	cases := []struct {
+		name      string
+		access    *checkAccess
+		message   *message.WpscanQueueMessage
+		recommend *finding.PutRecommendRequest
+		wantErr   bool
+	}{
+		{
+			name: "Closed no recommend",
+			access: &checkAccess{
+				Target: []checkAccessTarget{
+					{URL: "target",
+						Goal:         "goal",
+						Method:       "GET",
+						IsAccessible: false,
+					}},
+				isFoundAccesibleURL: false,
+				isUserFound:         false,
+			},
+			message: &message.WpscanQueueMessage{
+				DataSource:      common.DataSourceNameWPScan,
+				WpscanSettingID: 1,
+				ProjectID:       1,
+				TargetURL:       "http://localhost",
+				Options:         "",
+				ScanOnly:        true,
+			},
+			recommend: nil,
+			wantErr:   false,
+		},
+		{
+			name: "Open exists recommend",
+			access: &checkAccess{
+				Target: []checkAccessTarget{
+					{URL: "target",
+						Goal:         "goal",
+						Method:       "GET",
+						IsAccessible: true,
+					}},
+				isFoundAccesibleURL: true,
+				isUserFound:         false,
+			},
+			message: &message.WpscanQueueMessage{
+				DataSource:      common.DataSourceNameWPScan,
+				WpscanSettingID: 1,
+				ProjectID:       1,
+				TargetURL:       "http://localhost",
+				Options:         "",
+				ScanOnly:        true,
+			},
 			recommend: &finding.PutRecommendRequest{
 				ProjectId:  1,
 				FindingId:  0,
@@ -518,10 +689,7 @@ func TestGetAccessFinding(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			f, r, e := getAccessFinding(c.access, c.isUserFound, c.message)
-			if !reflect.DeepEqual(c.finding, f) {
-				t.Fatalf("Unexpected finding:\n want=%v,\n got=%v", c.finding, f)
-			}
+			r, e := c.access.getRecommend(c.message)
 			if !reflect.DeepEqual(c.recommend, r) {
 				t.Fatalf("Unexpected recommend:\n want=%v,\n got=%v", c.recommend, r)
 			}

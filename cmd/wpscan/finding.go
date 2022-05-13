@@ -15,7 +15,11 @@ import (
 
 func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult, message *message.WpscanQueueMessage) error {
 	for _, interstingFinding := range wpscanResult.InterestingFindings {
-		findingIntersting, recommendInteresting, err := getInterestingFinding(interstingFinding, message)
+		findingIntersting, err := interstingFinding.getFinding(message)
+		if err != nil {
+			return err
+		}
+		recommendInteresting, err := interstingFinding.getRecommend(message)
 		if err != nil {
 			return err
 		}
@@ -24,7 +28,11 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 			return err
 		}
 	}
-	findingVersion, recommendVersion, err := getVersionFinding(wpscanResult.Version, message)
+	findingVersion, err := wpscanResult.Version.getFinding(message)
+	if err != nil {
+		return err
+	}
+	recommendVersion, err := wpscanResult.Version.getRecommend(message)
 	if err != nil {
 		return err
 	}
@@ -47,7 +55,12 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 			return err
 		}
 	}
-	findingAccess, recommendAccess, err := getAccessFinding(wpscanResult.CheckAccess, isUserFound, message)
+	wpscanResult.CheckAccess.isUserFound = isUserFound
+	findingAccess, err := wpscanResult.CheckAccess.getFinding(message)
+	if err != nil {
+		return err
+	}
+	recommendAccess, err := wpscanResult.CheckAccess.getRecommend(message)
 	if err != nil {
 		return err
 	}
@@ -92,71 +105,100 @@ func makeRecommend(projectID uint32, findingID uint64, recommendType, risk, reco
 		Recommendation: recommendation,
 	}
 }
-func getInterestingFinding(ie interestingFindings, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
-	data, err := json.Marshal(map[string]interestingFindings{"data": ie})
+
+func (i *interestingFindings) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
+	data, err := json.Marshal(map[string]interestingFindings{"data": *i})
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	findingInf, ok := wpscanFindingMap[ie.Type]
+	findingInf, ok := wpscanFindingMap[i.Type]
 	var desc string
 	var score float32
 	if !ok {
-		desc = ie.ToS
+		desc = i.ToS
 		score = 1.0
-		f := makeFinding(desc, fmt.Sprintf("interesting_findings_%v", ie.ToS), score, &data, message)
-		return f, nil, nil
+		f := makeFinding(desc, fmt.Sprintf("interesting_findings_%v", i.ToS), score, &data, message)
+		return f, nil
 	}
 	desc = findingInf.Description
 	score = findingInf.Score
 	if zero.IsZeroVal(desc) {
-		desc = ie.ToS
+		desc = i.ToS
 	}
-	f := makeFinding(desc, fmt.Sprintf("interesting_findings_%v", ie.ToS), score, &data, message)
+	f := makeFinding(desc, fmt.Sprintf("interesting_findings_%v", i.ToS), score, &data, message)
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
-		return f, nil, nil
+		return f, nil
+	}
+
+	return f, nil
+}
+
+func (i *interestingFindings) getRecommend(message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
+	findingInf, ok := wpscanFindingMap[i.Type]
+	if !ok {
+		return nil, nil
+	}
+	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
+		return nil, nil
 	}
 	r := makeRecommend(message.ProjectID, 0, findingInf.RecommendType, findingInf.Risk, findingInf.Recommendation)
 
-	return f, r, nil
+	return r, nil
 }
 
-func getVersionFinding(wpScanVersion version, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
-	if zero.IsZeroVal(wpScanVersion.Number) {
-		return nil, nil, nil
+func (v *version) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
+	if zero.IsZeroVal(v.Number) {
+		return nil, nil
 	}
 	findingType := typeVersion
-	if wpScanVersion.Status == "insecure" {
+	if v.Status == "insecure" {
 		findingType = typeVersionInsecure
 	}
 	findingInf, ok := wpscanFindingMap[findingType]
 	if !ok {
 		appLogger.Warnf("Failed to get finding information, Unknown findingType=%v", findingType)
-		return nil, nil, fmt.Errorf("failed to get access information. findingType=%v", findingType)
+		return nil, fmt.Errorf("failed to get access information. findingType=%v", findingType)
 	}
-	data, err := json.Marshal(map[string]version{"data": wpScanVersion})
+	data, err := json.Marshal(v)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	f := makeFinding(fmt.Sprintf(findingInf.Description, wpScanVersion.Number), fmt.Sprintf("version_%v", message.TargetURL), findingInf.Score, &data, message)
+	f := makeFinding(fmt.Sprintf(findingInf.Description, v.Number), fmt.Sprintf("version_%v", message.TargetURL), findingInf.Score, &data, message)
+
+	return f, nil
+}
+
+func (v *version) getRecommend(message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
+	if zero.IsZeroVal(v.Number) {
+		return nil, nil
+	}
+	findingType := typeVersion
+	if v.Status == "insecure" {
+		findingType = typeVersionInsecure
+	}
+	findingInf, ok := wpscanFindingMap[findingType]
+	if !ok {
+		appLogger.Warnf("Failed to get finding information, Unknown findingType=%v", findingType)
+		return nil, fmt.Errorf("failed to get access information. findingType=%v", findingType)
+	}
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
-		return f, nil, nil
+		return nil, nil
 	}
 	r := makeRecommend(message.ProjectID, 0, findingInf.RecommendType, findingInf.Risk, findingInf.Recommendation)
 
-	return f, r, nil
+	return r, nil
 }
 
-func getAccessFinding(checkAccess *checkAccess, isUserFound bool, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
-
-	data, err := json.Marshal(checkAccess)
+func (c *checkAccess) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
+	data, err := json.Marshal(c)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	var findingInf wpscanFindingInformation
 	var ok bool
 
-	if checkAccess.isFoundAccesibleURL {
-		if isUserFound {
+	if c.isFoundAccesibleURL {
+		if c.isUserFound {
 			findingInf, ok = wpscanFindingMap[typeLoginOpenedUserFound]
 		} else {
 			findingInf, ok = wpscanFindingMap[typeLoginOpened]
@@ -166,16 +208,37 @@ func getAccessFinding(checkAccess *checkAccess, isUserFound bool, message *messa
 	}
 
 	if !ok {
-		appLogger.Warnf("Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", checkAccess.isFoundAccesibleURL, isUserFound)
-		return nil, nil, fmt.Errorf("failed to get access information. isFoundAccesibleURL=%v, isUserFound=%v", checkAccess.isFoundAccesibleURL, isUserFound)
+		appLogger.Warnf("Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
+		return nil, fmt.Errorf("failed to get access information. isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
 	}
 	f := makeFinding(findingInf.Description, fmt.Sprintf("Accesible_%v", message.TargetURL), findingInf.Score, &data, message)
+	return f, nil
+}
+
+func (c *checkAccess) getRecommend(message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
+	var findingInf wpscanFindingInformation
+	var ok bool
+
+	if c.isFoundAccesibleURL {
+		if c.isUserFound {
+			findingInf, ok = wpscanFindingMap[typeLoginOpenedUserFound]
+		} else {
+			findingInf, ok = wpscanFindingMap[typeLoginOpened]
+		}
+	} else {
+		findingInf, ok = wpscanFindingMap[typeLoginClosed]
+	}
+
+	if !ok {
+		appLogger.Warnf("Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
+		return nil, fmt.Errorf("failed to get access information. isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
+	}
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
-		return f, nil, nil
+		return nil, nil
 	}
 	r := makeRecommend(message.ProjectID, 0, findingInf.RecommendType, findingInf.Risk, findingInf.Recommendation)
 
-	return f, r, nil
+	return r, nil
 }
 
 func getPluginFinding(plugin plugin, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {

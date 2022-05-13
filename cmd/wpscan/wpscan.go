@@ -154,7 +154,7 @@ type wpscanOptions struct {
 
 type wpscanResult struct {
 	InterestingFindings []interestingFindings  `json:"interesting_findings"`
-	Version             version                `json:"version"`
+	Version             *version               `json:"version"`
 	Maintheme           mainTheme              `json:"main_theme"`
 	Users               map[string]interface{} `json:"users"`
 	CheckAccess         *checkAccess
@@ -207,6 +207,7 @@ type vulnAPI struct {
 type checkAccess struct {
 	Target              []checkAccessTarget
 	isFoundAccesibleURL bool
+	isUserFound         bool
 }
 
 type checkAccessTarget struct {
