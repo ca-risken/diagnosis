@@ -62,17 +62,17 @@ func (s *sqsClient) sendWpscanMessage(ctx context.Context, msg *message.WpscanQu
 	}
 	buf, err := json.Marshal(msg)
 	if err != nil {
-		appLogger.Errorf("Failed to parse message, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to parse message, error: %v", err)
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
-	appLogger.Infof("Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
+	appLogger.Infof(ctx, "Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
 	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
 	})
 	if err != nil {
-		appLogger.Errorf("Failed to send message, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to send message, error: %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -85,17 +85,17 @@ func (s *sqsClient) sendPortscanMessage(ctx context.Context, msg *message.Portsc
 	}
 	buf, err := json.Marshal(msg)
 	if err != nil {
-		appLogger.Errorf("Failed to parse message, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to parse message, error: %v", err)
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
-	appLogger.Infof("Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
+	appLogger.Infof(ctx, "Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
 	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
 	})
 	if err != nil {
-		appLogger.Errorf("Failed to send message, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to send message, error: %v", err)
 		return nil, err
 	}
 	return resp, nil
@@ -108,17 +108,17 @@ func (s *sqsClient) sendApplicationScanMessage(ctx context.Context, msg *message
 	}
 	buf, err := json.Marshal(msg)
 	if err != nil {
-		appLogger.Errorf("Failed to parse message, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to parse message, error: %v", err)
 		return nil, fmt.Errorf("Failed to parse message, err=%+v", err)
 	}
-	appLogger.Infof("Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
+	appLogger.Infof(ctx, "Send message, MessageBody: %v, QueueURL: %v", string(buf), url)
 	resp, err := s.svc.SendMessageWithContext(ctx, &sqs.SendMessageInput{
 		MessageBody:  aws.String(string(buf)),
 		QueueUrl:     &url,
 		DelaySeconds: aws.Int64(1),
 	})
 	if err != nil {
-		appLogger.Errorf("Failed to send message, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to send message, error: %v", err)
 		return nil, err
 	}
 	return resp, nil

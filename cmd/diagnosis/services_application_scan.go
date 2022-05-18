@@ -23,7 +23,7 @@ func (s *DiagnosisService) ListApplicationScan(ctx context.Context, req *diagnos
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListApplicationScanResponse{}, nil
 		}
-		appLogger.Errorf("Failed to List ApplicationScan, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to List ApplicationScan, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListApplicationScanResponse{}
@@ -40,7 +40,7 @@ func (s *DiagnosisService) GetApplicationScan(ctx context.Context, req *diagnosi
 	getData, err := s.repository.GetApplicationScan(ctx, req.ProjectId, req.ApplicationScanId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		appLogger.Errorf("Failed to Get ApplicationScan, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Get ApplicationScan, error: %v", err)
 		return nil, err
 	}
 
@@ -54,7 +54,7 @@ func (s *DiagnosisService) PutApplicationScan(ctx context.Context, req *diagnosi
 	savedData, err := s.repository.GetApplicationScan(ctx, req.ProjectId, req.ApplicationScan.ApplicationScanId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		appLogger.Errorf("Failed to Get ApplicationScan, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Get ApplicationScan, error: %v", err)
 		return nil, err
 	}
 
@@ -75,7 +75,7 @@ func (s *DiagnosisService) PutApplicationScan(ctx context.Context, req *diagnosi
 
 	registerdData, err := s.repository.UpsertApplicationScan(ctx, data)
 	if err != nil {
-		appLogger.Errorf("Failed to Put ApplicationScan, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Put ApplicationScan, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutApplicationScanResponse{ApplicationScan: convertApplicationScan(registerdData)}, nil
@@ -86,7 +86,7 @@ func (s *DiagnosisService) DeleteApplicationScan(ctx context.Context, req *diagn
 		return nil, err
 	}
 	if err := s.repository.DeleteApplicationScan(ctx, req.ProjectId, req.ApplicationScanId); err != nil {
-		appLogger.Errorf("Failed to Delete ApplicationScan, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Delete ApplicationScan, error: %v", err)
 		return nil, err
 	}
 	// Delete ApplicationScanBasicSetting
@@ -106,7 +106,7 @@ func (s *DiagnosisService) ListApplicationScanBasicSetting(ctx context.Context, 
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListApplicationScanBasicSettingResponse{}, nil
 		}
-		appLogger.Errorf("Failed to List ApplicationScanBasicSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to List ApplicationScanBasicSetting, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListApplicationScanBasicSettingResponse{}
@@ -123,7 +123,7 @@ func (s *DiagnosisService) GetApplicationScanBasicSetting(ctx context.Context, r
 	getData, err := s.repository.GetApplicationScanBasicSetting(ctx, req.ProjectId, req.ApplicationScanId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		appLogger.Errorf("Failed to Get ApplicationScanBasicSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Get ApplicationScanBasicSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -146,7 +146,7 @@ func (s *DiagnosisService) PutApplicationScanBasicSetting(ctx context.Context, r
 
 	registerdData, err := s.repository.UpsertApplicationScanBasicSetting(ctx, data)
 	if err != nil {
-		appLogger.Errorf("Failed to Put ApplicationScanBasicSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Put ApplicationScanBasicSetting, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutApplicationScanBasicSettingResponse{ApplicationScanBasicSetting: convertApplicationScanBasicSetting(registerdData)}, nil
@@ -157,7 +157,7 @@ func (s *DiagnosisService) DeleteApplicationScanBasicSetting(ctx context.Context
 		return nil, err
 	}
 	if err := s.repository.DeleteApplicationScanBasicSetting(ctx, req.ProjectId, req.ApplicationScanBasicSettingId); err != nil {
-		appLogger.Errorf("Failed to Delete ApplicationScanBasicSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Delete ApplicationScanBasicSetting, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil

@@ -22,7 +22,7 @@ func (s *DiagnosisService) ListWpscanSetting(ctx context.Context, req *diagnosis
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListWpscanSettingResponse{}, nil
 		}
-		appLogger.Errorf("Failed to List WpscanSettinng, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to List WpscanSettinng, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListWpscanSettingResponse{}
@@ -39,7 +39,7 @@ func (s *DiagnosisService) GetWpscanSetting(ctx context.Context, req *diagnosis.
 	getData, err := s.repository.GetWpscanSetting(ctx, req.ProjectId, req.WpscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		appLogger.Errorf("Failed to Get WpscanSettinng, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Get WpscanSettinng, error: %v", err)
 		return nil, err
 	}
 
@@ -53,7 +53,7 @@ func (s *DiagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 	savedData, err := s.repository.GetWpscanSetting(ctx, req.ProjectId, req.WpscanSetting.WpscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		appLogger.Errorf("Failed to Get WpscanSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Get WpscanSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -74,7 +74,7 @@ func (s *DiagnosisService) PutWpscanSetting(ctx context.Context, req *diagnosis.
 
 	registerdData, err := s.repository.UpsertWpscanSetting(ctx, data)
 	if err != nil {
-		appLogger.Errorf("Failed to Put WpscanSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Put WpscanSetting, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutWpscanSettingResponse{WpscanSetting: convertWpscanSetting(registerdData)}, nil
@@ -85,7 +85,7 @@ func (s *DiagnosisService) DeleteWpscanSetting(ctx context.Context, req *diagnos
 		return nil, err
 	}
 	if err := s.repository.DeleteWpscanSetting(ctx, req.ProjectId, req.WpscanSettingId); err != nil {
-		appLogger.Errorf("Failed to Delete WpscanSettinng, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Delete WpscanSettinng, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil

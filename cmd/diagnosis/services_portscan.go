@@ -22,7 +22,7 @@ func (s *DiagnosisService) ListPortscanSetting(ctx context.Context, req *diagnos
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListPortscanSettingResponse{}, nil
 		}
-		appLogger.Errorf("Failed to List PortscanSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to List PortscanSetting, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListPortscanSettingResponse{}
@@ -39,7 +39,7 @@ func (s *DiagnosisService) GetPortscanSetting(ctx context.Context, req *diagnosi
 	getData, err := s.repository.GetPortscanSetting(ctx, req.ProjectId, req.PortscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		appLogger.Errorf("Failed to Get PortscanSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Get PortscanSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -53,7 +53,7 @@ func (s *DiagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosi
 	savedData, err := s.repository.GetPortscanSetting(ctx, req.ProjectId, req.PortscanSetting.PortscanSettingId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		appLogger.Errorf("Failed to Get PortscanSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Get PortscanSetting, error: %v", err)
 		return nil, err
 	}
 
@@ -70,7 +70,7 @@ func (s *DiagnosisService) PutPortscanSetting(ctx context.Context, req *diagnosi
 
 	registerdData, err := s.repository.UpsertPortscanSetting(ctx, data)
 	if err != nil {
-		appLogger.Errorf("Failed to Put PortscanSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Put PortscanSetting, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutPortscanSettingResponse{PortscanSetting: convertPortscanSetting(registerdData)}, nil
@@ -81,12 +81,12 @@ func (s *DiagnosisService) DeletePortscanSetting(ctx context.Context, req *diagn
 		return nil, err
 	}
 	if err := s.repository.DeletePortscanSetting(ctx, req.ProjectId, req.PortscanSettingId); err != nil {
-		appLogger.Errorf("Failed to Delete PortscanSetting, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Delete PortscanSetting, error: %v", err)
 		return nil, err
 	}
 	// Delete PortscanTargetBySetting
 	if err := s.repository.DeletePortscanTargetByPortscanSettingID(ctx, req.ProjectId, req.PortscanSettingId); err != nil {
-		appLogger.Errorf("Failed to Delete PortscanTargetByPortscanSettingID, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Delete PortscanTargetByPortscanSettingID, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil
@@ -101,7 +101,7 @@ func (s *DiagnosisService) ListPortscanTarget(ctx context.Context, req *diagnosi
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &diagnosis.ListPortscanTargetResponse{}, nil
 		}
-		appLogger.Errorf("Failed to List PortscanTarget, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to List PortscanTarget, error: %v", err)
 		return nil, err
 	}
 	data := diagnosis.ListPortscanTargetResponse{}
@@ -118,7 +118,7 @@ func (s *DiagnosisService) GetPortscanTarget(ctx context.Context, req *diagnosis
 	getData, err := s.repository.GetPortscanTarget(ctx, req.ProjectId, req.PortscanTargetId)
 	noRecord := errors.Is(err, gorm.ErrRecordNotFound)
 	if err != nil && !noRecord {
-		appLogger.Errorf("Failed to Get PortscanTarget, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Get PortscanTarget, error: %v", err)
 		return nil, err
 	}
 
@@ -142,7 +142,7 @@ func (s *DiagnosisService) PutPortscanTarget(ctx context.Context, req *diagnosis
 
 	registerdData, err := s.repository.UpsertPortscanTarget(ctx, data)
 	if err != nil {
-		appLogger.Errorf("Failed to Put PortscanTarget, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Put PortscanTarget, error: %v", err)
 		return nil, err
 	}
 	return &diagnosis.PutPortscanTargetResponse{PortscanTarget: convertPortscanTarget(registerdData)}, nil
@@ -153,7 +153,7 @@ func (s *DiagnosisService) DeletePortscanTarget(ctx context.Context, req *diagno
 		return nil, err
 	}
 	if err := s.repository.DeletePortscanTarget(ctx, req.ProjectId, req.PortscanTargetId); err != nil {
-		appLogger.Errorf("Failed to Delete PortscanTarget, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Delete PortscanTarget, error: %v", err)
 		return nil, err
 	}
 	return &empty.Empty{}, nil
