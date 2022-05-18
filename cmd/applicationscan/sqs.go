@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
@@ -22,6 +23,7 @@ type SQSConfig struct {
 }
 
 func newSQSConsumer(conf *SQSConfig) *worker.Worker {
+	ctx := context.Background()
 	if conf.Debug == "true" {
 		appLogger.Level(logging.DebugLevel)
 	}
@@ -30,7 +32,7 @@ func newSQSConsumer(conf *SQSConfig) *worker.Worker {
 		SharedConfigState: session.SharedConfigEnable,
 	})
 	if err != nil {
-		appLogger.Fatalf("Failed to create a new session, %v", err)
+		appLogger.Fatalf(ctx, "Failed to create a new session, %v", err)
 	}
 	if !zero.IsZeroVal(&conf.SQSEndpoint) {
 		sqsClient = sqs.New(sess, &aws.Config{

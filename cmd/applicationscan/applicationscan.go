@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,8 +13,8 @@ import (
 )
 
 type applicationScanAPI interface {
-	executeZap(string) (int, error)
-	handleBasicScan(*diagnosis.ApplicationScanBasicSetting, uint32, uint32, string) (*zapResult, error)
+	executeZap(context.Context, string) (int, error)
+	handleBasicScan(context.Context, *diagnosis.ApplicationScanBasicSetting, uint32, uint32, string) (*zapResult, error)
 	terminateZap(int) error
 }
 
@@ -44,17 +45,17 @@ func newApplicationScanClient(port, path, apiKeyName, apiKeyValue, apiKeyHeader 
 	return &cli, nil
 }
 
-func (c *applicationScanClient) executeZap(apiKeyValue string) (int, error) {
+func (c *applicationScanClient) executeZap(ctx context.Context, apiKeyValue string) (int, error) {
 	cmd := exec.Command(c.config.ZapPath, "-daemon", "-port", c.config.ZapPort, "-config", fmt.Sprintf("api.key=%v", apiKeyValue))
 	err := cmd.Start()
 	if err != nil {
-		appLogger.Errorf("Failed to execute ZAP. cmd: %v, error: %v", cmd, err)
+		appLogger.Errorf(ctx, "Failed to execute ZAP. cmd: %v, error: %v", cmd, err)
 		return 0, err
 	}
 	pID := cmd.Process.Pid
 	err = c.WaitForStartingZap()
 	if err != nil {
-		appLogger.Errorf("Failed to execute ZAP. cmd: %v, error: %v", cmd, err)
+		appLogger.Errorf(ctx, "Failed to execute ZAP. cmd: %v, error: %v", cmd, err)
 		return 0, err
 	}
 	return pID, nil
