@@ -36,13 +36,13 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 		}
 		msg, err := makeWpscanMessage(req.ProjectId, req.SettingId, data.TargetURL, options)
 		if err != nil {
-			appLogger.Errorf("Error occured when making WPScan message, error: %v", err)
+			appLogger.Errorf(ctx, "Error occured when making WPScan message, error: %v", err)
 			return nil, err
 		}
 		msg.ScanOnly = req.ScanOnly
 		resp, err = d.sqs.sendWpscanMessage(ctx, msg)
 		if err != nil {
-			appLogger.Errorf("Error occured when sending WPScan message, error: %v", err)
+			appLogger.Errorf(ctx, "Error occured when sending WPScan message, error: %v", err)
 			return nil, err
 		}
 		var scanAt time.Time
@@ -59,30 +59,30 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
 			ScanAt:                scanAt,
 		}); err != nil {
-			appLogger.Errorf("Error occured when upsert WPScanSetting, error: %v", err)
+			appLogger.Errorf(ctx, "Error occured when upsert WPScanSetting, error: %v", err)
 			return nil, err
 		}
 	case common.DataSourceNamePortScan:
 		data, err := d.repository.GetPortscanSetting(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
-			appLogger.Errorf("Error occured when getting PortscanSetting, error: %v", err)
+			appLogger.Errorf(ctx, "Error occured when getting PortscanSetting, error: %v", err)
 			return nil, err
 		}
 		portscanTargets, err := d.repository.ListPortscanTarget(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
-			appLogger.Errorf("Error occured when getting PortscanTargets, error: %v", err)
+			appLogger.Errorf(ctx, "Error occured when getting PortscanTargets, error: %v", err)
 			return nil, err
 		}
 		for _, target := range *portscanTargets {
 			msg, err := makePortscanMessage(data.ProjectID, data.PortscanSettingID, target.PortscanTargetID, target.Target)
 			if err != nil {
-				appLogger.Errorf("Error occured when making Portscan message, error: %v", err)
+				appLogger.Errorf(ctx, "Error occured when making Portscan message, error: %v", err)
 				continue
 			}
 			msg.ScanOnly = req.ScanOnly
 			resp, err = d.sqs.sendPortscanMessage(ctx, msg)
 			if err != nil {
-				appLogger.Errorf("Error occured when sending Portscan message, error: %v", err)
+				appLogger.Errorf(ctx, "Error occured when sending Portscan message, error: %v", err)
 				continue
 			}
 			var scanAt time.Time
@@ -98,7 +98,7 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 				StatusDetail:      fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
 				ScanAt:            scanAt,
 			}); err != nil {
-				appLogger.Errorf("Error occured when upsert Portscan target, error: %v", err)
+				appLogger.Errorf(ctx, "Error occured when upsert Portscan target, error: %v", err)
 				return nil, err
 			}
 		}
@@ -113,7 +113,7 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 	case common.DataSourceNameApplicationScan:
 		data, err := d.repository.GetApplicationScan(ctx, req.ProjectId, req.SettingId)
 		if err != nil {
-			appLogger.Errorf("Error occured when getting PortscanSetting, error: %v", err)
+			appLogger.Errorf(ctx, "Error occured when getting PortscanSetting, error: %v", err)
 			return nil, err
 		}
 		msg, err := makeApplicationScanMessage(req.ProjectId, req.SettingId, data.Name, data.ScanType)
@@ -139,14 +139,14 @@ func (d *DiagnosisService) InvokeScan(ctx context.Context, req *diagnosis.Invoke
 			StatusDetail:          fmt.Sprintf("Start scan at %+v", time.Now().Format(time.RFC3339)),
 			ScanAt:                scanAt,
 		}); err != nil {
-			appLogger.Errorf("Error occured when upsert Application scan, error: %v", err)
+			appLogger.Errorf(ctx, "Error occured when upsert Application scan, error: %v", err)
 			return nil, err
 		}
 	default:
 		return nil, nil
 	}
 
-	appLogger.Infof("Invoke scanned, MessageID: %v", *resp.MessageId)
+	appLogger.Infof(ctx, "Invoke scanned, MessageID: %v", *resp.MessageId)
 	return &diagnosis.InvokeScanResponse{Message: "Start Diagnosis."}, nil
 }
 
@@ -163,15 +163,15 @@ func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 
 	listWpscanSetting, err := s.repository.ListAllWpscanSetting(ctx)
 	if err != nil {
-		appLogger.Errorf("Failed to List All WPScanSetting., error: %v", err)
+		appLogger.Errorf(ctx, "Failed to List All WPScanSetting., error: %v", err)
 		return nil, err
 	}
 	for _, WpscanSetting := range *listWpscanSetting {
 		if resp, err := s.projectClient.IsActive(ctx, &project.IsActiveRequest{ProjectId: WpscanSetting.ProjectID}); err != nil {
-			appLogger.Errorf("Failed to project.IsActive API, err=%+v", err)
+			appLogger.Errorf(ctx, "Failed to project.IsActive API, err=%+v", err)
 			return nil, err
 		} else if !resp.Active {
-			appLogger.Infof("Skip deactive project, project_id=%d", WpscanSetting.ProjectID)
+			appLogger.Infof(ctx, "Skip deactive project, project_id=%d", WpscanSetting.ProjectID)
 			continue
 		}
 
@@ -181,7 +181,7 @@ func (s *DiagnosisService) InvokeScanAll(ctx context.Context, req *diagnosis.Inv
 			DiagnosisDataSourceId: WpscanSetting.DiagnosisDataSourceID,
 			ScanOnly:              true,
 		}); err != nil {
-			appLogger.Errorf("InvokeScanAll error, error: %v", err)
+			appLogger.Errorf(ctx, "InvokeScanAll error, error: %v", err)
 			return nil, err
 		}
 	}

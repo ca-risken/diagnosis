@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net"
 
@@ -59,19 +60,20 @@ type AppConfig struct {
 }
 
 func main() {
+	ctx := context.Background()
 	var appConf AppConfig
 	err := envconfig.Process("", &appConf)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 
 	pTypes, err := profiler.ConvertProfileTypeFrom(appConf.ProfileTypes)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	pExporter, err := profiler.ConvertExporterTypeFrom(appConf.ProfileExporter)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	pc := profiler.Config{
 		ServiceName:  getFullServiceName(),
@@ -81,7 +83,7 @@ func main() {
 	}
 	err = pc.Start()
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	defer pc.Stop()
 
@@ -119,19 +121,19 @@ func main() {
 
 	l, err := net.Listen("tcp", fmt.Sprintf(":%s", appConf.Port))
 	if err != nil {
-		appLogger.Errorf("Failed to Opening Port, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to Opening Port, error: %v", err)
 	}
 
 	server := grpc.NewServer(
 		grpc.UnaryInterceptor(
 			grpcmiddleware.ChainUnaryServer(
-				mimosarpc.LoggingUnaryServerInterceptor(appLogger),
-				grpctrace.UnaryServerInterceptor())))
+				grpctrace.UnaryServerInterceptor(),
+				mimosarpc.LoggingUnaryServerInterceptor(appLogger))))
 	diagnosis.RegisterDiagnosisServiceServer(server, service)
 
 	reflection.Register(server) // enable reflection API
-	appLogger.Infof("Starting gRPC server, port: %v", appConf.Port)
+	appLogger.Infof(ctx, "Starting gRPC server, port: %v", appConf.Port)
 	if err := server.Serve(l); err != nil {
-		appLogger.Errorf("Failed to gRPC serve, error: %v", err)
+		appLogger.Errorf(ctx, "Failed to gRPC serve, error: %v", err)
 	}
 }
