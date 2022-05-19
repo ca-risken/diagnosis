@@ -18,7 +18,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, zapResult *zapResult, msg 
 		for _, alert := range site.Alerts {
 			data, err := json.Marshal(map[string]zapResultAlert{"data": alert})
 			if err != nil {
-				appLogger.Errorf("Failed to marshal zapResult for makeFinding. err: %v", err)
+				appLogger.Errorf(ctx, "Failed to marshal zapResult for makeFinding. err: %v", err)
 			}
 			res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: &finding.FindingForUpsert{
 				Description:      getDescription(&alert, target),
@@ -34,27 +34,27 @@ func (s *sqsHandler) putFindings(ctx context.Context, zapResult *zapResult, msg 
 				return err
 			}
 			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
-				appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
+				appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
 				return err
 			}
 			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagURL); err != nil {
-				appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagURL, err)
+				appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagURL, err)
 				return err
 			}
 			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagApplicationScan); err != nil {
-				appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagApplicationScan, err)
+				appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagApplicationScan, err)
 				return err
 			}
 			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability); err != nil {
-				appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
+				appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
 				return err
 			}
 			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
-				appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", target, err)
+				appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", target, err)
 				return err
 			}
 			if err = s.putRecommend(ctx, res.Finding.ProjectId, res.Finding.FindingId, msg.DataSource, &alert); err != nil {
-				appLogger.Errorf("Failed to put Recommend. alert: %v, error: %v", alert, err)
+				appLogger.Errorf(ctx, "Failed to put Recommend. alert: %v, error: %v", alert, err)
 				return err
 			}
 		}
@@ -71,16 +71,16 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 			Tag:       tag,
 		}})
 	if err != nil {
-		appLogger.Errorf("Failed to TagFinding. error: %v", err)
+		appLogger.Errorf(ctx, "Failed to TagFinding. error: %v", err)
 		return err
 	}
 	return nil
 }
 
 func (s *sqsHandler) putRecommend(ctx context.Context, projectID uint32, findingID uint64, dataSource string, alert *zapResultAlert) error {
-	r := getRecommend(alert)
+	r := getRecommend(ctx, alert)
 	if r.Risk == "" && r.Recommendation == "" {
-		appLogger.Warnf("Failed to get Recommendation, zapResultAlert=%+v", alert)
+		appLogger.Warnf(ctx, "Failed to get Recommendation, zapResultAlert=%+v", alert)
 		return nil
 	}
 	_, err := s.findingClient.PutRecommend(ctx, &finding.PutRecommendRequest{
@@ -92,7 +92,7 @@ func (s *sqsHandler) putRecommend(ctx context.Context, projectID uint32, finding
 		Recommendation: r.Recommendation,
 	})
 	if err != nil {
-		appLogger.Errorf("Failed to PutRecommend. projectID: %d, findingID: %d, error: %v", projectID, findingID, err)
+		appLogger.Errorf(ctx, "Failed to PutRecommend. projectID: %d, findingID: %d, error: %v", projectID, findingID, err)
 		return err
 	}
 	return nil

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"regexp"
 	"strings"
@@ -16,11 +17,11 @@ type recommend struct {
 
 var multiLine = regexp.MustCompile("[\n]+")
 
-func getRecommend(alert *zapResultAlert) *recommend {
+func getRecommend(ctx context.Context, alert *zapResultAlert) *recommend {
 	var r string
 	var buf bytes.Buffer
 	if err := godown.Convert(&buf, strings.NewReader(alert.Solution), &godown.Option{}); err != nil {
-		appLogger.Warnf("Failed to convert markdown from html, err=%+v, input=%s", err, alert.Solution)
+		appLogger.Warnf(ctx, "Failed to convert markdown from html, err=%+v, input=%s", err, alert.Solution)
 		r = alert.Solution
 	} else {
 		r = multiLine.ReplaceAllString(strings.TrimSpace(buf.String()), "\n")
