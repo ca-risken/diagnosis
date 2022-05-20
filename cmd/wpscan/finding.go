@@ -29,11 +29,11 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 		}
 	}
 	if wpscanResult.Version != nil {
-		findingVersion, err := wpscanResult.Version.getFinding(message)
+		findingVersion, err := wpscanResult.Version.getFinding(ctx, message)
 		if err != nil {
 			return err
 		}
-		recommendVersion, err := wpscanResult.Version.getRecommend(message)
+		recommendVersion, err := wpscanResult.Version.getRecommend(ctx, message)
 		if err != nil {
 			return err
 		}
@@ -59,11 +59,11 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 	}
 	if wpscanResult.CheckAccess != nil {
 		wpscanResult.CheckAccess.isUserFound = isUserFound
-		findingAccess, err := wpscanResult.CheckAccess.getFinding(message)
+		findingAccess, err := wpscanResult.CheckAccess.getFinding(ctx, message)
 		if err != nil {
 			return err
 		}
-		recommendAccess, err := wpscanResult.CheckAccess.getRecommend(message)
+		recommendAccess, err := wpscanResult.CheckAccess.getRecommend(ctx, message)
 		if err != nil {
 			return err
 		}
@@ -74,7 +74,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 	}
 
 	for _, p := range wpscanResult.Plugins {
-		findingPlugin, recommendPlugin, err := getPluginFinding(p, message)
+		findingPlugin, recommendPlugin, err := getPluginFinding(ctx, p, message)
 		if err != nil {
 			return err
 		}
@@ -150,7 +150,7 @@ func (i *interestingFindings) getRecommend(message *message.WpscanQueueMessage) 
 	return r, nil
 }
 
-func (v *version) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
+func (v *version) getFinding(ctx context.Context, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
 	if zero.IsZeroVal(v.Number) {
 		return nil, nil
 	}
@@ -160,7 +160,7 @@ func (v *version) getFinding(message *message.WpscanQueueMessage) (*finding.Find
 	}
 	findingInf, ok := wpscanFindingMap[findingType]
 	if !ok {
-		appLogger.Warnf("Failed to get finding information, Unknown findingType=%v", findingType)
+		appLogger.Warnf(ctx, "Failed to get finding information, Unknown findingType=%v", findingType)
 		return nil, fmt.Errorf("failed to get access information. findingType=%v", findingType)
 	}
 	data, err := json.Marshal(v)
@@ -172,7 +172,7 @@ func (v *version) getFinding(message *message.WpscanQueueMessage) (*finding.Find
 	return f, nil
 }
 
-func (v *version) getRecommend(message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
+func (v *version) getRecommend(ctx context.Context, message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
 	if zero.IsZeroVal(v.Number) {
 		return nil, nil
 	}
@@ -182,7 +182,7 @@ func (v *version) getRecommend(message *message.WpscanQueueMessage) (*finding.Pu
 	}
 	findingInf, ok := wpscanFindingMap[findingType]
 	if !ok {
-		appLogger.Warnf("Failed to get finding information, Unknown findingType=%v", findingType)
+		appLogger.Warnf(ctx, "Failed to get finding information, Unknown findingType=%v", findingType)
 		return nil, fmt.Errorf("failed to get access information. findingType=%v", findingType)
 	}
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
@@ -193,7 +193,7 @@ func (v *version) getRecommend(message *message.WpscanQueueMessage) (*finding.Pu
 	return r, nil
 }
 
-func (c *checkAccess) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
+func (c *checkAccess) getFinding(ctx context.Context, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
 	data, err := json.Marshal(c)
 	if err != nil {
 		return nil, err
@@ -212,14 +212,14 @@ func (c *checkAccess) getFinding(message *message.WpscanQueueMessage) (*finding.
 	}
 
 	if !ok {
-		appLogger.Warnf("Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
+		appLogger.Warnf(ctx, "Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
 		return nil, fmt.Errorf("failed to get access information. isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
 	}
 	f := makeFinding(findingInf.Description, fmt.Sprintf("Accesible_%v", message.TargetURL), findingInf.Score, &data, message)
 	return f, nil
 }
 
-func (c *checkAccess) getRecommend(message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
+func (c *checkAccess) getRecommend(ctx context.Context, message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
 	var findingInf wpscanFindingInformation
 	var ok bool
 
@@ -234,7 +234,7 @@ func (c *checkAccess) getRecommend(message *message.WpscanQueueMessage) (*findin
 	}
 
 	if !ok {
-		appLogger.Warnf("Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
+		appLogger.Warnf(ctx, "Failed to get access information, isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
 		return nil, fmt.Errorf("failed to get access information. isFoundAccesibleURL=%v, isUserFound=%v", c.isFoundAccesibleURL, c.isUserFound)
 	}
 	if zero.IsZeroVal(findingInf.Risk) || zero.IsZeroVal(findingInf.Recommendation) {
@@ -245,7 +245,7 @@ func (c *checkAccess) getRecommend(message *message.WpscanQueueMessage) (*findin
 	return r, nil
 }
 
-func getPluginFinding(plugin plugin, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
+func getPluginFinding(ctx context.Context, plugin plugin, message *message.WpscanQueueMessage) (*finding.FindingForUpsert, *finding.PutRecommendRequest, error) {
 	data, err := json.Marshal(plugin)
 	if err != nil {
 		return nil, nil, err
@@ -260,7 +260,7 @@ func getPluginFinding(plugin plugin, message *message.WpscanQueueMessage) (*find
 		findingInf, ok = wpscanFindingMap[typePluginVulnerable]
 	}
 	if !ok {
-		appLogger.Errorf("Failed to get plugin information, plugin=%v", plugin)
+		appLogger.Errorf(ctx, "Failed to get plugin information, plugin=%v", plugin)
 		return nil, nil, fmt.Errorf("failed to get plugin information. plugin_name=%v", plugin.Slug)
 	}
 	f := makeFinding(fmt.Sprintf(findingInf.Description, plugin.Slug), fmt.Sprintf("plugin_%v", plugin.Slug), findingInf.Score, &data, message)
@@ -280,23 +280,23 @@ func (s *sqsHandler) putFinding(ctx context.Context, f *finding.FindingForUpsert
 		return err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
 		return err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagURL); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagURL, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagURL, err)
 		return err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagWordPress); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagWordPress, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagWordPress, err)
 		return err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagVulnerability); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
 		return err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", target, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", target, err)
 		return err
 	}
 
@@ -323,7 +323,7 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 			Tag:       tag,
 		}})
 	if err != nil {
-		appLogger.Errorf("Failed to TagFinding. error: %v", err)
+		appLogger.Errorf(ctx, "Failed to TagFinding. error: %v", err)
 		return err
 	}
 	return nil
