@@ -107,6 +107,9 @@ func makeRecommend(projectID uint32, findingID uint64, recommendType, risk, reco
 }
 
 func (i *interestingFindings) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
+	if zero.IsZeroVal(i) {
+		return nil, nil
+	}
 	data, err := json.Marshal(map[string]interestingFindings{"data": *i})
 	if err != nil {
 		return nil, err
@@ -134,6 +137,10 @@ func (i *interestingFindings) getFinding(message *message.WpscanQueueMessage) (*
 }
 
 func (i *interestingFindings) getRecommend(message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
+	if zero.IsZeroVal(i) {
+		return nil, nil
+	}
+
 	findingInf, ok := wpscanFindingMap[i.Type]
 	if !ok {
 		return nil, nil
@@ -147,7 +154,7 @@ func (i *interestingFindings) getRecommend(message *message.WpscanQueueMessage) 
 }
 
 func (v *version) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
-	if zero.IsZeroVal(v.Number) {
+	if zero.IsZeroVal(v) || zero.IsZeroVal(v.Number) {
 		return nil, nil
 	}
 	findingType := typeVersion
@@ -169,7 +176,7 @@ func (v *version) getFinding(message *message.WpscanQueueMessage) (*finding.Find
 }
 
 func (v *version) getRecommend(message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
-	if zero.IsZeroVal(v.Number) {
+	if zero.IsZeroVal(v) || zero.IsZeroVal(v.Number) {
 		return nil, nil
 	}
 	findingType := typeVersion
@@ -190,6 +197,9 @@ func (v *version) getRecommend(message *message.WpscanQueueMessage) (*finding.Pu
 }
 
 func (c *checkAccess) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
+	if zero.IsZeroVal(c) {
+		return nil, nil
+	}
 	data, err := json.Marshal(c)
 	if err != nil {
 		return nil, err
@@ -216,6 +226,9 @@ func (c *checkAccess) getFinding(message *message.WpscanQueueMessage) (*finding.
 }
 
 func (c *checkAccess) getRecommend(message *message.WpscanQueueMessage) (*finding.PutRecommendRequest, error) {
+	if zero.IsZeroVal(c) {
+		return nil, nil
+	}
 	var findingInf wpscanFindingInformation
 	var ok bool
 
