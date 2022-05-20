@@ -10,7 +10,7 @@ import (
 type portscanAPI interface {
 	makeTargets(string)
 	getResult(context.Context, *message.PortscanQueueMessage) ([]*portscan.NmapResult, error)
-	scan() ([]*portscan.NmapResult, error)
+	scan(context.Context) ([]*portscan.NmapResult, error)
 }
 
 type portscanClient struct {
@@ -29,21 +29,21 @@ func newPortscanClient() (portscanAPI, error) {
 }
 
 func (p *portscanClient) getResult(ctx context.Context, message *message.PortscanQueueMessage) ([]*portscan.NmapResult, error) {
-	nmapResults, err := p.scan()
+	nmapResults, err := p.scan(ctx)
 	if err != nil {
-		appLogger.Errorf("Faild to Portscan: err=%+v", err)
+		appLogger.Errorf(ctx, "Faild to Portscan: err=%+v", err)
 		return []*portscan.NmapResult{}, err
 	}
 
 	return nmapResults, nil
 }
 
-func (p *portscanClient) scan() ([]*portscan.NmapResult, error) {
+func (p *portscanClient) scan(ctx context.Context) ([]*portscan.NmapResult, error) {
 	var nmapResults []*portscan.NmapResult
 	for _, target := range p.target {
 		results, err := portscan.Scan(target.Target, target.Protocol, target.FromPort, target.ToPort)
 		if err != nil {
-			appLogger.Warnf("Error occured when scanning. err: %v", err)
+			appLogger.Warnf(ctx, "Error occured when scanning. err: %v", err)
 			return nmapResults, err
 		}
 		for _, result := range results {

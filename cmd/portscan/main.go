@@ -35,29 +35,29 @@ type AppConfig struct {
 
 	DiagnosisPortscanQueueName string `split_words:"true" default:"diagnosis-portscan"`
 	DiagnosisPortscanQueueURL  string `split_words:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-portscan"`
-	MaxNumberOfMessage         int64  `split_words:"true" default:"5"`
-	WaitTimeSecond             int64  `split_words:"true" default:"20"`
+	MaxNumberOfMessage         int32  `split_words:"true" default:"5"`
+	WaitTimeSecond             int32  `split_words:"true" default:"20"`
 
 	// grpc
-	CoreAddr   string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
+	CoreAddr         string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
 	DiagnosisSvcAddr string `required:"true" split_words:"true" default:"diagnosis.diagnosis.svc.cluster.local:19001"`
 }
 
 func main() {
+	ctx := context.Background()
 	var conf AppConfig
 	err := envconfig.Process("", &conf)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
-	ctx := context.Background()
 
 	pTypes, err := profiler.ConvertProfileTypeFrom(conf.ProfileTypes)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	pExporter, err := profiler.ConvertExporterTypeFrom(conf.ProfileExporter)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	pc := profiler.Config{
 		ServiceName:  getFullServiceName(),
@@ -67,7 +67,7 @@ func main() {
 	}
 	err = pc.Start()
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	defer pc.Stop()
 
@@ -85,7 +85,7 @@ func main() {
 	handler.diagnosisClient = newDiagnosisClient(conf.DiagnosisSvcAddr)
 	f, err := mimosasqs.NewFinalizer(common.DataSourceNamePortScan, settingURL, conf.CoreAddr, nil)
 	if err != nil {
-		appLogger.Fatalf("Failed to create Finalizer, err=%+v", err)
+		appLogger.Fatalf(ctx, "Failed to create Finalizer, err=%+v", err)
 	}
 
 	sqsConf := &SQSConfig{
@@ -98,11 +98,11 @@ func main() {
 		WaitTimeSecond:             conf.WaitTimeSecond,
 	}
 	consumer := newSQSConsumer(sqsConf)
-	appLogger.Info("Start the portscan SQS consumer server...")
+	appLogger.Info(ctx, "Start the portscan SQS consumer server...")
 	consumer.Start(ctx,
 		mimosasqs.InitializeHandler(
 			mimosasqs.RetryableErrorHandler(
-				mimosasqs.StatusLoggingHandler(appLogger,
-					mimosasqs.TracingHandler(getFullServiceName(),
+				mimosasqs.TracingHandler(getFullServiceName(),
+					mimosasqs.StatusLoggingHandler(appLogger,
 						f.FinalizeHandler(handler))))))
 }
