@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"reflect"
 	"testing"
 )
@@ -62,7 +63,7 @@ func TestGetRecommend(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			got := getRecommend(c.input)
+			got := getRecommend(context.Background(), c.input)
 			if !reflect.DeepEqual(c.want, got) {
 				t.Fatalf("Unexpected data: want=%v, got=%v", c.want, got)
 			}
