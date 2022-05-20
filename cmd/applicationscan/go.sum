@@ -130,8 +130,8 @@ github.com/ca-risken/common/pkg/logging v0.0.0-20220518032134-ad443b601efd h1:YX
 github.com/ca-risken/common/pkg/logging v0.0.0-20220518032134-ad443b601efd/go.mod h1:iqLbvDuf708TWjF8RO5qw6Nx1e3R0/UEHZ8tE/VEPjA=
 github.com/ca-risken/common/pkg/profiler v0.0.0-20220304031727-c94e2c463b27 h1:NV95obXJwovUBvxWPW5boJcMAwkUIrsqhH3uwhTfTNY=
 github.com/ca-risken/common/pkg/profiler v0.0.0-20220304031727-c94e2c463b27/go.mod h1:xldq3VZ7qomkI5vfpw8Y9qCVEFl8BrSvDr+sxbz32H4=
-github.com/ca-risken/common/pkg/sqs v0.0.0-20220518084850-961f1d7aa955 h1:auRSrwMfeiw6lcQAqvU0RaJ2stur8CORMiFCFtv3u4U=
-github.com/ca-risken/common/pkg/sqs v0.0.0-20220518084850-961f1d7aa955/go.mod h1:sI0Jn1wf8y4WIBSyEf8bYKzCQmOJG7dHwOua+gelwQ0=
+github.com/ca-risken/common/pkg/sqs v0.0.0-20220520051921-497abce3e602 h1:OPStZU+317khT/iDRXfgqCx78feIDprrU+kJTBOGarU=
+github.com/ca-risken/common/pkg/sqs v0.0.0-20220520051921-497abce3e602/go.mod h1:sI0Jn1wf8y4WIBSyEf8bYKzCQmOJG7dHwOua+gelwQ0=
 github.com/ca-risken/common/pkg/tracer v0.0.0-20220426050416-a654045b9fa5 h1:uWLkCDh/N4eXKBMaVfd3bbxA3R3oi6RKe4ZYuuJ5WcI=
 github.com/ca-risken/common/pkg/tracer v0.0.0-20220426050416-a654045b9fa5/go.mod h1:PIXjETIPseBEB/OXp5Rxn8FFuRwfQjFZe1VN+0Skh2E=
 github.com/ca-risken/core/proto/alert v0.0.0-20211208021136-f6b597adc160 h1:9eqixwjkG5GWu46TN5KFGKHMtPfaIIlPKSmPnlGOh1w=
