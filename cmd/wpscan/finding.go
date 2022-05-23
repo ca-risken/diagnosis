@@ -15,9 +15,6 @@ import (
 
 func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult, message *message.WpscanQueueMessage) error {
 	for _, interstingFinding := range wpscanResult.InterestingFindings {
-		if zero.IsZeroVal(interstingFinding) {
-			continue
-		}
 		findingIntersting, err := interstingFinding.getFinding(message)
 		if err != nil {
 			return err
@@ -31,7 +28,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 			return err
 		}
 	}
-	if !zero.IsZeroVal(wpscanResult.Version) {
+	if wpscanResult.Version != nil {
 		findingVersion, err := wpscanResult.Version.getFinding(message)
 		if err != nil {
 			return err
@@ -60,7 +57,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 			return err
 		}
 	}
-	if !zero.IsZeroVal(wpscanResult.CheckAccess) {
+	if wpscanResult.CheckAccess != nil {
 		wpscanResult.CheckAccess.isUserFound = isUserFound
 		findingAccess, err := wpscanResult.CheckAccess.getFinding(message)
 		if err != nil {
@@ -154,7 +151,7 @@ func (i *interestingFindings) getRecommend(message *message.WpscanQueueMessage) 
 }
 
 func (v *version) getFinding(message *message.WpscanQueueMessage) (*finding.FindingForUpsert, error) {
-	if zero.IsZeroVal(v) {
+	if zero.IsZeroVal(v.Number) {
 		return nil, nil
 	}
 	findingType := typeVersion
