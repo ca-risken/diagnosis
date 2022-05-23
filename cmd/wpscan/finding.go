@@ -28,17 +28,19 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 			return err
 		}
 	}
-	findingVersion, err := wpscanResult.Version.getFinding(message)
-	if err != nil {
-		return err
-	}
-	recommendVersion, err := wpscanResult.Version.getRecommend(message)
-	if err != nil {
-		return err
-	}
-	err = s.putFinding(ctx, findingVersion, recommendVersion, message.TargetURL)
-	if err != nil {
-		return err
+	if wpscanResult.Version != nil {
+		findingVersion, err := wpscanResult.Version.getFinding(message)
+		if err != nil {
+			return err
+		}
+		recommendVersion, err := wpscanResult.Version.getRecommend(message)
+		if err != nil {
+			return err
+		}
+		err = s.putFinding(ctx, findingVersion, recommendVersion, message.TargetURL)
+		if err != nil {
+			return err
+		}
 	}
 	isUserFound := false
 	for key, val := range wpscanResult.Users {
@@ -55,18 +57,20 @@ func (s *sqsHandler) putFindings(ctx context.Context, wpscanResult *wpscanResult
 			return err
 		}
 	}
-	wpscanResult.CheckAccess.isUserFound = isUserFound
-	findingAccess, err := wpscanResult.CheckAccess.getFinding(message)
-	if err != nil {
-		return err
-	}
-	recommendAccess, err := wpscanResult.CheckAccess.getRecommend(message)
-	if err != nil {
-		return err
-	}
-	err = s.putFinding(ctx, findingAccess, recommendAccess, message.TargetURL)
-	if err != nil {
-		return err
+	if wpscanResult.CheckAccess != nil {
+		wpscanResult.CheckAccess.isUserFound = isUserFound
+		findingAccess, err := wpscanResult.CheckAccess.getFinding(message)
+		if err != nil {
+			return err
+		}
+		recommendAccess, err := wpscanResult.CheckAccess.getRecommend(message)
+		if err != nil {
+			return err
+		}
+		err = s.putFinding(ctx, findingAccess, recommendAccess, message.TargetURL)
+		if err != nil {
+			return err
+		}
 	}
 
 	for _, p := range wpscanResult.Plugins {
