@@ -103,18 +103,18 @@ func (s *sqsHandler) putFinding(ctx context.Context, f *finding.FindingForUpsert
 		return nil, err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagDiagnosis); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagDiagnosis, err)
 		return nil, err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagFQDN); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagFQDN, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagFQDN, err)
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, common.TagPortscan); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", common.TagPortscan, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagPortscan, err)
 		return nil, err
 	}
 	if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
-		appLogger.Errorf("Failed to tag finding. tag: %v, error: %v", target, err)
+		appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", target, err)
 		return nil, err
 	}
 
@@ -138,7 +138,7 @@ func (s *sqsHandler) tagFinding(ctx context.Context, projectID uint32, findingID
 			Tag:       tag,
 		}})
 	if err != nil {
-		appLogger.Errorf("Failed to TagFinding. error: %v", err)
+		appLogger.Errorf(ctx, "Failed to TagFinding. error: %v", err)
 		return err
 	}
 	return nil

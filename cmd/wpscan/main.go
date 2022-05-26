@@ -33,10 +33,10 @@ type AppConfig struct {
 
 	DiagnosisWpscanQueueName string `split_words:"true" default:"diagnosis-wpscan"`
 	DiagnosisWpscanQueueURL  string `split_words:"true" default:"http://queue.middleware.svc.cluster.local:9324/queue/diagnosis-wpscan"`
-	MaxNumberOfMessage       int64  `split_words:"true" default:"10"`
-	WaitTimeSecond           int64  `split_words:"true" default:"20"`
+	MaxNumberOfMessage       int32  `split_words:"true" default:"10"`
+	WaitTimeSecond           int32  `split_words:"true" default:"20"`
 	// grpc
-	CoreAddr   string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
+	CoreAddr         string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
 	DiagnosisSvcAddr string `required:"true" split_words:"true" default:"diagnosis.diagnosis.svc.cluster.local:19001"`
 	// wpscan
 	ResultPath         string `split_words:"true" required:"true" default:"/tmp"`
@@ -44,20 +44,20 @@ type AppConfig struct {
 }
 
 func main() {
+	ctx := context.Background()
 	var conf AppConfig
 	err := envconfig.Process("", &conf)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
-	ctx := context.Background()
 
 	pTypes, err := profiler.ConvertProfileTypeFrom(conf.ProfileTypes)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	pExporter, err := profiler.ConvertExporterTypeFrom(conf.ProfileExporter)
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	pc := profiler.Config{
 		ServiceName:  getFullServiceName(),
@@ -67,7 +67,7 @@ func main() {
 	}
 	err = pc.Start()
 	if err != nil {
-		appLogger.Fatal(err.Error())
+		appLogger.Fatal(ctx, err.Error())
 	}
 	defer pc.Stop()
 
@@ -84,13 +84,13 @@ func main() {
 		ResultPath:         conf.ResultPath,
 		WpscanVulndbApikey: conf.WpscanVulndbApikey,
 	}
-	appLogger.Info("Start Wpscan Client")
+	appLogger.Info(ctx, "Start Wpscan Client")
 	handler.findingClient = newFindingClient(conf.CoreAddr)
-	appLogger.Info("Start Finding Client")
+	appLogger.Info(ctx, "Start Finding Client")
 	handler.alertClient = newAlertClient(conf.CoreAddr)
-	appLogger.Info("Start Alert Client")
+	appLogger.Info(ctx, "Start Alert Client")
 	handler.diagnosisClient = newDiagnosisClient(conf.DiagnosisSvcAddr)
-	appLogger.Info("Start Diagnosis Client")
+	appLogger.Info(ctx, "Start Diagnosis Client")
 	f, err := mimosasqs.NewFinalizer(common.DataSourceNameWPScan, settingURL, conf.CoreAddr, &mimosasqs.DataSourceRecommnend{
 		ScanFailureRisk: fmt.Sprintf("Failed to scan %s, So you are not gathering the latest security threat information.", common.DataSourceNameWPScan),
 		ScanFailureRecommendation: fmt.Sprintf(`Please review the following items and rescan,
@@ -103,7 +103,7 @@ func main() {
 		- If this does not resolve the problem, or if you suspect that the problem is server-side, please contact the system administrators.`, settingURL),
 	})
 	if err != nil {
-		appLogger.Fatalf("Failed to create Finalizer, err=%+v", err)
+		appLogger.Fatalf(ctx, "Failed to create Finalizer, err=%+v", err)
 	}
 
 	sqsConf := &SQSConfig{
@@ -114,12 +114,12 @@ func main() {
 		MaxNumberOfMessage:       conf.MaxNumberOfMessage,
 		WaitTimeSecond:           conf.WaitTimeSecond,
 	}
-	consumer := newSQSConsumer(sqsConf)
-	appLogger.Info("Start the wpscan SQS consumer server...")
+	consumer := newSQSConsumer(ctx, sqsConf)
+	appLogger.Info(ctx, "Start the wpscan SQS consumer server...")
 	consumer.Start(ctx,
 		mimosasqs.InitializeHandler(
 			mimosasqs.RetryableErrorHandler(
-				mimosasqs.StatusLoggingHandler(appLogger,
-					mimosasqs.TracingHandler(getFullServiceName(),
+				mimosasqs.TracingHandler(getFullServiceName(),
+					mimosasqs.StatusLoggingHandler(appLogger,
 						f.FinalizeHandler(handler))))))
 }

@@ -313,7 +313,8 @@ func TestGetVersionFinding(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			f, e := c.ver.getFinding(c.message)
+			ctx := context.Background()
+			f, e := c.ver.getFinding(ctx, c.message)
 			if !reflect.DeepEqual(c.finding, f) {
 				t.Fatalf("Unexpected finding:\n want=%v,\n got=%v", c.finding, f)
 			}
@@ -382,7 +383,8 @@ func TestGetVersionRecommend(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			r, e := c.ver.getRecommend(c.message)
+			ctx := context.Background()
+			r, e := c.ver.getRecommend(ctx, c.message)
 			if !reflect.DeepEqual(c.recommend, r) {
 				t.Fatalf("Unexpected recommend:\n want=%v,\n got=%v", c.recommend, r)
 			}
@@ -523,9 +525,10 @@ func TestGetPluginFinding(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			ctx := context.Background()
 			data, _ := json.Marshal(c.plugin)
 			c.finding.Data = string(data)
-			f, r, e := getPluginFinding(c.plugin, c.message)
+			f, r, e := getPluginFinding(ctx, c.plugin, c.message)
 			if !reflect.DeepEqual(c.finding, f) {
 				t.Fatalf("Unexpected finding:\n want=%#v,\n got=%#v", c.finding, f)
 			}
@@ -614,7 +617,8 @@ func TestGetAccessFinding(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			f, e := c.access.getFinding(c.message)
+			ctx := context.Background()
+			f, e := c.access.getFinding(ctx, c.message)
 			if !reflect.DeepEqual(c.finding, f) {
 				t.Fatalf("Unexpected finding:\n want=%v,\n got=%v", c.finding, f)
 			}
@@ -689,7 +693,8 @@ func TestGetAccessRecommend(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			r, e := c.access.getRecommend(c.message)
+			ctx := context.Background()
+			r, e := c.access.getRecommend(ctx, c.message)
 			if !reflect.DeepEqual(c.recommend, r) {
 				t.Fatalf("Unexpected recommend:\n want=%v,\n got=%v", c.recommend, r)
 			}

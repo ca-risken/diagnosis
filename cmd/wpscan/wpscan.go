@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -20,7 +21,7 @@ type WpscanConfig struct {
 	WpscanVulndbApikey string
 }
 
-func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscanOptions) (*wpscanResult, error) {
+func (w *WpscanConfig) run(ctx context.Context, target string, wpscanSettingID uint32, options wpscanOptions) (*wpscanResult, error) {
 	now := time.Now().UnixNano()
 	filePath := fmt.Sprintf("%s/%v_%v.json", w.ResultPath, wpscanSettingID, now)
 	args := []string{"--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath}
@@ -38,22 +39,22 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 		isUseAPIKey = true
 		argsWithApiKey := append(args, "--api-token", w.WpscanVulndbApikey)
 		cmd := exec.Command("wpscan", argsWithApiKey...)
-		err := execWPScan(cmd)
+		err := execWPScan(ctx, cmd)
 		if err != nil {
 			// ReScan for Invalid APIKey or reaching APIKey Limit
-			appLogger.Warnf("APIKey doesn't work. Try scanning without apikey, err=%v", err)
+			appLogger.Warnf(ctx, "APIKey doesn't work. Try scanning without apikey, err=%v", err)
 			cmd := exec.Command("wpscan", args...)
-			err = execWPScan(cmd)
+			err = execWPScan(ctx, cmd)
 			if err != nil {
-				appLogger.Errorf("Scan also failed without apikey, err=%v", err)
+				appLogger.Errorf(ctx, "Scan also failed without apikey, err=%v", err)
 				return nil, err
 			}
 		}
 	} else {
 		cmd := exec.Command("wpscan", args...)
-		err := execWPScan(cmd)
+		err := execWPScan(ctx, cmd)
 		if err != nil {
-			appLogger.Errorf("Scan failed without apikey, err=%v", err)
+			appLogger.Errorf(ctx, "Scan failed without apikey, err=%v", err)
 			return nil, err
 		}
 	}
@@ -64,7 +65,7 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 	}
 	var wpscanResult wpscanResult
 	if err := json.Unmarshal(bytes, &wpscanResult); err != nil {
-		appLogger.Errorf("Failed to parse scan results. error: %v", err)
+		appLogger.Errorf(ctx, "Failed to parse scan results. error: %v", err)
 		return nil, err
 	}
 
@@ -72,7 +73,7 @@ func (w *WpscanConfig) run(target string, wpscanSettingID uint32, options wpscan
 		remain := map[string]interface{}{
 			"api_remaining": wpscanResult.VulnAPI.RequestRemaining,
 		}
-		appLogger.WithItems(logging.InfoLevel, remain, "Executed WPScan VulnAPI")
+		appLogger.WithItems(ctx, logging.InfoLevel, remain, "Executed WPScan VulnAPI")
 	}
 	wpscanResult.CheckAccess, err = checkOpen(target)
 	if err != nil {
@@ -91,14 +92,14 @@ func (w *wpscanError) Error() string {
 	return fmt.Sprintf("Failed to wpscan, code=%d, stdout=%s, stderr=%s", w.Code, w.StdOut.String(), w.StdErr.String())
 }
 
-func execWPScan(cmd *exec.Cmd) error {
+func execWPScan(ctx context.Context, cmd *exec.Cmd) error {
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	_ = cmd.Run()
 	exitCode := cmd.ProcessState.ExitCode()
 	if exitCode != 0 && exitCode != 5 {
-		appLogger.Errorf("Failed exec WPScan. exitCode: %v", exitCode)
+		appLogger.Errorf(ctx, "Failed exec WPScan. exitCode: %v", exitCode)
 		return &wpscanError{Code: exitCode, StdOut: &stdout, StdErr: &stderr}
 	}
 	return nil
