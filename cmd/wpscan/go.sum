@@ -133,8 +133,8 @@ github.com/ca-risken/common/pkg/logging v0.0.0-20220520051921-497abce3e602 h1:cm
 github.com/ca-risken/common/pkg/logging v0.0.0-20220520051921-497abce3e602/go.mod h1:iqLbvDuf708TWjF8RO5qw6Nx1e3R0/UEHZ8tE/VEPjA=
 github.com/ca-risken/common/pkg/profiler v0.0.0-20220304031727-c94e2c463b27 h1:NV95obXJwovUBvxWPW5boJcMAwkUIrsqhH3uwhTfTNY=
 github.com/ca-risken/common/pkg/profiler v0.0.0-20220304031727-c94e2c463b27/go.mod h1:xldq3VZ7qomkI5vfpw8Y9qCVEFl8BrSvDr+sxbz32H4=
-github.com/ca-risken/common/pkg/sqs v0.0.0-20220520051921-497abce3e602 h1:OPStZU+317khT/iDRXfgqCx78feIDprrU+kJTBOGarU=
-github.com/ca-risken/common/pkg/sqs v0.0.0-20220520051921-497abce3e602/go.mod h1:sI0Jn1wf8y4WIBSyEf8bYKzCQmOJG7dHwOua+gelwQ0=
+github.com/ca-risken/common/pkg/sqs v0.0.0-20220525094706-413e91572a52 h1:WCi2Ofmr7uFXwn85TDZNd6ydktjtntCiPyMHDjeaE7I=
+github.com/ca-risken/common/pkg/sqs v0.0.0-20220525094706-413e91572a52/go.mod h1:d1jPir/CD2AvFIM9iqbU1F+kSwGhc3lXjz/utdRzZpI=
 github.com/ca-risken/common/pkg/tracer v0.0.0-20220426050416-a654045b9fa5 h1:uWLkCDh/N4eXKBMaVfd3bbxA3R3oi6RKe4ZYuuJ5WcI=
 github.com/ca-risken/common/pkg/tracer v0.0.0-20220426050416-a654045b9fa5/go.mod h1:PIXjETIPseBEB/OXp5Rxn8FFuRwfQjFZe1VN+0Skh2E=
 github.com/ca-risken/core/proto/alert v0.0.0-20220309052852-c058b4e5cb84 h1:AcKpx0eYZVTSUNuwdOtoyJVnq5uxiXuWCLGDwlLBiBg=
@@ -148,8 +148,8 @@ github.com/ca-risken/diagnosis/pkg/message v0.0.0-20220309052839-1394e8f2e4a1 h1
 github.com/ca-risken/diagnosis/pkg/message v0.0.0-20220309052839-1394e8f2e4a1/go.mod h1:L+t717MZilPHRE8b5BW5u5Yj5VRtWGuxl/Q7wlzboho=
 github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20220309052839-1394e8f2e4a1 h1:X66cHF3LrINPHb87OMSoRh8Ow/GSt7IM/z+WmagIv3A=
 github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20220309052839-1394e8f2e4a1/go.mod h1:5z+3xNa4lt9HDrmEj9O0Y/XLuCc3dApFdA4yqy0mSWw=
-github.com/ca-risken/go-sqs-poller/worker/v5 v5.0.0-20220502103103-3ea0e54c7692 h1:mLQXrqlr2Xb+KvtrQrQOuKpsbxdRDc3W31VjVqezMSk=
-github.com/ca-risken/go-sqs-poller/worker/v5 v5.0.0-20220502103103-3ea0e54c7692/go.mod h1:pboVfH7X3jKqsVKSpYNYAgqgPQ6gVb+AjFuWH1e8dSU=
+github.com/ca-risken/go-sqs-poller/worker/v5 v5.0.0-20220525093235-9148d33b6aee h1:aIrvjCnF+Owzzh7dnE1w4442CdcuUkHaJsJOXImjeqg=
+github.com/ca-risken/go-sqs-poller/worker/v5 v5.0.0-20220525093235-9148d33b6aee/go.mod h1:pboVfH7X3jKqsVKSpYNYAgqgPQ6gVb+AjFuWH1e8dSU=
 github.com/cenkalti/backoff/v3 v3.0.0/go.mod h1:cIeZDE3IrqwwJl6VUwCN6trj1oXrTS4rc0ij+ULvLYs=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0 h1:a6HrQnmkObjyL+Gs60czilIUGqrzKutQD6XZog3p+ko=
