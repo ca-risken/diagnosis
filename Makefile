@@ -101,7 +101,7 @@ go-test: $(TEST_TARGETS) proto-test pkg-test
 proto-test:
 	cd proto/diagnosis  && GO111MODULE=on go test ./...
 pkg-test:
-	cd pkg/message      && GO111MODULE=on go test ./...
+	cd pkg/common && GO111MODULE=on go test ./...
 
 .PHONY: go-mod-update
 go-mod-update:
@@ -123,7 +123,6 @@ go-mod-update:
 
 .PHONY: go-mod-tidy
 go-mod-tidy: proto
-	cd pkg/message           && go mod tidy
 	cd cmd/diagnosis         && go mod tidy
 	cd cmd/wpscan            && go mod tidy
 	cd cmd/portscan          && go mod tidy
@@ -137,7 +136,5 @@ proto-lint:
 	sh hack/golinter.sh proto/diagnosis
 pkg-lint:
 	sh hack/golinter.sh pkg/common
-	sh hack/golinter.sh pkg/message
-	sh hack/golinter.sh pkg/model
 
 FAKE:
