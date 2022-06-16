@@ -72,20 +72,23 @@ go-mod-update:
 	cd cmd/wpscan \
 		&& go get -u \
 			github.com/ca-risken/core/... \
+			github.com/ca-risken/datasource-api/... \
 			github.com/ca-risken/diagnosis/...
 	cd cmd/portscan \
 		&& go get -u \
 			github.com/ca-risken/core/... \
+			github.com/ca-risken/datasource-api/... \
 			github.com/ca-risken/diagnosis/...
 	cd cmd/applicationscan \
 		&& go get -u \
 			github.com/ca-risken/core/... \
+			github.com/ca-risken/datasource-api/... \
 			github.com/ca-risken/diagnosis/...
 
 .PHONY: go-mod-tidy
 go-mod-tidy:
-	cd cmd/wpscan            && go mod tidy
-	cd cmd/portscan          && go mod tidy
+	cd cmd/wpscan           && go mod tidy
+	cd cmd/portscan         && go mod tidy
 	cd cmd/applicationscan  && go mod tidy
 
 .PHONY: lint pkg-lint
