@@ -7,7 +7,7 @@ import (
 	"github.com/ca-risken/common/pkg/profiler"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/common/pkg/tracer"
-	"github.com/ca-risken/diagnosis/pkg/common"
+	"github.com/ca-risken/datasource-api/pkg/message"
 	"github.com/gassara-kys/envconfig"
 )
 
@@ -36,8 +36,8 @@ type AppConfig struct {
 	MaxNumberOfMessage       int32  `split_words:"true" default:"10"`
 	WaitTimeSecond           int32  `split_words:"true" default:"20"`
 	// grpc
-	CoreAddr         string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
-	DiagnosisSvcAddr string `required:"true" split_words:"true" default:"diagnosis.diagnosis.svc.cluster.local:19001"`
+	CoreAddr             string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
+	DataSourceAPISvcAddr string `required:"true" split_words:"true" default:"datasource-api.core.svc.cluster.local:8081"`
 	// wpscan
 	ResultPath         string `split_words:"true" required:"true" default:"/tmp"`
 	WpscanVulndbApikey string `split_words:"true"`
@@ -89,10 +89,10 @@ func main() {
 	appLogger.Info(ctx, "Start Finding Client")
 	handler.alertClient = newAlertClient(conf.CoreAddr)
 	appLogger.Info(ctx, "Start Alert Client")
-	handler.diagnosisClient = newDiagnosisClient(conf.DiagnosisSvcAddr)
+	handler.diagnosisClient = newDiagnosisClient(conf.DataSourceAPISvcAddr)
 	appLogger.Info(ctx, "Start Diagnosis Client")
-	f, err := mimosasqs.NewFinalizer(common.DataSourceNameWPScan, settingURL, conf.CoreAddr, &mimosasqs.DataSourceRecommnend{
-		ScanFailureRisk: fmt.Sprintf("Failed to scan %s, So you are not gathering the latest security threat information.", common.DataSourceNameWPScan),
+	f, err := mimosasqs.NewFinalizer(message.DataSourceNameWPScan, settingURL, conf.CoreAddr, &mimosasqs.DataSourceRecommnend{
+		ScanFailureRisk: fmt.Sprintf("Failed to scan %s, So you are not gathering the latest security threat information.", message.DataSourceNameWPScan),
 		ScanFailureRecommendation: fmt.Sprintf(`Please review the following items and rescan,
 		- Ensure the error message of the DataSource.
 		- Ensure the network is reachable to the target host.
