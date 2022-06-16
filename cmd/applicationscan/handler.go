@@ -16,8 +16,8 @@ import (
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
-	"github.com/ca-risken/diagnosis/pkg/message"
-	"github.com/ca-risken/diagnosis/proto/diagnosis"
+	"github.com/ca-risken/datasource-api/pkg/message"
+	"github.com/ca-risken/datasource-api/proto/diagnosis"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
