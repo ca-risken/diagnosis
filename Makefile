@@ -65,7 +65,7 @@ go-test: $(TEST_TARGETS) pkg-test
 %.go-test: FAKE
 	cd cmd/$(*) && GO111MODULE=on go test ./...
 pkg-test:
-	cd pkg/message      && GO111MODULE=on go test ./...
+	cd pkg/common && GO111MODULE=on go test ./...
 
 .PHONY: go-mod-update
 go-mod-update:
@@ -84,7 +84,6 @@ go-mod-update:
 
 .PHONY: go-mod-tidy
 go-mod-tidy:
-	cd pkg/message           && go mod tidy
 	cd cmd/wpscan            && go mod tidy
 	cd cmd/portscan          && go mod tidy
 	cd cmd/applicationscan  && go mod tidy
@@ -95,7 +94,5 @@ lint: $(LINT_TARGETS) pkg-lint
 	sh hack/golinter.sh cmd/$(*)
 pkg-lint:
 	sh hack/golinter.sh pkg/common
-	sh hack/golinter.sh pkg/message
-	sh hack/golinter.sh pkg/model
 
 FAKE:
