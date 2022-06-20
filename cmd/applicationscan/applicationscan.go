@@ -9,7 +9,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/ca-risken/diagnosis/proto/diagnosis"
+	"github.com/ca-risken/datasource-api/proto/diagnosis"
 )
 
 type applicationScanAPI interface {

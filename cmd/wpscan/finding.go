@@ -8,8 +8,8 @@ import (
 	"fmt"
 
 	"github.com/ca-risken/core/proto/finding"
+	"github.com/ca-risken/datasource-api/pkg/message"
 	"github.com/ca-risken/diagnosis/pkg/common"
-	"github.com/ca-risken/diagnosis/pkg/message"
 	"github.com/vikyd/zero"
 )
 
@@ -103,7 +103,7 @@ func makeRecommend(projectID uint32, findingID uint64, recommendType, risk, reco
 	return &finding.PutRecommendRequest{
 		ProjectId:      projectID,
 		FindingId:      findingID,
-		DataSource:     common.DataSourceNameWPScan,
+		DataSource:     message.DataSourceNameWPScan,
 		Type:           recommendType,
 		Risk:           risk,
 		Recommendation: recommendation,

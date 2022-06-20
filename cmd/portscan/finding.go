@@ -7,8 +7,8 @@ import (
 
 	"github.com/ca-risken/common/pkg/portscan"
 	"github.com/ca-risken/core/proto/finding"
+	"github.com/ca-risken/datasource-api/pkg/message"
 	"github.com/ca-risken/diagnosis/pkg/common"
-	"github.com/ca-risken/diagnosis/pkg/message"
 )
 
 func (s *sqsHandler) putNmapFinding(ctx context.Context, nmapResult *portscan.NmapResult, projectID uint32, dataSource, data string, target string) error {

@@ -5,20 +5,19 @@ go 1.17
 require (
 	github.com/aws/aws-sdk-go-v2 v1.16.4
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.18.5
-	github.com/ca-risken/common/pkg/logging v0.0.0-20220518032134-ad443b601efd
+	github.com/ca-risken/common/pkg/logging v0.0.0-20220601065422-5b97bd6efc9b
 	github.com/ca-risken/common/pkg/portscan v0.0.0-20211224014353-4e5485f7db26
-	github.com/ca-risken/common/pkg/profiler v0.0.0-20220304031727-c94e2c463b27
+	github.com/ca-risken/common/pkg/profiler v0.0.0-20220601065422-5b97bd6efc9b
 	github.com/ca-risken/common/pkg/sqs v0.0.0-20220525094706-413e91572a52
-	github.com/ca-risken/common/pkg/tracer v0.0.0-20220426050416-a654045b9fa5
+	github.com/ca-risken/common/pkg/tracer v0.0.0-20220601065422-5b97bd6efc9b
 	github.com/ca-risken/core/proto/alert v0.0.0-20210924100500-e1499111345b
 	github.com/ca-risken/core/proto/finding v0.0.0-20220309052852-c058b4e5cb84
-	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220407095309-105129776296
-	github.com/ca-risken/diagnosis/pkg/message v0.0.0-20210928110806-54123bffb7e9
-	github.com/ca-risken/diagnosis/proto/diagnosis v0.0.0-20210928110806-54123bffb7e9
+	github.com/ca-risken/datasource-api v0.0.0-20220615043958-794d01b2e367
+	github.com/ca-risken/diagnosis/pkg/common v0.0.0-20220616040525-f4f7c592ac81
 	github.com/ca-risken/go-sqs-poller/worker/v5 v5.0.0-20220525093235-9148d33b6aee
 	github.com/gassara-kys/envconfig v1.4.4
-	google.golang.org/grpc v1.45.0
-	gopkg.in/DataDog/dd-trace-go.v1 v1.38.0
+	google.golang.org/grpc v1.47.0
+	gopkg.in/DataDog/dd-trace-go.v1 v1.38.1
 )
 
 require (
@@ -44,6 +43,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible // indirect
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -55,7 +55,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/tinylib/msgp v1.1.2 // indirect
-	golang.org/x/net v0.0.0-20211020060615-d418f374d309 // indirect
+	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
 	golang.org/x/text v0.3.7 // indirect

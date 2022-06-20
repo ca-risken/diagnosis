@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/ca-risken/common/pkg/portscan"
-	"github.com/ca-risken/diagnosis/pkg/message"
+	"github.com/ca-risken/datasource-api/pkg/message"
 )
 
 type portscanAPI interface {

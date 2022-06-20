@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ca-risken/diagnosis/proto/diagnosis"
+	"github.com/ca-risken/datasource-api/proto/diagnosis"
 )
 
 func (z *applicationScanClient) handleBasicScan(ctx context.Context, setting *diagnosis.ApplicationScanBasicSetting, applicationScanID, projectID uint32, name string) (*zapResult, error) {

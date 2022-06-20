@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/ca-risken/core/proto/finding"
+	"github.com/ca-risken/datasource-api/pkg/message"
 	"github.com/ca-risken/diagnosis/pkg/common"
-	"github.com/ca-risken/diagnosis/pkg/message"
 )
 
 func (s *sqsHandler) putFindings(ctx context.Context, zapResult *zapResult, msg *message.ApplicationScanQueueMessage, target string) error {

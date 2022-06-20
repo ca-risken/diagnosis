@@ -6,7 +6,7 @@ import (
 
 	"github.com/ca-risken/core/proto/alert"
 	"github.com/ca-risken/core/proto/finding"
-	"github.com/ca-risken/diagnosis/proto/diagnosis"
+	"github.com/ca-risken/datasource-api/proto/diagnosis"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
