@@ -89,13 +89,13 @@ func main() {
 	}
 
 	sqsConf := &SQSConfig{
-		Debug:                      conf.Debug,
-		AWSRegion:                  conf.AWSRegion,
-		SQSEndpoint:                conf.SQSEndpoint,
-		DiagnosisPortscanQueueName: conf.DiagnosisPortscanQueueName,
-		DiagnosisPortscanQueueURL:  conf.DiagnosisPortscanQueueURL,
-		MaxNumberOfMessage:         conf.MaxNumberOfMessage,
-		WaitTimeSecond:             conf.WaitTimeSecond,
+		Debug:              conf.Debug,
+		AWSRegion:          conf.AWSRegion,
+		SQSEndpoint:        conf.SQSEndpoint,
+		QueueName:          conf.DiagnosisPortscanQueueName,
+		QueueURL:           conf.DiagnosisPortscanQueueURL,
+		MaxNumberOfMessage: conf.MaxNumberOfMessage,
+		WaitTimeSecond:     conf.WaitTimeSecond,
 	}
 	consumer := newSQSConsumer(sqsConf)
 	appLogger.Info(ctx, "Start the portscan SQS consumer server...")

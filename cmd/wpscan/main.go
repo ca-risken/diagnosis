@@ -107,12 +107,12 @@ func main() {
 	}
 
 	sqsConf := &SQSConfig{
-		AWSRegion:                conf.AWSRegion,
-		Endpoint:                 conf.Endpoint,
-		DiagnosisWpscanQueueName: conf.DiagnosisWpscanQueueName,
-		DiagnosisWpscanQueueURL:  conf.DiagnosisWpscanQueueURL,
-		MaxNumberOfMessage:       conf.MaxNumberOfMessage,
-		WaitTimeSecond:           conf.WaitTimeSecond,
+		AWSRegion:          conf.AWSRegion,
+		Endpoint:           conf.Endpoint,
+		QueueName:          conf.DiagnosisWpscanQueueName,
+		QueueURL:           conf.DiagnosisWpscanQueueURL,
+		MaxNumberOfMessage: conf.MaxNumberOfMessage,
+		WaitTimeSecond:     conf.WaitTimeSecond,
 	}
 	consumer := newSQSConsumer(ctx, sqsConf)
 	appLogger.Info(ctx, "Start the wpscan SQS consumer server...")
