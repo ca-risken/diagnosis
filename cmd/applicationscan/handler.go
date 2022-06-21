@@ -89,7 +89,7 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
 		DataSource: msg.DataSource,
 		ProjectId:  msg.ProjectID,
-		Tag:        []string{setting.Target},
+		Tag:        []string{fmt.Sprintf("application_scan_id:%v", msg.ApplicationScanID)},
 	}); err != nil {
 		appLogger.Errorf(ctx, "Failed to clear finding score. ApplicationScanID: %v, error: %v", msg.ApplicationScanID, err)
 		return s.handleErrorWithUpdateStatus(ctx, msg, err)

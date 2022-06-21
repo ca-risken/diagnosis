@@ -49,8 +49,8 @@ func (s *sqsHandler) putFindings(ctx context.Context, zapResult *zapResult, msg 
 				appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", common.TagVulnerability, err)
 				return err
 			}
-			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, target); err != nil {
-				appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", target, err)
+			if err = s.tagFinding(ctx, res.Finding.ProjectId, res.Finding.FindingId, fmt.Sprintf("application_scan_id:%v", msg.ApplicationScanID)); err != nil {
+				appLogger.Errorf(ctx, "Failed to tag finding. tag: %v, error: %v", fmt.Sprintf("application_scan_id:%v", msg.ApplicationScanID), err)
 				return err
 			}
 			if err = s.putRecommend(ctx, res.Finding.ProjectId, res.Finding.FindingId, msg.DataSource, &alert); err != nil {
