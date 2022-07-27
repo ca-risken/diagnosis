@@ -111,7 +111,10 @@ func main() {
 		MaxNumberOfMessage: conf.MaxNumberOfMessage,
 		WaitTimeSecond:     conf.WaitTimeSecond,
 	}
-	consumer := newSQSConsumer(sqsConf)
+	consumer, err := newSQSConsumer(ctx, sqsConf)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create SQS consumer, err=%+v", err)
+	}
 	appLogger.Info(ctx, "Start the portscan SQS consumer server...")
 	consumer.Start(ctx,
 		mimosasqs.InitializeHandler(
