@@ -79,18 +79,31 @@ func main() {
 	tracer.Start(tc)
 	defer tracer.Stop()
 
-	handler := &sqsHandler{}
-	handler.wpscanConfig = WpscanConfig{
-		ResultPath:         conf.ResultPath,
-		WpscanVulndbApikey: conf.WpscanVulndbApikey,
+	findingClient, err := newFindingClient(ctx, conf.CoreAddr)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create finding client, err=%+v", err)
 	}
-	appLogger.Info(ctx, "Start Wpscan Client")
-	handler.findingClient = newFindingClient(conf.CoreAddr)
 	appLogger.Info(ctx, "Start Finding Client")
-	handler.alertClient = newAlertClient(conf.CoreAddr)
+	alertClient, err := newAlertClient(ctx, conf.CoreAddr)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create alert client, err=%+v", err)
+	}
 	appLogger.Info(ctx, "Start Alert Client")
-	handler.diagnosisClient = newDiagnosisClient(conf.DataSourceAPISvcAddr)
+	diagnosisClient, err := newDiagnosisClient(ctx, conf.DataSourceAPISvcAddr)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create diagnosis client, err=%+v", err)
+	}
 	appLogger.Info(ctx, "Start Diagnosis Client")
+	handler := &sqsHandler{
+		wpscanConfig: WpscanConfig{
+			ResultPath:         conf.ResultPath,
+			WpscanVulndbApikey: conf.WpscanVulndbApikey,
+		},
+		findingClient:   findingClient,
+		alertClient:     alertClient,
+		diagnosisClient: diagnosisClient,
+	}
+
 	f, err := mimosasqs.NewFinalizer(message.DataSourceNameWPScan, settingURL, conf.CoreAddr, &mimosasqs.DataSourceRecommnend{
 		ScanFailureRisk: fmt.Sprintf("Failed to scan %s, So you are not gathering the latest security threat information.", message.DataSourceNameWPScan),
 		ScanFailureRecommendation: fmt.Sprintf(`Please review the following items and rescan,
