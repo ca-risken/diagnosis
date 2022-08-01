@@ -19,6 +19,7 @@ func (s *sqsHandler) putFindings(ctx context.Context, zapResult *zapResult, msg 
 			data, err := json.Marshal(map[string]zapResultAlert{"data": alert})
 			if err != nil {
 				appLogger.Errorf(ctx, "Failed to marshal zapResult for makeFinding. err: %v", err)
+				return err
 			}
 			res, err := s.findingClient.PutFinding(ctx, &finding.PutFindingRequest{Finding: &finding.FindingForUpsert{
 				Description:      getDescription(&alert, target),
