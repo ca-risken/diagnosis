@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -31,12 +32,14 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 	msg, err := parseMessage(msgBody)
 	if err != nil {
 		appLogger.Errorf(ctx, "Invalid message. message: %v, error: %v", msgBody, err)
-		return s.handleErrorWithUpdateStatus(ctx, msg, err)
+		s.updateStatusToError(ctx, msg, err)
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	var options wpscanOptions
 	if err := json.Unmarshal([]byte(msg.Options), &options); err != nil {
 		appLogger.Errorf(ctx, "Failed to Unmarshal options. message: %v, error: %v", msgBody, err)
-		return s.handleErrorWithUpdateStatus(ctx, msg, err)
+		s.updateStatusToError(ctx, msg, err)
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	requestID, err := appLogger.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
@@ -51,8 +54,9 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 	tspan.Finish(tracer.WithError(err))
 	if err != nil {
 		appLogger.Errorf(ctx, "Failed exec WPScan, error: %v", err)
-		_ = s.putWpscanSetting(ctx, msg.WpscanSettingID, msg.ProjectID, false, "Failed exec WPScan Ask the system administrator. ")
-		return s.handleErrorWithUpdateStatus(ctx, msg, err)
+		// Customize error message when failed WPScan
+		s.updateStatusToError(ctx, msg, errors.New("Failed exec WPScan Ask the system administrator. "))
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	// Clear finding score
 	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
@@ -61,12 +65,14 @@ func (s *sqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 		Tag:        []string{msg.TargetURL},
 	}); err != nil {
 		appLogger.Errorf(ctx, "Failed to clear finding score. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
-		return s.handleErrorWithUpdateStatus(ctx, msg, err)
+		s.updateStatusToError(ctx, msg, err)
+		return mimosasqs.WrapNonRetryable(err)
 	}
 	err = s.putFindings(ctx, wpscanResult, msg)
 	if err != nil {
 		appLogger.Errorf(ctx, "Failed put Findings, error: %v", err)
-		return s.handleErrorWithUpdateStatus(ctx, msg, err)
+		s.updateStatusToError(ctx, msg, err)
+		return mimosasqs.WrapNonRetryable(err)
 	}
 
 	// Put WpscanSetting
@@ -95,11 +101,10 @@ func parseMessage(msg string) (*message.WpscanQueueMessage, error) {
 	return message, nil
 }
 
-func (s *sqsHandler) handleErrorWithUpdateStatus(ctx context.Context, msg *message.WpscanQueueMessage, err error) error {
+func (s *sqsHandler) updateStatusToError(ctx context.Context, msg *message.WpscanQueueMessage, err error) {
 	if updateErr := s.putWpscanSetting(ctx, msg.WpscanSettingID, msg.ProjectID, false, err.Error()); updateErr != nil {
 		appLogger.Warnf(ctx, "Failed to update scan status error: err=%+v", updateErr)
 	}
-	return mimosasqs.WrapNonRetryable(err)
 }
 
 func (s *sqsHandler) putWpscanSetting(ctx context.Context, wpscanSettingID, projectID uint32, isSuccess bool, errDetail string) error {
