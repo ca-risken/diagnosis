@@ -96,7 +96,10 @@ func execWPScan(ctx context.Context, cmd *exec.Cmd) error {
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
-	_ = cmd.Run()
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("failed to run command, err=%w", err)
+	}
 	exitCode := cmd.ProcessState.ExitCode()
 	if exitCode != 0 && exitCode != 5 {
 		appLogger.Errorf(ctx, "Failed exec WPScan. exitCode: %v", exitCode)
@@ -112,16 +115,14 @@ func checkOpen(wpURL string) (*checkAccess, error) {
 		if zero.IsZeroVal(target.Goal) {
 			goal = target.URL
 		}
-		var req *http.Request
-		switch target.Method {
-		case "GET":
-			req, _ = http.NewRequest("GET", target.URL, nil)
-		case "POST":
-			req, _ = http.NewRequest("POST", target.URL, nil)
-		default:
+		if target.Method != "GET" && target.Method != "POST" {
 			return nil, fmt.Errorf("invalid checkAccessTarget method: %v", target.Method)
 		}
 
+		req, err := http.NewRequest(target.Method, target.URL, nil)
+		if err != nil {
+			return nil, err
+		}
 		client := new(http.Client)
 		resp, err := client.Do(req)
 		if err != nil {
