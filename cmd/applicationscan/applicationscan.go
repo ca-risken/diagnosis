@@ -53,7 +53,7 @@ func (c *applicationScanClient) executeZap(ctx context.Context, apiKeyValue stri
 		return 0, err
 	}
 	pID := cmd.Process.Pid
-	err = c.WaitForStartingZap()
+	err = c.WaitForStartingZap(ctx)
 	if err != nil {
 		appLogger.Errorf(ctx, "Failed to execute ZAP. cmd: %v, error: %v", cmd, err)
 		return 0, err

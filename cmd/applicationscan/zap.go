@@ -1,8 +1,7 @@
 package main
 
 import (
-	//	"context"
-
+	"context"
 	"fmt"
 	"strconv"
 	"time"
@@ -124,17 +123,20 @@ func (c *applicationScanClient) Jsonreport() ([]byte, error) {
 	return c.RequestOther("core/other/jsonreport/", nil)
 }
 
-func (c *applicationScanClient) WaitForStartingZap() error {
+func (c *applicationScanClient) WaitForStartingZap(ctx context.Context) error {
 	WaitDuration := 300.0
 	now := time.Now()
+	count := 1
 	for {
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 20)
 		_, err := c.RequestOther("", nil)
 		if err == nil {
 			return nil
 		}
+		appLogger.Infof(ctx, "Waiting to start ZAP. wait time: %d [sec], err: %+v", count*20, err)
 		if time.Since(now).Seconds() > WaitDuration {
 			return fmt.Errorf("ZAP doesn't start. waitDuration: %v", WaitDuration)
 		}
+		count++
 	}
 }
