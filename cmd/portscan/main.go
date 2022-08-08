@@ -79,10 +79,24 @@ func main() {
 	tracer.Start(tc)
 	defer tracer.Stop()
 
-	handler := &sqsHandler{}
-	handler.findingClient = newFindingClient(conf.CoreAddr)
-	handler.alertClient = newAlertClient(conf.CoreAddr)
-	handler.diagnosisClient = newDiagnosisClient(conf.DataSourceAPISvcAddr)
+	findingClient, err := newFindingClient(ctx, conf.CoreAddr)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create finding client, err=%+v", err)
+	}
+	alertClient, err := newAlertClient(ctx, conf.CoreAddr)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create alert client, err=%+v", err)
+	}
+	diagnosisClient, err := newDiagnosisClient(ctx, conf.DataSourceAPISvcAddr)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create diagnosis client, err=%+v", err)
+	}
+	handler := &sqsHandler{
+		findingClient:   findingClient,
+		alertClient:     alertClient,
+		diagnosisClient: diagnosisClient,
+	}
+
 	f, err := mimosasqs.NewFinalizer(message.DataSourceNamePortScan, settingURL, conf.CoreAddr, nil)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create Finalizer, err=%+v", err)
@@ -97,7 +111,10 @@ func main() {
 		MaxNumberOfMessage: conf.MaxNumberOfMessage,
 		WaitTimeSecond:     conf.WaitTimeSecond,
 	}
-	consumer := newSQSConsumer(sqsConf)
+	consumer, err := newSQSConsumer(ctx, sqsConf)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create SQS consumer, err=%+v", err)
+	}
 	appLogger.Info(ctx, "Start the portscan SQS consumer server...")
 	consumer.Start(ctx,
 		mimosasqs.InitializeHandler(
