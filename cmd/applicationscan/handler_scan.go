@@ -93,15 +93,16 @@ func (c *applicationScanClient) HandleSpiderScan(ctx context.Context, contextNam
 			appLogger.Errorf(ctx, "Failed to get status spider, error: %v", err)
 			return err
 		}
-		if retSpiderStatus["status"] == nil {
+		status := retSpiderStatus["status"]
+		if status == nil {
 			err = errors.New("SpiderScanStatus is null")
 			appLogger.Errorf(ctx, "Failed to get spider scan status, error: %v", err)
 			return err
 		}
-		spiderStatus, err := strconv.Atoi(retSpiderStatus["status"].(string))
+		spiderStatus, err := strconv.Atoi(status.(string))
 		if err != nil {
-			appLogger.Errorf(ctx, "Failed to convert spider status. error: %v", err)
-			break
+			appLogger.Errorf(ctx, "Failed to convert spider status to int. status: %v, error: %v", status, err)
+			return fmt.Errorf("invalid spider status. err: %w", err)
 		}
 		if spiderStatus >= 100 {
 			break
@@ -129,15 +130,16 @@ func (c *applicationScanClient) HandleActiveScan(ctx context.Context) error {
 			appLogger.Errorf(ctx, "Failed to get active scan status, error: %v", err)
 			return err
 		}
-		if retAscanStatus["status"] == nil {
+		status := retAscanStatus["status"]
+		if status == nil {
 			err = errors.New("ActiveScanStatus is null")
 			appLogger.Errorf(ctx, "Failed to get active scan status, error: %v", err)
 			return err
 		}
-		ascanStatus, err := strconv.Atoi(retAscanStatus["status"].(string))
+		ascanStatus, err := strconv.Atoi(status.(string))
 		if err != nil {
-			appLogger.Errorf(ctx, "Failed to convert active scan status. error: %v", err)
-			break
+			appLogger.Errorf(ctx, "Failed to convert active scan status to int. status: %v, error: %v", status, err)
+			return fmt.Errorf("invalid active scan status. err: %w", err)
 		}
 		if ascanStatus >= 100 {
 			break
