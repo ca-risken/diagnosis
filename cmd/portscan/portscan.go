@@ -37,16 +37,7 @@ func (p *portscanClient) scan(ctx context.Context) ([]*portscan.NmapResult, erro
 	for _, target := range p.target {
 		results, err := portscan.Scan(target.Target, target.Protocol, target.FromPort, target.ToPort)
 		if err != nil {
-			appLogger.Warnf(ctx, "Error occured when scanning. err: %v", err)
-			// TODO 以下を確認したら、エラーの種類によるハンドリングはせずにそのまま呼び出し元に返すように変更する予定
-			// 握りつぶしていたエラーを返すようにしたが、そのエラーがどれくらい発生していたかが不明なためそのままエラーを返すとオペレーションの負荷が高くなる可能性がある。
-			// 発生件数を確認するためにログ出力だけを行いエラーは返さずに終了させる。
-			if _, ok := err.(*portscan.ResultAnalysisError); ok {
-				appLogger.Warnf(ctx, "Failed to analyze portscan results, err=%+v", err)
-				return nmapResults, nil
-			} else {
-				return nmapResults, err
-			}
+			return nil, err
 		}
 		for _, result := range results {
 			result.ResourceName = target.Target
