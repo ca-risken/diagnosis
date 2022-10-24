@@ -11,6 +11,10 @@ import (
 	"github.com/ca-risken/diagnosis/pkg/common"
 )
 
+const (
+	MaxScore = 10.0
+)
+
 func (s *sqsHandler) putNmapFinding(ctx context.Context, nmapResult *portscan.NmapResult, projectID uint32, dataSource, data string, target string) error {
 	putFinding := &finding.FindingForUpsert{
 		Description:      nmapResult.GetDescription(),
@@ -19,7 +23,7 @@ func (s *sqsHandler) putNmapFinding(ctx context.Context, nmapResult *portscan.Nm
 		ResourceName:     nmapResult.ResourceName,
 		ProjectId:        projectID,
 		OriginalScore:    nmapResult.GetScore(),
-		OriginalMaxScore: 10.0,
+		OriginalMaxScore: MaxScore,
 		Data:             data,
 	}
 	resFinding, err := s.putFinding(ctx, putFinding, target)
@@ -55,7 +59,7 @@ func (s *sqsHandler) putAdditionalFinding(ctx context.Context, nmapResult *ports
 			ResourceName:     nmapResult.ResourceName,
 			ProjectId:        projectID,
 			OriginalScore:    additionalCheckResult.GetScore(),
-			OriginalMaxScore: 10.0,
+			OriginalMaxScore: MaxScore,
 			Data:             data,
 		}
 		resFinding, err := s.putFinding(ctx, addFinding, target)
