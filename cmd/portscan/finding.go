@@ -55,7 +55,7 @@ func (s *sqsHandler) putAdditionalFinding(ctx context.Context, nmapResult *ports
 			ResourceName:     nmapResult.ResourceName,
 			ProjectId:        projectID,
 			OriginalScore:    additionalCheckResult.GetScore(),
-			OriginalMaxScore: 1.0,
+			OriginalMaxScore: 10.0,
 			Data:             data,
 		}
 		resFinding, err := s.putFinding(ctx, addFinding, target)
