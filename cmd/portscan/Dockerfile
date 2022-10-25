@@ -1,15 +1,15 @@
-FROM golang:1.17 AS builder
+FROM golang:1.18.2 AS builder
 
 WORKDIR /go/src/github.com/ca-risken/diagnosis/cmd/portscan/
 
 ADD *.go go.* ./
-ENV CGO_ENABLED=0
 ARG GITHUB_USER
 ARG GITHUB_TOKEN
 RUN echo "machine github.com" > ~/.netrc
 RUN echo "login $GITHUB_USER" >> ~/.netrc
 RUN echo "password $GITHUB_TOKEN" >> ~/.netrc
-RUN go build && cp portscan /go/bin/
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o /go/bin/
 
 FROM public.ecr.aws/risken/base/risken-base:v0.0.1
 RUN apk add --no-cache nmap nmap-scripts
