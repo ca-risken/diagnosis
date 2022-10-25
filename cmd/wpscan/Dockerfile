@@ -1,4 +1,4 @@
-FROM golang:1.17 AS builder
+FROM golang:1.18.2 AS builder
 
 WORKDIR /go/src/github.com/ca-risken/diagnosis/src/wpscan/
 
@@ -10,7 +10,8 @@ ARG GITHUB_TOKEN
 RUN echo "machine github.com" > ~/.netrc
 RUN echo "login $GITHUB_USER" >> ~/.netrc
 RUN echo "password $GITHUB_TOKEN" >> ~/.netrc
-RUN go build && cp wpscan /go/bin/
+RUN go mod download
+RUN GO_ENABLED=0 GOOS=linux go build -buildvcs=false -o /go/bin/
 
 WORKDIR /go/src/github.com/gassara-kys
 RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_VERSION} \
