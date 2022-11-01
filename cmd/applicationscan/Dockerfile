@@ -1,26 +1,19 @@
 FROM golang:1.18.2 AS builder
-
 WORKDIR /go/src/github.com/ca-risken/diagnosis/cmd/applicationscan/
-
 ADD *.go go.* ./
-ARG ENV_INJECTOR_VERSION=v0.0.6
-ARG GITHUB_USER
-ARG GITHUB_TOKEN
-RUN echo "machine github.com" > ~/.netrc
-RUN echo "login $GITHUB_USER" >> ~/.netrc
-RUN echo "password $GITHUB_TOKEN" >> ~/.netrc
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o /go/bin/
 
 WORKDIR /go/src/github.com/gassara-kys
+ARG ENV_INJECTOR_VERSION=v0.0.6
 RUN git clone https://github.com/gassara-kys/env-injector.git -b ${ENV_INJECTOR_VERSION} \
   && cd env-injector \
-  && go build \
-  && cp env-injector /go/bin/
+  && go mod download \
+  && CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o /go/bin/
 
 FROM public.ecr.aws/w4a9j2y8/diagnosis/applicationscan-base:v2.10.0
 COPY --from=builder /go/bin/env-injector /usr/local/bin/
-COPY --from=builder /go/bin/applicationscan /usr/local/applicationscan/bin/
+COPY --from=builder /go/bin/applicationscan /usr/local/bin/
 ENV DEBUG= \
   PROFILE_EXPORTER= \
   PROFILE_TYPES= \
@@ -39,6 +32,6 @@ ENV DEBUG= \
   AWS_SVC_ADDR= \
   ZAP_PORT= \
   TZ=Asia/Tokyo
-WORKDIR /usr/local/applicationscan
-ENTRYPOINT ["/usr/local/bin/env-injector"]
+WORKDIR /usr/local/
+ENTRYPOINT ["bin/env-injector"]
 CMD ["bin/applicationscan"]
