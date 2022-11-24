@@ -4,10 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ca-risken/common/pkg/logging"
 	"github.com/ca-risken/common/pkg/profiler"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/common/pkg/tracer"
 	"github.com/ca-risken/datasource-api/pkg/message"
+	"github.com/ca-risken/diagnosis/pkg/grpc"
+	"github.com/ca-risken/diagnosis/pkg/portscan"
+	"github.com/ca-risken/diagnosis/pkg/sqs"
 	"github.com/gassara-kys/envconfig"
 )
 
@@ -16,6 +20,8 @@ const (
 	serviceName = "portscan"
 	settingURL  = "https://docs.security-hub.jp/diagnosis/portscan_datasource/"
 )
+
+var appLogger = logging.NewLogger()
 
 func getFullServiceName() string {
 	return fmt.Sprintf("%s.%s", nameSpace, serviceName)
@@ -79,30 +85,26 @@ func main() {
 	tracer.Start(tc)
 	defer tracer.Stop()
 
-	findingClient, err := newFindingClient(ctx, conf.CoreAddr)
+	fc, err := grpc.NewFindingClient(conf.CoreAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create finding client, err=%+v", err)
 	}
-	alertClient, err := newAlertClient(ctx, conf.CoreAddr)
+	ac, err := grpc.NewAlertClient(conf.CoreAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create alert client, err=%+v", err)
 	}
-	diagnosisClient, err := newDiagnosisClient(ctx, conf.DataSourceAPISvcAddr)
+	dc, err := grpc.NewDiagnosisClient(conf.DataSourceAPISvcAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create diagnosis client, err=%+v", err)
 	}
-	handler := &sqsHandler{
-		findingClient:   findingClient,
-		alertClient:     alertClient,
-		diagnosisClient: diagnosisClient,
-	}
+	handler := portscan.NewSqsHandler(fc, ac, dc, appLogger)
 
 	f, err := mimosasqs.NewFinalizer(message.DataSourceNamePortScan, settingURL, conf.CoreAddr, nil)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create Finalizer, err=%+v", err)
 	}
 
-	sqsConf := &SQSConfig{
+	sqsConf := &sqs.SQSConfig{
 		Debug:              conf.Debug,
 		AWSRegion:          conf.AWSRegion,
 		SQSEndpoint:        conf.SQSEndpoint,
@@ -111,7 +113,7 @@ func main() {
 		MaxNumberOfMessage: conf.MaxNumberOfMessage,
 		WaitTimeSecond:     conf.WaitTimeSecond,
 	}
-	consumer, err := newSQSConsumer(ctx, sqsConf)
+	consumer, err := sqs.NewSQSConsumer(ctx, sqsConf, appLogger)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create SQS consumer, err=%+v", err)
 	}

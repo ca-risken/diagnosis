@@ -3,16 +3,10 @@ version: 0.2
 env:
   variables:
     IMAGE_APPLICATIONSCAN_BASE: "diagnosis/applicationscan-base"
-  parameter-store:
-    GITHUB_USER: "/build/GITHUB_USER"
-    GITHUB_TOKEN: "/build/GITHUB_TOKEN"
 
 phases:
   install:
     commands:
-      - echo "machine github.com" > ~/.netrc
-      - echo "login ${GITHUB_USER}" >> ~/.netrc
-      - echo "password ${GITHUB_TOKEN}" >> ~/.netrc
       - export DOCKER_CLI_EXPERIMENTAL=enabled
   pre_build:
     commands:

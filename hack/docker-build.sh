@@ -5,4 +5,4 @@ fi
 if [ "${IMAGE_PREFIX}" = "" ]; then
   IMAGE_PREFIX=default_prefix
 fi
-cd cmd/${TARGET} && docker build ${BUILD_OPT} -t ${IMAGE_PREFIX}/${TARGET}:${IMAGE_TAG} .
+docker build ${BUILD_OPT} -t ${IMAGE_PREFIX}/${TARGET}:${IMAGE_TAG} -f dockers/${TARGET}/Dockerfile .

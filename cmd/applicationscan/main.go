@@ -4,10 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ca-risken/common/pkg/logging"
 	"github.com/ca-risken/common/pkg/profiler"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/common/pkg/tracer"
 	"github.com/ca-risken/datasource-api/pkg/message"
+	"github.com/ca-risken/diagnosis/pkg/applicationscan"
+	"github.com/ca-risken/diagnosis/pkg/grpc"
+	"github.com/ca-risken/diagnosis/pkg/sqs"
 	"github.com/gassara-kys/envconfig"
 )
 
@@ -16,6 +20,8 @@ const (
 	serviceName = "applicationscan"
 	settingURL  = "https://docs.security-hub.jp/diagnosis/applicationscan_datasource/"
 )
+
+var appLogger = logging.NewLogger()
 
 func getFullServiceName() string {
 	return fmt.Sprintf("%s.%s", nameSpace, serviceName)
@@ -85,37 +91,34 @@ func main() {
 	tracer.Start(tc)
 	defer tracer.Stop()
 
-	findingClient, err := newFindingClient(ctx, conf.CoreAddr)
+	fc, err := grpc.NewFindingClient(conf.CoreAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create finding client, err=%+v", err)
 	}
 	appLogger.Info(ctx, "Start Finding Client")
-	alertClient, err := newAlertClient(ctx, conf.CoreAddr)
+	ac, err := grpc.NewAlertClient(conf.CoreAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create alert client, err=%+v", err)
 	}
 	appLogger.Info(ctx, "Start Alert Client")
-	diagnosisClient, err := newDiagnosisClient(ctx, conf.DataSourceAPISvcAddr)
+	dc, err := grpc.NewDiagnosisClient(conf.DataSourceAPISvcAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create diagnosis client, err=%+v", err)
 	}
 	appLogger.Info(ctx, "Start Diagnosis Client")
-	handler := &sqsHandler{
-		zapPort:         conf.ZapPort,
-		zapPath:         conf.ZapPath,
-		zapApiKeyName:   conf.ZapApiKeyName,
-		zapApiKeyHeader: conf.ZapApiKeyHeader,
-		findingClient:   findingClient,
-		alertClient:     alertClient,
-		diagnosisClient: diagnosisClient,
+	appc, err := applicationscan.NewApplicationScanClient(conf.ZapPort, conf.ZapPath, conf.ZapApiKeyName, conf.ZapApiKeyHeader, appLogger)
+	if err != nil {
+		appLogger.Fatalf(ctx, "Failed to create diagnosis client, err=%+v", err)
 	}
+	appLogger.Info(ctx, "Start ApplicationScan Client")
+	handler := applicationscan.NewSqsHandler(fc, ac, dc, appc, appLogger)
 
 	f, err := mimosasqs.NewFinalizer(message.DataSourceNameApplicationScan, settingURL, conf.CoreAddr, nil)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create Finalizer, err=%+v", err)
 	}
 
-	sqsConf := &SQSConfig{
+	sqsConf := &sqs.SQSConfig{
 		Debug:              conf.Debug,
 		AWSRegion:          conf.AWSRegion,
 		SQSEndpoint:        conf.SQSEndpoint,
@@ -124,7 +127,7 @@ func main() {
 		MaxNumberOfMessage: conf.MaxNumberOfMessage,
 		WaitTimeSecond:     conf.WaitTimeSecond,
 	}
-	consumer, err := newSQSConsumer(ctx, sqsConf)
+	consumer, err := sqs.NewSQSConsumer(ctx, sqsConf, appLogger)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create SQS consumer, err=%+v", err)
 	}

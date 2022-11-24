@@ -23,7 +23,7 @@ ecr-login:
 
 .PHONY: build
 build: $(BUILD_TARGETS)
-%.build: %.go-test
+%.build: go-test
 	TARGET=$(*) IMAGE_TAG=$(IMAGE_TAG) IMAGE_PREFIX=$(IMAGE_PREFIX) BUILD_OPT="$(BUILD_OPT)" . hack/docker-build.sh
 
 .PHONY: build-ci
@@ -60,46 +60,18 @@ push-manifest: $(MANIFEST_PUSH_TARGETS)
 	docker manifest push $(IMAGE_REGISTRY)/$(IMAGE_PREFIX)/$(*):$(MANIFEST_TAG)
 	docker manifest inspect $(IMAGE_REGISTRY)/$(IMAGE_PREFIX)/$(*):$(MANIFEST_TAG)
 
-.PHONY: go-test pkg-test
-go-test: $(TEST_TARGETS) pkg-test
-%.go-test: FAKE
-	cd cmd/$(*) && GO111MODULE=on go test ./...
-pkg-test:
-	cd pkg/common && GO111MODULE=on go test ./...
+.PHONY: go-test
+go-test:
+	GO111MODULE=on go test ./...
 
-.PHONY: go-mod-update
-go-mod-update:
-	cd cmd/wpscan \
-		&& go get -u \
-			github.com/ca-risken/core/... \
-			github.com/ca-risken/datasource-api/... \
-			github.com/ca-risken/diagnosis/...
-	cd cmd/portscan \
-		&& go get -u \
-			github.com/ca-risken/core/... \
-			github.com/ca-risken/datasource-api/... \
-			github.com/ca-risken/diagnosis/...
-	cd cmd/applicationscan \
-		&& go get -u \
-			github.com/ca-risken/core/... \
-			github.com/ca-risken/datasource-api/... \
-			github.com/ca-risken/diagnosis/...
+.PHONY: lint
+lint:
+	GO111MODULE=on GOFLAGS=-buildvcs=false golangci-lint run --timeout 5m
 
-.PHONY: go-mod-tidy
-go-mod-tidy:
-	cd cmd/wpscan           && go mod tidy
-	cd cmd/portscan         && go mod tidy
-	cd cmd/applicationscan  && go mod tidy
-
-.PHONY: lint pkg-lint
-lint: $(LINT_TARGETS) pkg-lint
-%.lint: FAKE
-	sh hack/golinter.sh cmd/$(*)
-pkg-lint:
-	sh hack/golinter.sh pkg/common
-
-.PHONY: workspace
-workspace:
-	go work use -r .
+enqueue-portscan:
+	aws sqs send-message \
+		--endpoint-url http://localhost:9324 \
+		--queue-url http://localhost:9324/queue/diagnosis-portscan \
+		--message-body '{"data_source":"diagnosis:portscan", "project_id":1001, "portscan_setting_id":1001, "portscan_target_id":1001, "target":"127.0.0.1", "scan_only":"false"}'
 
 FAKE:
