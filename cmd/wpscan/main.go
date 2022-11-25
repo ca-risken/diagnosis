@@ -4,10 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ca-risken/common/pkg/logging"
 	"github.com/ca-risken/common/pkg/profiler"
 	mimosasqs "github.com/ca-risken/common/pkg/sqs"
 	"github.com/ca-risken/common/pkg/tracer"
 	"github.com/ca-risken/datasource-api/pkg/message"
+	"github.com/ca-risken/diagnosis/pkg/grpc"
+	"github.com/ca-risken/diagnosis/pkg/sqs"
+	"github.com/ca-risken/diagnosis/pkg/wpscan"
 	"github.com/gassara-kys/envconfig"
 )
 
@@ -16,6 +20,8 @@ const (
 	serviceName = "wpscan"
 	settingURL  = "https://docs.security-hub.jp/diagnosis/wpscan_datasource/"
 )
+
+var appLogger = logging.NewLogger()
 
 func getFullServiceName() string {
 	return fmt.Sprintf("%s.%s", nameSpace, serviceName)
@@ -79,30 +85,23 @@ func main() {
 	tracer.Start(tc)
 	defer tracer.Stop()
 
-	findingClient, err := newFindingClient(ctx, conf.CoreAddr)
+	wc := wpscan.NewWpscanConfig(conf.ResultPath, conf.WpscanVulndbApikey, appLogger)
+	fc, err := grpc.NewFindingClient(conf.CoreAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create finding client, err=%+v", err)
 	}
 	appLogger.Info(ctx, "Start Finding Client")
-	alertClient, err := newAlertClient(ctx, conf.CoreAddr)
+	ac, err := grpc.NewAlertClient(conf.CoreAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create alert client, err=%+v", err)
 	}
 	appLogger.Info(ctx, "Start Alert Client")
-	diagnosisClient, err := newDiagnosisClient(ctx, conf.DataSourceAPISvcAddr)
+	dc, err := grpc.NewDiagnosisClient(conf.DataSourceAPISvcAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create diagnosis client, err=%+v", err)
 	}
 	appLogger.Info(ctx, "Start Diagnosis Client")
-	handler := &sqsHandler{
-		wpscanConfig: WpscanConfig{
-			ResultPath:         conf.ResultPath,
-			WpscanVulndbApikey: conf.WpscanVulndbApikey,
-		},
-		findingClient:   findingClient,
-		alertClient:     alertClient,
-		diagnosisClient: diagnosisClient,
-	}
+	handler := wpscan.NewSqsHandler(wc, fc, ac, dc, appLogger)
 
 	f, err := mimosasqs.NewFinalizer(message.DataSourceNameWPScan, settingURL, conf.CoreAddr, &mimosasqs.DataSourceRecommnend{
 		ScanFailureRisk: fmt.Sprintf("Failed to scan %s, So you are not gathering the latest security threat information.", message.DataSourceNameWPScan),
@@ -119,15 +118,15 @@ func main() {
 		appLogger.Fatalf(ctx, "Failed to create Finalizer, err=%+v", err)
 	}
 
-	sqsConf := &SQSConfig{
+	sqsConf := &sqs.SQSConfig{
 		AWSRegion:          conf.AWSRegion,
-		Endpoint:           conf.Endpoint,
+		SQSEndpoint:        conf.Endpoint,
 		QueueName:          conf.DiagnosisWpscanQueueName,
 		QueueURL:           conf.DiagnosisWpscanQueueURL,
 		MaxNumberOfMessage: conf.MaxNumberOfMessage,
 		WaitTimeSecond:     conf.WaitTimeSecond,
 	}
-	consumer, err := newSQSConsumer(ctx, sqsConf)
+	consumer, err := sqs.NewSQSConsumer(ctx, sqsConf, appLogger)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create SQS consumer, err=%+v", err)
 	}
