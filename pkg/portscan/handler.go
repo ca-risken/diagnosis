@@ -48,6 +48,8 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 		s.updateStatusToError(ctx, msg, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
+
+	beforeScanAt := time.Now()
 	requestID, err := s.logger.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
 		s.logger.Warnf(ctx, "Failed to generate requestID: err=%+v", err)
@@ -74,20 +76,21 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 		return mimosasqs.WrapNonRetryable(err)
 	}
 
-	// Clear finding score
-	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
-		DataSource: msg.DataSource,
-		ProjectId:  msg.ProjectID,
-		Tag:        []string{msg.Target},
-	}); err != nil {
-		s.logger.Errorf(ctx, "Failed to clear finding score. PortscanSettingID: %v, error: %v", msg.PortscanSettingID, err)
+	// Put finding to core
+	if err := s.putFindings(ctx, nmapResults, msg); err != nil {
+		s.logger.Errorf(ctx, "Failed to put findings: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
 		s.updateStatusToError(ctx, msg, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
 
-	// Put finding to core
-	if err := s.putFindings(ctx, nmapResults, msg); err != nil {
-		s.logger.Errorf(ctx, "Failed to put findings: PortscanSettingID=%+v, Target=%+v, err=%+v", msg.PortscanSettingID, msg.Target, err)
+	// Clear score for inactive findings
+	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
+		DataSource: msg.DataSource,
+		ProjectId:  msg.ProjectID,
+		Tag:        []string{msg.Target},
+		BeforeAt:   beforeScanAt.Unix(),
+	}); err != nil {
+		s.logger.Errorf(ctx, "Failed to clear finding score. PortscanSettingID: %v, error: %v", msg.PortscanSettingID, err)
 		s.updateStatusToError(ctx, msg, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
