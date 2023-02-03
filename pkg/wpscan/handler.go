@@ -58,6 +58,8 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 		s.updateStatusToError(ctx, msg, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}
+
+	beforeScanAt := time.Now()
 	requestID, err := s.logger.GenerateRequestID(fmt.Sprint(msg.ProjectID))
 	if err != nil {
 		s.logger.Warnf(ctx, "Failed to generate requestID: err=%+v", err)
@@ -75,19 +77,21 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 		s.updateStatusToError(ctx, msg, errors.New("Failed exec WPScan Ask the system administrator. "))
 		return mimosasqs.WrapNonRetryable(err)
 	}
-	// Clear finding score
+	err = s.putFindings(ctx, wpscanResult, msg)
+	if err != nil {
+		s.logger.Errorf(ctx, "Failed put Findings, error: %v", err)
+		s.updateStatusToError(ctx, msg, err)
+		return mimosasqs.WrapNonRetryable(err)
+	}
+
+	// Clear score for inactive findings
 	if _, err := s.findingClient.ClearScore(ctx, &finding.ClearScoreRequest{
 		DataSource: msg.DataSource,
 		ProjectId:  msg.ProjectID,
 		Tag:        []string{msg.TargetURL},
+		BeforeAt:   beforeScanAt.Unix(),
 	}); err != nil {
 		s.logger.Errorf(ctx, "Failed to clear finding score. WpscanSettingID: %v, error: %v", msg.WpscanSettingID, err)
-		s.updateStatusToError(ctx, msg, err)
-		return mimosasqs.WrapNonRetryable(err)
-	}
-	err = s.putFindings(ctx, wpscanResult, msg)
-	if err != nil {
-		s.logger.Errorf(ctx, "Failed put Findings, error: %v", err)
 		s.updateStatusToError(ctx, msg, err)
 		return mimosasqs.WrapNonRetryable(err)
 	}

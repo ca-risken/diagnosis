@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -125,7 +125,7 @@ func (a *ApplicationScanClient) request(path string, queryParams map[string]stri
 		return nil, fmt.Errorf("Errored when sending request to the server: %v", err)
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 func (a *ApplicationScanClient) setApiKey(key string) {
