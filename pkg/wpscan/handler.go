@@ -74,7 +74,7 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 	if err != nil {
 		s.logger.Errorf(ctx, "Failed exec WPScan, error: %v", err)
 		// Customize error message when failed WPScan
-		s.updateStatusToError(ctx, msg, errors.New("Failed exec WPScan Ask the system administrator. "))
+		s.updateStatusToError(ctx, msg, errors.New("failed exec WPScan. See the document. https://docs.security-hub.jp/contact/faq/#wpscan"))
 		return mimosasqs.WrapNonRetryable(err)
 	}
 	err = s.putFindings(ctx, wpscanResult, msg)

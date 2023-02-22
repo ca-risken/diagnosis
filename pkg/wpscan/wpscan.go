@@ -16,29 +16,25 @@ import (
 )
 
 type WpscanConfig struct {
-	ResultPath         string
-	WpscanVulndbApikey string
-	logger             logging.Logger
+	ResultPath string
+	logger     logging.Logger
 }
 
 func NewWpscanConfig(
 	resultPath string,
-	wpscanVulndbApikey string,
 	l logging.Logger,
 
 ) *WpscanConfig {
 	return &WpscanConfig{
-		ResultPath:         resultPath,
-		WpscanVulndbApikey: wpscanVulndbApikey,
-		logger:             l,
+		ResultPath: resultPath,
+		logger:     l,
 	}
 }
 
 func (w *WpscanConfig) run(ctx context.Context, target string, wpscanSettingID uint32, options wpscanOptions) (*wpscanResult, error) {
 	now := time.Now().UnixNano()
 	filePath := fmt.Sprintf("%s/%v_%v.json", w.ResultPath, wpscanSettingID, now)
-	args := []string{"--clear-cache", "--disable-tls-checks", "--url", target, "-e", "vp,u1-5", "--wp-version-all", "-f", "json", "-o", filePath}
-	isUseAPIKey := false
+	args := []string{"--clear-cache", "--disable-tls-checks", "--url", target, "-e", "u1-5", "--wp-version-all", "-f", "json", "-o", filePath}
 	if options.Force {
 		args = append(args, "--force")
 	}
@@ -48,28 +44,11 @@ func (w *WpscanConfig) run(ctx context.Context, target string, wpscanSettingID u
 	if !zero.IsZeroVal(options.WpContentDir) {
 		args = append(args, "--wp-content-dir", options.WpContentDir)
 	}
-	if !zero.IsZeroVal(w.WpscanVulndbApikey) {
-		isUseAPIKey = true
-		argsWithApiKey := append(args, "--api-token", w.WpscanVulndbApikey)
-		cmd := exec.Command("wpscan", argsWithApiKey...)
-		err := w.execWPScan(ctx, cmd)
-		if err != nil {
-			// ReScan for Invalid APIKey or reaching APIKey Limit
-			w.logger.Warnf(ctx, "APIKey doesn't work. Try scanning without apikey, err=%v", err)
-			cmd := exec.Command("wpscan", args...)
-			err = w.execWPScan(ctx, cmd)
-			if err != nil {
-				w.logger.Errorf(ctx, "Scan also failed without apikey, err=%v", err)
-				return nil, err
-			}
-		}
-	} else {
-		cmd := exec.Command("wpscan", args...)
-		err := w.execWPScan(ctx, cmd)
-		if err != nil {
-			w.logger.Errorf(ctx, "Scan failed without apikey, err=%v", err)
-			return nil, err
-		}
+	cmd := exec.Command("wpscan", args...)
+	err := w.execWPScan(ctx, cmd)
+	if err != nil {
+		w.logger.Errorf(ctx, "Scan failed,target: %s, err: %v", target, err)
+		return nil, err
 	}
 
 	bytes, err := readAndDeleteFile(filePath)
@@ -82,12 +61,6 @@ func (w *WpscanConfig) run(ctx context.Context, target string, wpscanSettingID u
 		return nil, err
 	}
 
-	if isUseAPIKey {
-		remain := map[string]interface{}{
-			"api_remaining": wpscanResult.VulnAPI.RequestRemaining,
-		}
-		w.logger.WithItems(ctx, logging.InfoLevel, remain, "Executed WPScan VulnAPI")
-	}
 	wpscanResult.CheckAccess, err = checkOpen(target)
 	if err != nil {
 		return nil, err
@@ -173,8 +146,6 @@ type wpscanResult struct {
 	Maintheme           mainTheme              `json:"main_theme"`
 	Users               map[string]interface{} `json:"users"`
 	CheckAccess         *checkAccess
-	Plugins             map[string]plugin `json:"plugins"`
-	VulnAPI             vulnAPI           `json:"vuln_api"`
 }
 
 type interestingFindings struct {
@@ -202,21 +173,6 @@ type vulnerability struct {
 	FixedIn    string                 `json:"fixed_in"`
 	References map[string]interface{} `json:"references"`
 	URL        []string               `json:"url"`
-}
-
-type plugin struct {
-	Slug              string          `json:"slug"`
-	LatestVersion     string          `json:"latest_version"`
-	Location          string          `json:"location"`
-	InterstingEntries []string        `json:"intersting_entries"`
-	Vulnerabilities   []vulnerability `json:"vulnerabilities"`
-	Version           version         `json:"version"`
-}
-
-type vulnAPI struct {
-	Plan                   string `json:"plan"`
-	RequestsDoneDuringScan uint32 `json:"requests_done_during_scan"`
-	RequestRemaining       uint32 `json:"requests_remaining"`
 }
 
 type checkAccess struct {

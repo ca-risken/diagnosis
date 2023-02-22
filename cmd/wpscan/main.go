@@ -45,8 +45,7 @@ type AppConfig struct {
 	CoreAddr             string `required:"true" split_words:"true" default:"core.core.svc.cluster.local:8080"`
 	DataSourceAPISvcAddr string `required:"true" split_words:"true" default:"datasource-api.core.svc.cluster.local:8081"`
 	// wpscan
-	ResultPath         string `split_words:"true" required:"true" default:"/tmp"`
-	WpscanVulndbApikey string `split_words:"true"`
+	ResultPath string `split_words:"true" required:"true" default:"/tmp"`
 }
 
 func main() {
@@ -85,7 +84,7 @@ func main() {
 	tracer.Start(tc)
 	defer tracer.Stop()
 
-	wc := wpscan.NewWpscanConfig(conf.ResultPath, conf.WpscanVulndbApikey, appLogger)
+	wc := wpscan.NewWpscanConfig(conf.ResultPath, appLogger)
 	fc, err := grpc.NewFindingClient(conf.CoreAddr)
 	if err != nil {
 		appLogger.Fatalf(ctx, "Failed to create finding client, err=%+v", err)
