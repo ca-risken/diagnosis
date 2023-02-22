@@ -146,7 +146,6 @@ type wpscanResult struct {
 	Maintheme           mainTheme              `json:"main_theme"`
 	Users               map[string]interface{} `json:"users"`
 	CheckAccess         *checkAccess
-	VulnAPI             vulnAPI `json:"vuln_api"`
 }
 
 type interestingFindings struct {
@@ -174,12 +173,6 @@ type vulnerability struct {
 	FixedIn    string                 `json:"fixed_in"`
 	References map[string]interface{} `json:"references"`
 	URL        []string               `json:"url"`
-}
-
-type vulnAPI struct {
-	Plan                   string `json:"plan"`
-	RequestsDoneDuringScan uint32 `json:"requests_done_during_scan"`
-	RequestRemaining       uint32 `json:"requests_remaining"`
 }
 
 type checkAccess struct {
