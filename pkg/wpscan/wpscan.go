@@ -12,22 +12,29 @@ import (
 	"time"
 
 	"github.com/ca-risken/common/pkg/logging"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/vikyd/zero"
 )
 
 type WpscanConfig struct {
 	ResultPath string
 	logger     logging.Logger
+	retryer    backoff.BackOff
 }
 
 func NewWpscanConfig(
 	resultPath string,
 	l logging.Logger,
-
 ) *WpscanConfig {
+	// ref: https://pkg.go.dev/github.com/cenkalti/backoff/v4#ExponentialBackOff
+	retryer := backoff.NewExponentialBackOff()
+	retryer.InitialInterval = 1 * time.Second
+	retryer.MaxInterval = 10 * time.Second
+	retryer.MaxElapsedTime = 60 * time.Second
 	return &WpscanConfig{
 		ResultPath: resultPath,
 		logger:     l,
+		retryer:    retryer,
 	}
 }
 
@@ -61,7 +68,7 @@ func (w *WpscanConfig) run(ctx context.Context, target string, wpscanSettingID u
 		return nil, err
 	}
 
-	wpscanResult.CheckAccess, err = checkOpen(target)
+	wpscanResult.CheckAccess, err = w.CheckOpen(ctx, target)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +101,14 @@ func (w *WpscanConfig) execWPScan(ctx context.Context, cmd *exec.Cmd) error {
 	return nil
 }
 
-func checkOpen(wpURL string) (*checkAccess, error) {
+func (w *WpscanConfig) CheckOpen(ctx context.Context, wpURL string) (*checkAccess, error) {
+	operation := func() (*checkAccess, error) {
+		return w.checkOpen(wpURL)
+	}
+	return backoff.RetryNotifyWithData(operation, w.retryer, w.newRetryLogger(ctx, "CheckOpen"))
+}
+
+func (w *WpscanConfig) checkOpen(wpURL string) (*checkAccess, error) {
 	checkAccess := getAccessList(wpURL)
 	for i, target := range checkAccess.Target {
 		goal := target.Goal
@@ -112,7 +126,7 @@ func checkOpen(wpURL string) (*checkAccess, error) {
 		client := new(http.Client)
 		resp, err := client.Do(req)
 		if err != nil {
-			continue
+			return nil, fmt.Errorf("http request error: target=%+v, err=%+v", target, err)
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode == 200 && strings.Contains(resp.Request.URL.String(), goal) {
@@ -197,4 +211,10 @@ func getAccessList(wpURL string) *checkAccess {
 		},
 	}
 	return checkAccess
+}
+
+func (w *WpscanConfig) newRetryLogger(ctx context.Context, funcName string) func(error, time.Duration) {
+	return func(err error, t time.Duration) {
+		w.logger.Warnf(ctx, "[RetryLogger] %s error: duration=%+v, err=%+v", funcName, t, err)
+	}
 }
