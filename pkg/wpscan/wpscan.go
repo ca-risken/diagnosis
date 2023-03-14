@@ -30,7 +30,7 @@ func NewWpscanConfig(
 	retryer := backoff.NewExponentialBackOff()
 	retryer.InitialInterval = 1 * time.Second
 	retryer.MaxInterval = 10 * time.Second
-	retryer.MaxElapsedTime = 60 * time.Second
+	retryer.MaxElapsedTime = 30 * time.Second
 	return &WpscanConfig{
 		ResultPath: resultPath,
 		logger:     l,
@@ -68,7 +68,7 @@ func (w *WpscanConfig) run(ctx context.Context, target string, wpscanSettingID u
 		return nil, err
 	}
 
-	wpscanResult.CheckAccess, err = w.CheckOpen(ctx, target)
+	wpscanResult.CheckAccess, err = w.checkOpen(ctx, target)
 	if err != nil {
 		return nil, err
 	}
@@ -101,14 +101,7 @@ func (w *WpscanConfig) execWPScan(ctx context.Context, cmd *exec.Cmd) error {
 	return nil
 }
 
-func (w *WpscanConfig) CheckOpen(ctx context.Context, wpURL string) (*checkAccess, error) {
-	operation := func() (*checkAccess, error) {
-		return w.checkOpen(wpURL)
-	}
-	return backoff.RetryNotifyWithData(operation, w.retryer, w.newRetryLogger(ctx, "CheckOpen"))
-}
-
-func (w *WpscanConfig) checkOpen(wpURL string) (*checkAccess, error) {
+func (w *WpscanConfig) checkOpen(ctx context.Context, wpURL string) (*checkAccess, error) {
 	checkAccess := getAccessList(wpURL)
 	for i, target := range checkAccess.Target {
 		goal := target.Goal
@@ -123,10 +116,12 @@ func (w *WpscanConfig) checkOpen(wpURL string) (*checkAccess, error) {
 		if err != nil {
 			return nil, err
 		}
-		client := new(http.Client)
-		resp, err := client.Do(req)
+		resp, err := w.httpRequestWithRetry(ctx, req)
 		if err != nil {
-			return nil, fmt.Errorf("http request error: target=%+v, err=%+v", target, err)
+			// `/wp-admin` などの特定pathはサーバ側でレスポンスを返さないような設定をしているケースもある。
+			// その場合、必ずリクエストが失敗するがWordｐressの設定としては問題ないためスキャンエラーにはしない
+			w.logger.Errorf(ctx, "Failed to request with retries: err=%+v", err)
+			continue
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode == 200 && strings.Contains(resp.Request.URL.String(), goal) {
@@ -135,6 +130,22 @@ func (w *WpscanConfig) checkOpen(wpURL string) (*checkAccess, error) {
 		}
 	}
 	return checkAccess, nil
+}
+
+func (w *WpscanConfig) httpRequestWithRetry(ctx context.Context, req *http.Request) (*http.Response, error) {
+	operation := func() (*http.Response, error) {
+		return httpRequest(req)
+	}
+	return backoff.RetryNotifyWithData(operation, w.retryer, w.newRetryLogger(ctx, "httpRequestWithRetry"))
+}
+
+func httpRequest(req *http.Request) (*http.Response, error) {
+	client := new(http.Client)
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("http request error: url=%+v, err=%+v", req.URL, err)
+	}
+	return resp, err
 }
 
 func readAndDeleteFile(fileName string) ([]byte, error) {
