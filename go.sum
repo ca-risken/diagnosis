@@ -27,8 +27,8 @@ github.com/aws/aws-sdk-go-v2 v1.17.1 h1:02c72fDJr87N8RAC2s3Qu0YuvMRZKNZJ9F+lAehC
 github.com/aws/aws-sdk-go-v2 v1.17.1/go.mod h1:JLnGeGONAyi2lWXI1p0PCIOIy333JMVK1U7Hf0aRFLw=
 github.com/aws/aws-sdk-go-v2/config v1.15.4 h1:P4mesY1hYUxru4f9SU0XxNKXmzfxsD0FtMIPRBjkH7Q=
 github.com/aws/aws-sdk-go-v2/config v1.15.4/go.mod h1:ZijHHh0xd/A+ZY53az0qzC5tT46kt4JVCePf2NX9Lk4=
-github.com/aws/aws-sdk-go-v2/credentials v1.12.0 h1:4R/NqlcRFSkR0wxOhgHi+agGpbEr5qMCjn7VqUIJY+E=
 github.com/aws/aws-sdk-go-v2/credentials v1.12.0/go.mod h1:9YWk7VW+eyKsoIL6/CljkTrNVWBSK9pkqOPUuijid4A=
+github.com/aws/aws-sdk-go-v2/credentials v1.12.1 h1:ZrLRNXSHVKfIEtE/Omy4sm3MCttO01/hcAezccZMdFs=
 github.com/aws/aws-sdk-go-v2/credentials v1.12.1/go.mod h1:vwCvnQKZoz/lLFkokOpHCWaoftee+ATlpx6XZS0ACn0=
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.4 h1:FP8gquGeGHHdfY6G5llaMQDF+HAf20VKc8opRwmjf04=
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.4/go.mod h1:u/s5/Z+ohUQOPXl00m2yJVyioWDECsbpXTQlaqSlufc=
@@ -46,12 +46,12 @@ github.com/aws/aws-sdk-go-v2/service/sqs v1.19.15 h1:5PgOVgJWObGxve+0qU7T/C0reU6
 github.com/aws/aws-sdk-go-v2/service/sqs v1.19.15/go.mod h1:DKX/7/ZiAzHO6p6AhArnGdrV4r+d461weby8KeVtvC4=
 github.com/aws/aws-sdk-go-v2/service/sso v1.11.4 h1:Uw5wBybFQ1UeA9ts0Y07gbv0ncZnIAyw858tDW0NP2o=
 github.com/aws/aws-sdk-go-v2/service/sso v1.11.4/go.mod h1:cPDwJwsP4Kff9mldCXAmddjJL6JGQqtA3Mzer2zyr88=
-github.com/aws/aws-sdk-go-v2/service/sts v1.16.4 h1:+xtV90n3abQmgzk1pS++FdxZTrPEDgQng6e4/56WR2A=
 github.com/aws/aws-sdk-go-v2/service/sts v1.16.4/go.mod h1:lfSYenAXtavyX2A1LsViglqlG9eEFYxNryTZS5rn3QE=
+github.com/aws/aws-sdk-go-v2/service/sts v1.16.5 h1:aEMP+STBsvCY1U/yL4pAqUrU4oFli46AdbCXvVbTiHI=
 github.com/aws/aws-sdk-go-v2/service/sts v1.16.5/go.mod h1:lfSYenAXtavyX2A1LsViglqlG9eEFYxNryTZS5rn3QE=
 github.com/aws/smithy-go v1.11.2/go.mod h1:3xHYmszWVx2c0kIwQeEVf9uSm4fYZt67FBJnwub1bgM=
-github.com/aws/smithy-go v1.13.4 h1:/RN2z1txIJWeXeOkzX+Hk/4Uuvv7dWtCjbmVJcrskyk=
 github.com/aws/smithy-go v1.13.4/go.mod h1:Tg+OJXh4MB2R/uN61Ko2f6hTZwB/ZYGOtib8J3gBHzA=
+github.com/aws/smithy-go v1.13.5 h1:hgz0X/DX0dGqTYpGALqXJoRKRj5oQ7150i5FdTePzO8=
 github.com/aws/smithy-go v1.13.5/go.mod h1:Tg+OJXh4MB2R/uN61Ko2f6hTZwB/ZYGOtib8J3gBHzA=
 github.com/ca-risken/common/pkg/logging v0.0.0-20221119073224-9db027bda6f8 h1:U92BkR3p4XiKRo+m/DgMN1O1gUCm4DX3i00tgmFLiU4=
 github.com/ca-risken/common/pkg/logging v0.0.0-20221119073224-9db027bda6f8/go.mod h1:lUCE46TDzshDpI8Et+U806+ycG3LhMuBLrhemEJdSe0=
@@ -65,10 +65,6 @@ github.com/ca-risken/common/pkg/tracer v0.0.0-20221119073224-9db027bda6f8 h1:2V2
 github.com/ca-risken/common/pkg/tracer v0.0.0-20221119073224-9db027bda6f8/go.mod h1:PIXjETIPseBEB/OXp5Rxn8FFuRwfQjFZe1VN+0Skh2E=
 github.com/ca-risken/core v0.5.1-0.20230131022604-6ee078ff449c h1:djX7qmNvIdqB0+kNZjUP+ZtJu0TAUDVVs+A5sNGUduw=
 github.com/ca-risken/core v0.5.1-0.20230131022604-6ee078ff449c/go.mod h1:imJ7Eut2LDOaG6i9VnbfxZdILA3bJorSQ/OGgt0VQJM=
-github.com/ca-risken/datasource-api v0.4.1 h1:4ghFYv9T0YLSv2yve5eHd8tjE7EnWzR2IqyJY1rqoOg=
-github.com/ca-risken/datasource-api v0.4.1/go.mod h1:XAUaKNB8N0+1DED5mVuq2ldzT4pZlLzIwCbTlr1QBwg=
-github.com/ca-risken/datasource-api v0.6.0 h1:+ANI/ib4UCW/S3OACEB3IhBB6PPcCJNYOjZCaYpqR0E=
-github.com/ca-risken/datasource-api v0.6.0/go.mod h1:cCsoQDX58kDJWpsmszG1HbjmwWyQtvIvDCrKUuDdu5Y=
 github.com/ca-risken/datasource-api v0.6.1-0.20230417092713-4a58584b96d9 h1:rN9fT250ccCz0JGuR+tm9fJ2L3+JsT/UpgfyDAqCp/A=
 github.com/ca-risken/datasource-api v0.6.1-0.20230417092713-4a58584b96d9/go.mod h1:cCsoQDX58kDJWpsmszG1HbjmwWyQtvIvDCrKUuDdu5Y=
 github.com/ca-risken/go-sqs-poller/worker/v5 v5.0.0-20220525093235-9148d33b6aee h1:aIrvjCnF+Owzzh7dnE1w4442CdcuUkHaJsJOXImjeqg=
