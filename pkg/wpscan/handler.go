@@ -46,7 +46,7 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 	msgBody := aws.ToString(sqsMsg.Body)
 	s.logger.Infof(ctx, "got message. message: %v", msgBody)
 	// Parse message
-	msg, err := parseMessage(msgBody)
+	msg, err := message.ParseWpscanMessage(msgBody)
 	if err != nil {
 		s.logger.Errorf(ctx, "Invalid message. message: %v, error: %v", msgBody, err)
 		s.updateStatusToError(ctx, msg, err)
@@ -112,14 +112,6 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 	}
 	return nil
 
-}
-
-func parseMessage(msg string) (*message.WpscanQueueMessage, error) {
-	message := &message.WpscanQueueMessage{}
-	if err := json.Unmarshal([]byte(msg), message); err != nil {
-		return nil, err
-	}
-	return message, nil
 }
 
 func (s *SqsHandler) updateStatusToError(ctx context.Context, msg *message.WpscanQueueMessage, err error) {

@@ -3,7 +3,6 @@ package applicationscan
 import (
 	"context"
 	"crypto/rand"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -49,7 +48,7 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 	msgBody := aws.ToString(sqsMsg.Body)
 	s.logger.Infof(ctx, "got message. message: %v", msgBody)
 	// Parse message
-	msg, err := parseMessage(msgBody)
+	msg, err := message.ParseApplicationScanMessage(msgBody)
 	if err != nil {
 		s.logger.Errorf(ctx, "Invalid message. message: %v, error: %v", msgBody, err)
 		s.updateStatusToError(ctx, msg, err)
@@ -158,14 +157,6 @@ func (s *SqsHandler) runApplicationScan(ctx context.Context, msg *message.Applic
 		return nil, err
 	}
 	return scanResult, nil
-}
-
-func parseMessage(msg string) (*message.ApplicationScanQueueMessage, error) {
-	message := &message.ApplicationScanQueueMessage{}
-	if err := json.Unmarshal([]byte(msg), message); err != nil {
-		return nil, err
-	}
-	return message, nil
 }
 
 func checkAccessibleTarget(target string) error {
