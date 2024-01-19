@@ -2,7 +2,6 @@ package portscan
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -42,7 +41,7 @@ func (s *SqsHandler) HandleMessage(ctx context.Context, sqsMsg *types.Message) e
 	msgBody := aws.ToString(sqsMsg.Body)
 	s.logger.Infof(ctx, "got message: %s", msgBody)
 	// Parse message
-	msg, err := parseMessage(msgBody)
+	msg, err := message.ParsePortscanMessage(msgBody)
 	if err != nil {
 		s.logger.Errorf(ctx, "Invalid message: SQS_msg=%+v, err=%+v", msgBody, err)
 		s.updateStatusToError(ctx, msg, err)
@@ -145,14 +144,6 @@ func (s *SqsHandler) putPortscanTarget(ctx context.Context, portscanTargetID, pr
 	}
 
 	return nil
-}
-
-func parseMessage(msg string) (*message.PortscanQueueMessage, error) {
-	message := &message.PortscanQueueMessage{}
-	if err := json.Unmarshal([]byte(msg), message); err != nil {
-		return nil, err
-	}
-	return message, nil
 }
 
 func (s *SqsHandler) analyzeAlert(ctx context.Context, projectID uint32) error {
